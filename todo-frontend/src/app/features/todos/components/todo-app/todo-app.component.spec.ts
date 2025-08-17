@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { of } from 'rxjs';
+import { of, throwError, forkJoin } from 'rxjs';
 import { TodoAppComponent } from './todo-app.component';
 import { TodoService } from '../../../../core/services/todo.service';
 import { ErrorService } from '../../../../core/services/error.service';
@@ -121,5 +121,169 @@ describe('TodoAppComponent', () => {
     component.clearError();
     
     expect(errorService.clearError).toHaveBeenCalled();
+  });
+
+  describe('input validation and error handling', () => {
+    it('should show error for empty title when creating todo', () => {
+      component.onCreateTodo('');
+      
+      expect(errorService.handleError).toHaveBeenCalledWith('Todo title cannot be empty');
+      expect(todoService.createTodo).not.toHaveBeenCalled();
+    });
+
+    it('should show error for title exceeding max length when creating todo', () => {
+      const longTitle = 'a'.repeat(501);
+      
+      component.onCreateTodo(longTitle);
+      
+      expect(errorService.handleError).toHaveBeenCalledWith('Todo title cannot exceed 500 characters');
+      expect(todoService.createTodo).not.toHaveBeenCalled();
+    });
+
+    it('should show error for empty title when updating todo', () => {
+      component.onUpdateTodo({ id: 1, title: '  ' });
+      
+      expect(errorService.handleError).toHaveBeenCalledWith('Todo title cannot be empty');
+      expect(todoService.updateTodo).not.toHaveBeenCalled();
+    });
+
+    it('should show error for title exceeding max length when updating todo', () => {
+      const longTitle = 'a'.repeat(501);
+      
+      component.onUpdateTodo({ id: 1, title: longTitle });
+      
+      expect(errorService.handleError).toHaveBeenCalledWith('Todo title cannot exceed 500 characters');
+      expect(todoService.updateTodo).not.toHaveBeenCalled();
+    });
+
+    it('should handle error when creating todo fails', () => {
+      const errorMessage = 'Server error';
+      todoService.createTodo.and.returnValue(throwError(() => ({ message: errorMessage })));
+      
+      component.onCreateTodo('Test Todo');
+      
+      expect(errorService.handleError).toHaveBeenCalledWith(errorMessage);
+    });
+
+    it('should handle error when updating todo fails', () => {
+      const errorMessage = 'Server error';
+      todoService.updateTodo.and.returnValue(throwError(() => ({ message: errorMessage })));
+      
+      component.onUpdateTodo({ id: 1, title: 'Updated Todo' });
+      
+      expect(errorService.handleError).toHaveBeenCalledWith(errorMessage);
+    });
+
+    it('should handle error when toggling todo fails', () => {
+      todoService.toggleTodo.and.returnValue(throwError(() => ({ message: 'Server error' })));
+      
+      component.onToggleTodo(1);
+      
+      expect(errorService.handleError).toHaveBeenCalledWith('Server error');
+    });
+
+    it('should handle error when deleting todo fails', () => {
+      todoService.deleteTodo.and.returnValue(throwError(() => ({ message: 'Server error' })));
+      
+      component.onDeleteTodo(1);
+      
+      expect(errorService.handleError).toHaveBeenCalledWith('Server error');
+    });
+
+    it('should handle error when clearing completed todos fails', () => {
+      todoService.clearCompleted.and.returnValue(throwError(() => ({ message: 'Server error' })));
+      
+      component.onClearCompleted();
+      
+      expect(errorService.handleError).toHaveBeenCalledWith('Server error');
+    });
+
+    it('should handle error when loading todos fails', () => {
+      const errorMessage = 'Network error';
+      todoService.getTodos.and.returnValue(throwError(() => ({ message: errorMessage })));
+      
+      component.ngOnInit();
+      
+      expect(errorService.handleError).toHaveBeenCalledWith(errorMessage);
+    });
+  });
+
+  describe('filter functionality', () => {
+    it('should change current filter', () => {
+      const newFilter = { type: 'active' as const, label: 'Active' };
+      
+      component.onFilterChange(newFilter);
+      
+      expect(component.currentFilter).toEqual(newFilter);
+    });
+  });
+
+  describe('toggle all functionality', () => {
+    it('should toggle all todos to completed when some are active', () => {
+      const stats = { total: 2, active: 1, completed: 1 };
+      const activeTodo = { id: 1, title: 'Active Todo', completed: false };
+      const completedTodo = { id: 2, title: 'Completed Todo', completed: true };
+      
+      todoService.getStats.and.returnValue(of(stats));
+      component.todos$ = of([activeTodo, completedTodo]);
+      todoService.toggleTodo.and.returnValue(of({ ...activeTodo, completed: true }));
+      
+      component.onToggleAll();
+      
+      expect(todoService.toggleTodo).toHaveBeenCalledWith(1);
+    });
+
+    it('should toggle all todos to active when all are completed', () => {
+      const stats = { total: 2, active: 0, completed: 2 };
+      const completedTodo1 = { id: 1, title: 'Todo 1', completed: true };
+      const completedTodo2 = { id: 2, title: 'Todo 2', completed: true };
+      
+      todoService.getStats.and.returnValue(of(stats));
+      component.todos$ = of([completedTodo1, completedTodo2]);
+      todoService.toggleTodo.and.returnValue(of({ ...completedTodo1, completed: false }));
+      
+      component.onToggleAll();
+      
+      expect(todoService.toggleTodo).toHaveBeenCalledWith(1);
+      expect(todoService.toggleTodo).toHaveBeenCalledWith(2);
+    });
+
+    it('should not perform any toggles when no todos need to be toggled', () => {
+      const stats = { total: 1, active: 1, completed: 0 };
+      const activeTodo = { id: 1, title: 'Active Todo', completed: false };
+      
+      todoService.getStats.and.returnValue(of(stats));
+      component.todos$ = of([activeTodo]);
+      
+      component.onToggleAll();
+      
+      expect(todoService.toggleTodo).not.toHaveBeenCalled();
+    });
+
+    it('should handle error when toggle all fails', () => {
+      const stats = { total: 2, active: 2, completed: 0 };
+      const activeTodo1 = { id: 1, title: 'Active Todo 1', completed: false };
+      const activeTodo2 = { id: 2, title: 'Active Todo 2', completed: false };
+      
+      todoService.getStats.and.returnValue(of(stats));
+      component.todos$ = of([activeTodo1, activeTodo2]);
+      todoService.toggleTodo.and.returnValue(throwError(() => new Error('Server error')));
+      
+      component.onToggleAll();
+      
+      expect(errorService.handleError).toHaveBeenCalledWith('Failed to toggle all todos');
+    });
+  });
+
+  describe('component lifecycle', () => {
+    it('should clean up subscriptions on destroy', () => {
+      spyOn(component['destroy$'], 'next');
+      spyOn(component['destroy$'], 'complete');
+      
+      component.ngOnDestroy();
+      
+      expect(component['destroy$'].next).toHaveBeenCalled();
+      expect(component['destroy$'].complete).toHaveBeenCalled();
+    });
   });
 });

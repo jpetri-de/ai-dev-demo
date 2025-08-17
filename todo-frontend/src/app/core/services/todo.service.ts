@@ -1,7 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, map } from 'rxjs';
-import { Todo, TodoStats } from '../../features/todos/models/todo.interface';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable, throwError, timer } from 'rxjs';
+import { map, catchError, retry, delayWhen, tap } from 'rxjs/operators';
+import { 
+  Todo, 
+  TodoStats, 
+  CreateTodoRequest, 
+  UpdateTodoRequest,
+  TodoApiError,
+  TodoId 
+} from '../../features/todos/models';
+import { TodoValidator } from '../../features/todos/models/todo-validation';
 
 @Injectable({
   providedIn: 'root'
@@ -9,98 +18,182 @@ import { Todo, TodoStats } from '../../features/todos/models/todo.interface';
 export class TodoService {
   private readonly apiUrl = '/api/todos';
   private todosSubject = new BehaviorSubject<Todo[]>([]);
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  
   public todos$ = this.todosSubject.asObservable();
+  public loading$ = this.loadingSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
-  // Get all todos
+  // GET /api/todos - Retrieve all todos
   getTodos(): Observable<Todo[]> {
-    return this.http.get<Todo[]>(this.apiUrl).pipe(
-      map(todos => {
-        this.updateTodos(todos);
-        return todos;
-      })
-    );
-  }
-
-  // Create new todo
-  createTodo(title: string): Observable<Todo> {
-    const trimmedTitle = title.trim();
-    if (!trimmedTitle) {
-      throw new Error('Todo title cannot be empty');
-    }
+    this.setLoading(true);
     
-    const newTodo = { title: trimmedTitle, completed: false };
-    return this.http.post<Todo>(this.apiUrl, newTodo).pipe(
-      map(todo => {
-        const currentTodos = this.todosSubject.value;
-        this.updateTodos([...currentTodos, todo]);
-        return todo;
+    return this.http.get<Todo[]>(this.apiUrl).pipe(
+      retry({
+        count: 3,
+        delay: (error, retryCount) => timer(retryCount * 1000)
+      }),
+      tap(todos => {
+        this.updateTodos(todos);
+        this.setLoading(false);
+      }),
+      catchError(error => {
+        this.setLoading(false);
+        return this.handleError(error);
       })
     );
   }
 
-  // Update todo
-  updateTodo(id: number, updates: Partial<Todo>): Observable<Todo> {
+  // POST /api/todos - Create new todo
+  createTodo(title: string): Observable<Todo> {
+    // Client-side validation
+    const validationErrors = TodoValidator.validateTitle(title);
+    if (validationErrors.length > 0) {
+      return throwError(() => new Error(validationErrors[0].message));
+    }
+
+    const request: CreateTodoRequest = { 
+      title: title.trim() 
+    };
+
+    // Optimistic update
+    const optimisticTodo: Todo = {
+      id: Date.now(), // Temporary ID for optimistic update
+      title: request.title,
+      completed: false
+    };
+
+    const currentTodos = this.todosSubject.value;
+    this.updateTodos([...currentTodos, optimisticTodo]);
+
+    return this.http.post<Todo>(this.apiUrl, request).pipe(
+      tap(createdTodo => {
+        // Replace optimistic todo with real todo from server
+        const updatedTodos = currentTodos.concat(createdTodo);
+        this.updateTodos(updatedTodos);
+      }),
+      catchError(error => {
+        // Rollback optimistic update
+        this.updateTodos(currentTodos);
+        return this.handleError(error);
+      })
+    );
+  }
+
+  // PUT /api/todos/{id} - Update todo
+  updateTodo(id: TodoId, updates: UpdateTodoRequest): Observable<Todo> {
+    // Client-side validation if title is being updated
+    if (updates.title !== undefined) {
+      const validationErrors = TodoValidator.validateTitle(updates.title);
+      if (validationErrors.length > 0) {
+        return throwError(() => new Error(validationErrors[0].message));
+      }
+      updates.title = updates.title.trim();
+    }
+
+    // Optimistic update
+    const currentTodos = this.todosSubject.value;
+    const optimisticTodos = currentTodos.map(todo => 
+      todo.id === id ? { ...todo, ...updates } : todo
+    );
+    this.updateTodos(optimisticTodos);
+
     return this.http.put<Todo>(`${this.apiUrl}/${id}`, updates).pipe(
-      map(updatedTodo => {
-        const currentTodos = this.todosSubject.value;
-        const updatedTodos = currentTodos.map(todo => 
+      tap(updatedTodo => {
+        // Update with server response
+        const serverUpdatedTodos = currentTodos.map(todo => 
           todo.id === id ? updatedTodo : todo
         );
-        this.updateTodos(updatedTodos);
-        return updatedTodo;
+        this.updateTodos(serverUpdatedTodos);
+      }),
+      catchError(error => {
+        // Rollback optimistic update
+        this.updateTodos(currentTodos);
+        return this.handleError(error);
       })
     );
   }
 
-  // Delete todo
-  deleteTodo(id: number): Observable<void> {
+  // DELETE /api/todos/{id} - Delete todo
+  deleteTodo(id: TodoId): Observable<void> {
+    // Optimistic update
+    const currentTodos = this.todosSubject.value;
+    const optimisticTodos = currentTodos.filter(todo => todo.id !== id);
+    this.updateTodos(optimisticTodos);
+
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
-      map(() => {
-        const currentTodos = this.todosSubject.value;
-        const filteredTodos = currentTodos.filter(todo => todo.id !== id);
-        this.updateTodos(filteredTodos);
+      catchError(error => {
+        // Rollback optimistic update
+        this.updateTodos(currentTodos);
+        return this.handleError(error);
       })
     );
   }
 
-  // Toggle todo completion status
-  toggleTodo(id: number): Observable<Todo> {
+  // PUT /api/todos/{id}/toggle - Toggle todo completion status
+  toggleTodo(id: TodoId): Observable<Todo> {
+    // Optimistic update
+    const currentTodos = this.todosSubject.value;
+    const optimisticTodos = currentTodos.map(todo => 
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    );
+    this.updateTodos(optimisticTodos);
+
     return this.http.put<Todo>(`${this.apiUrl}/${id}/toggle`, {}).pipe(
-      map(updatedTodo => {
-        const currentTodos = this.todosSubject.value;
-        const updatedTodos = currentTodos.map(todo => 
+      tap(updatedTodo => {
+        // Update with server response
+        const serverUpdatedTodos = currentTodos.map(todo => 
           todo.id === id ? updatedTodo : todo
         );
-        this.updateTodos(updatedTodos);
-        return updatedTodo;
+        this.updateTodos(serverUpdatedTodos);
+      }),
+      catchError(error => {
+        // Rollback optimistic update
+        this.updateTodos(currentTodos);
+        return this.handleError(error);
       })
     );
   }
 
-  // Toggle all todos
-  toggleAllTodos(completed: boolean): Observable<Todo[]> {
-    return this.http.put<Todo[]>(`${this.apiUrl}/toggle-all`, { completed }).pipe(
-      map(updatedTodos => {
-        this.updateTodos(updatedTodos);
-        return updatedTodos;
-      })
-    );
-  }
-
-  // Clear completed todos
+  // DELETE /api/todos/completed - Delete all completed todos
   clearCompleted(): Observable<void> {
+    // Optimistic update
+    const currentTodos = this.todosSubject.value;
+    const optimisticTodos = currentTodos.filter(todo => !todo.completed);
+    this.updateTodos(optimisticTodos);
+
     return this.http.delete<void>(`${this.apiUrl}/completed`).pipe(
-      map(() => {
-        const currentTodos = this.todosSubject.value;
-        const activeTodos = currentTodos.filter(todo => !todo.completed);
-        this.updateTodos(activeTodos);
+      catchError(error => {
+        // Rollback optimistic update
+        this.updateTodos(currentTodos);
+        return this.handleError(error);
       })
     );
   }
 
-  // Get todo statistics
+  // Toggle all todos - implemented as individual toggle calls since backend doesn't support bulk operations
+  toggleAllTodos(completed: boolean): Observable<Todo[]> {
+    const currentTodos = this.todosSubject.value;
+    const todosToToggle = currentTodos.filter(todo => todo.completed !== completed);
+    
+    if (todosToToggle.length === 0) {
+      return new Observable(subscriber => {
+        subscriber.next(currentTodos);
+        subscriber.complete();
+      });
+    }
+
+    // Optimistic update
+    const optimisticTodos = currentTodos.map(todo => ({ ...todo, completed }));
+    this.updateTodos(optimisticTodos);
+
+    // Execute individual toggle requests - for now we'll handle this in components
+    // since backend doesn't support bulk toggle
+    return throwError(() => new Error('Bulk toggle operation should be handled at component level'));
+  }
+
+  // Get todo statistics (derived from current state)
   getStats(): Observable<TodoStats> {
     return this.todos$.pipe(
       map(todos => {
@@ -112,8 +205,56 @@ export class TodoService {
     );
   }
 
-  // Private method to update todos state
+  // Get todo by ID
+  getTodoById(id: TodoId): Observable<Todo | undefined> {
+    return this.todos$.pipe(
+      map(todos => todos.find(todo => todo.id === id))
+    );
+  }
+
+  // Private helper methods
   private updateTodos(todos: Todo[]): void {
     this.todosSubject.next(todos);
+  }
+
+  private setLoading(loading: boolean): void {
+    this.loadingSubject.next(loading);
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let apiError: TodoApiError;
+
+    if (error.status === 0) {
+      // Network error
+      apiError = {
+        status: 0,
+        message: 'Network error. Please check your connection.'
+      };
+    } else if (error.status === 400 && error.error?.message) {
+      // Validation error from backend
+      apiError = {
+        status: 400,
+        message: error.error.message,
+        errors: error.error.errors || []
+      };
+    } else if (error.status === 404) {
+      apiError = {
+        status: 404,
+        message: 'Todo not found.'
+      };
+    } else if (error.status >= 500) {
+      apiError = {
+        status: error.status,
+        message: 'Server error. Please try again later.'
+      };
+    } else {
+      apiError = {
+        status: error.status,
+        message: error.error?.message || 'An unexpected error occurred.'
+      };
+    }
+
+    console.error('TodoService error:', error);
+    return throwError(() => apiError);
   }
 }

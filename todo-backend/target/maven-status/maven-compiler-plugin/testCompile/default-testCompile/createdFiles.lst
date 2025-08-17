@@ -1,1 +1,4 @@
+com/example/todobackend/service/TodoServiceIntegrationTest.class
+com/example/todobackend/model/TodoTest.class
+com/example/todobackend/service/TodoStorageServiceTest.class
 com/example/todobackend/TodoBackendApplicationTests.class

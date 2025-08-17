@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TodoStorageService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">todo-backend</a> &gt; <a href="index.source.html" class="el_package">com.example.todobackend.service</a> &gt; <span class="el_source">TodoStorageService.java</span></div><h1>TodoStorageService.java</h1><pre class="source lang-java linenums">package com.example.todobackend.service;
+
+import com.example.todobackend.model.Todo;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+
+/**
+ * Thread-safe in-memory storage service for Todo entities.
+ * Uses synchronized collections and atomic operations for thread safety.
+ */
+@Service
+<span class="fc" id="L14">public class TodoStorageService {</span>
+    
+<span class="fc" id="L16">    private final List&lt;Todo&gt; todos = Collections.synchronizedList(new ArrayList&lt;&gt;());</span>
+<span class="fc" id="L17">    private final AtomicLong idCounter = new AtomicLong(1);</span>
+
+    /**
+     * Retrieves all todos.
+     * @return A copy of all todos for thread safety
+     */
+    public List&lt;Todo&gt; findAll() {
+<span class="fc" id="L24">        synchronized (todos) {</span>
+<span class="fc" id="L25">            return new ArrayList&lt;&gt;(todos);</span>
+        }
+    }
+
+    /**
+     * Finds a todo by ID.
+     * @param id The todo ID
+     * @return Optional containing the todo if found
+     */
+    public Optional&lt;Todo&gt; findById(Long id) {
+<span class="fc" id="L35">        synchronized (todos) {</span>
+<span class="fc" id="L36">            return todos.stream()</span>
+<span class="fc" id="L37">                    .filter(todo -&gt; Objects.equals(todo.getId(), id))</span>
+<span class="fc" id="L38">                    .findFirst();</span>
+        }
+    }
+
+    /**
+     * Saves a todo (create or update).
+     * @param todo The todo to save
+     * @return The saved todo
+     */
+    public Todo save(Todo todo) {
+<span class="fc" id="L48">        synchronized (todos) {</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">            if (todo.getId() == null) {</span>
+                // Create new todo
+<span class="fc" id="L51">                todo.setId(idCounter.getAndIncrement());</span>
+<span class="fc" id="L52">                todos.add(todo);</span>
+            } else {
+                // Update existing todo
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">                for (int i = 0; i &lt; todos.size(); i++) {</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">                    if (Objects.equals(todos.get(i).getId(), todo.getId())) {</span>
+<span class="fc" id="L57">                        todos.set(i, todo);</span>
+<span class="fc" id="L58">                        break;</span>
+                    }
+                }
+            }
+<span class="fc" id="L62">            return todo;</span>
+        }
+    }
+
+    /**
+     * Deletes a todo by ID.
+     * @param id The todo ID
+     * @return true if the todo was deleted, false if not found
+     */
+    public boolean deleteById(Long id) {
+<span class="fc" id="L72">        synchronized (todos) {</span>
+<span class="fc" id="L73">            return todos.removeIf(todo -&gt; Objects.equals(todo.getId(), id));</span>
+        }
+    }
+
+    /**
+     * Deletes all completed todos.
+     * @return The number of todos deleted
+     */
+    public int deleteCompleted() {
+<span class="fc" id="L82">        synchronized (todos) {</span>
+<span class="fc" id="L83">            int sizeBefore = todos.size();</span>
+<span class="fc" id="L84">            todos.removeIf(Todo::isCompleted);</span>
+<span class="fc" id="L85">            return sizeBefore - todos.size();</span>
+        }
+    }
+
+    /**
+     * Gets the current number of todos.
+     * @return The count of todos
+     */
+    public int count() {
+<span class="fc" id="L94">        return todos.size();</span>
+    }
+
+    /**
+     * Clears all todos (useful for testing).
+     */
+    public void clear() {
+<span class="fc" id="L101">        synchronized (todos) {</span>
+<span class="fc" id="L102">            todos.clear();</span>
+<span class="fc" id="L103">            idCounter.set(1);</span>
+<span class="fc" id="L104">        }</span>
+<span class="fc" id="L105">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

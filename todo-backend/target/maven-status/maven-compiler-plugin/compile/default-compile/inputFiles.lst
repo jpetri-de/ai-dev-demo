@@ -1,2 +1,13 @@
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/exception/TodoNotFoundException.java
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/dto/CreateTodoRequest.java
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/dto/UpdateTodoRequest.java
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/mapper/TodoMapper.java
 /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/config/CorsConfig.java
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/service/TodoStorageService.java
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/controller/TodoController.java
 /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/TodoBackendApplication.java
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/service/TodoService.java
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/exception/GlobalExceptionHandler.java
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/model/Todo.java
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/dto/ErrorResponse.java
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/dto/TodoResponse.java

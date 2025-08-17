@@ -1,107 +1,97 @@
-# TodoMVC Angular Frontend Implementation Plan
+# Todo Model Feature - Frontend Implementation Plan
 
 ## Context
 
-This plan outlines the comprehensive frontend implementation for the TodoMVC application using Angular 17. The frontend will communicate with a Spring Boot backend via REST API and provide a modern, responsive user interface following TodoMVC specifications.
+This plan focuses specifically on implementing the Todo model feature for the Angular frontend, based on specification `02-todo-model.md`. The backend provides REST endpoints for CRUD operations, and the frontend needs to integrate with these APIs while providing robust error handling, validation, and state management.
+
+### Feature Description
+- Implement Todo interface and TypeScript models
+- Integrate with backend REST API endpoints
+- Add client-side validation and error handling
+- Ensure seamless integration with existing components
+- Provide comprehensive testing for the Todo model layer
 
 ### Requirements Analysis
-- **Framework**: Angular 17 with TypeScript
-- **Styling**: Integration of existing TodoMVC CSS from `resources/css/main.css`
-- **API Communication**: HTTP client for Spring Boot backend on port 8080
-- **Development**: Port 4200 with proxy configuration
-- **Features**: Full CRUD operations, filtering, toggle-all, clear completed
-- **UI/UX**: TodoMVC standard interface with responsive design
+- **Backend API**: 6 REST endpoints for full CRUD operations
+- **Todo Model**: id (Long), title (String, max 500 chars), completed (boolean)
+- **Validation**: Client-side input validation matching backend constraints
+- **Error Handling**: Graceful handling of API failures and validation errors
+- **State Management**: Reactive state updates with optimistic UI changes
 
 ## Architecture
 
-### Module Structure
+### Model Structure
 ```
-src/
-├── app/
-│   ├── core/                    # Core module (singleton services)
-│   │   ├── services/
-│   │   │   ├── todo.service.ts
-│   │   │   └── error.service.ts
-│   │   └── core.module.ts
-│   ├── shared/                  # Shared module (common components/pipes)
-│   │   ├── components/
-│   │   ├── pipes/
-│   │   └── shared.module.ts
-│   ├── features/                # Feature modules
-│   │   └── todos/
-│   │       ├── components/
-│   │       │   ├── todo-app/
-│   │       │   ├── todo-list/
-│   │       │   ├── todo-item/
-│   │       │   └── todo-filter/
-│   │       ├── models/
-│   │       │   └── todo.interface.ts
-│   │       └── todos.module.ts
-│   ├── app.component.ts
-│   ├── app.module.ts
-│   └── app-routing.module.ts
-├── assets/
-├── environments/
-└── styles.css                  # Global styles (TodoMVC CSS)
+src/app/features/todos/models/
+├── todo.interface.ts           # Core Todo interface and related types
+├── todo-create.dto.ts         # Data Transfer Object for creating todos
+├── todo-update.dto.ts         # Data Transfer Object for updating todos
+├── todo-validation.ts         # Client-side validation functions
+└── index.ts                   # Barrel export for clean imports
 ```
 
-### Component Hierarchy
+### Service Integration Points
 ```
-AppComponent
-└── TodoAppComponent (todos feature)
-    ├── TodoFilterComponent (filters: all/active/completed)
-    └── TodoListComponent (main section)
-        └── TodoItemComponent (individual todo items) [*ngFor]
+TodoService (existing) integrations:
+├── HTTP Client → Backend REST APIs
+├── State Management → BehaviorSubject<Todo[]>
+├── Error Handling → ErrorService integration
+├── Validation → Input validation before API calls
+└── Optimistic Updates → Immediate UI updates with rollback
 ```
 
-### Data Flow
-1. **Components** → **TodoService** → **HTTP Client** → **Spring Boot API**
-2. **Optimistic Updates**: Immediate UI updates with rollback on API errors
-3. **Error Handling**: Global error interceptor with user-friendly messages
-4. **Loading States**: Spinner components during API operations
+### Component Integration
+```
+Existing Components Integration:
+├── TodoAppComponent → Service method calls with error handling
+├── TodoListComponent → Display filtered todos from service state
+├── TodoItemComponent → CRUD operations via event emissions
+└── TodoFilterComponent → Filter logic based on todo.completed property
+```
 
 ## Implementation
 
-### 1. Project Setup and Configuration
+### 1. Enhanced Todo Model Definitions
 
-#### Angular CLI Project Creation
-```bash
-ng new todo-frontend --routing --style=css --strict
-cd todo-frontend
-```
+#### `/Users/jurgenpetri/git/github/ai-dev-demo/todo-frontend/src/app/features/todos/models/todo.interface.ts`
 
-#### Proxy Configuration (`proxy.conf.json`)
-```json
-{
-  "/api/*": {
-    "target": "http://localhost:8080",
-    "secure": false,
-    "changeOrigin": true,
-    "logLevel": "debug"
-  }
-}
-```
+**Current Issues to Address:**
+- `id` should be `number` (not optional) to match backend Long type
+- Need additional interfaces for DTOs and validation
+- Missing error handling types
 
-#### Angular Configuration (`angular.json` updates)
-```json
-"serve": {
-  "builder": "@angular-devkit/build-angular:dev-server",
-  "options": {
-    "proxyConfig": "proxy.conf.json"
-  }
-}
-```
-
-### 2. Core Models and Interfaces
-
-#### `src/app/features/todos/models/todo.interface.ts`
+**Updated Implementation:**
 ```typescript
+// Core Todo interface matching backend model
 export interface Todo {
-  id?: number;
-  title: string;
-  completed: boolean;
+  id: number;          // Required, matches backend Long
+  title: string;       // Required, max 500 characters
+  completed: boolean;  // Required, default false
 }
 
+// Data Transfer Objects for API calls
+export interface CreateTodoRequest {
+  title: string;
+}
+
+export interface UpdateTodoRequest {
+  title?: string;
+  completed?: boolean;
+}
+
+// Validation and Error Types
+export interface TodoValidationError {
+  field: string;
+  message: string;
+}
+
+export interface TodoApiError {
+  status: number;
+  message: string;
+  errors?: TodoValidationError[];
+}
+
+// Filter and Stats interfaces (keep existing)
 export interface TodoFilter {
   type: 'all' | 'active' | 'completed';
   label: string;
@@ -112,521 +102,424 @@ export interface TodoStats {
   active: number;
   completed: number;
 }
+
+// Helper types for better type safety
+export type TodoId = number;
+export type TodoStatus = 'active' | 'completed';
 ```
 
-### 3. Core Services
+#### `/Users/jurgenpetri/git/github/ai-dev-demo/todo-frontend/src/app/features/todos/models/todo-validation.ts`
 
-#### `src/app/core/services/todo.service.ts`
+**New File - Client-side Validation:**
 ```typescript
+import { TodoValidationError } from './todo.interface';
+
+export class TodoValidator {
+  static readonly MAX_TITLE_LENGTH = 500;
+  static readonly MIN_TITLE_LENGTH = 1;
+
+  static validateTitle(title: string): TodoValidationError[] {
+    const errors: TodoValidationError[] = [];
+    const trimmedTitle = title.trim();
+
+    if (!trimmedTitle || trimmedTitle.length < this.MIN_TITLE_LENGTH) {
+      errors.push({
+        field: 'title',
+        message: 'Todo title cannot be empty'
+      });
+    }
+
+    if (trimmedTitle.length > this.MAX_TITLE_LENGTH) {
+      errors.push({
+        field: 'title',
+        message: `Todo title cannot exceed ${this.MAX_TITLE_LENGTH} characters`
+      });
+    }
+
+    return errors;
+  }
+
+  static validateTodo(todo: Partial<Todo>): TodoValidationError[] {
+    const errors: TodoValidationError[] = [];
+
+    if (todo.title !== undefined) {
+      errors.push(...this.validateTitle(todo.title));
+    }
+
+    return errors;
+  }
+
+  static isValidTitle(title: string): boolean {
+    return this.validateTitle(title).length === 0;
+  }
+}
+```
+
+#### `/Users/jurgenpetri/git/github/ai-dev-demo/todo-frontend/src/app/features/todos/models/index.ts`
+
+**New File - Barrel Exports:**
+```typescript
+export * from './todo.interface';
+export * from './todo-validation';
+```
+
+### 2. Enhanced TodoService Implementation
+
+#### Update `/Users/jurgenpetri/git/github/ai-dev-demo/todo-frontend/src/app/core/services/todo.service.ts`
+
+**Key Issues to Address:**
+- Backend uses PUT /api/todos/{id}/toggle but service expects toggle-all endpoint
+- Need proper error handling and validation integration
+- Missing proper error recovery and retry logic
+- Need to handle HTTP status codes properly
+
+**Updated Implementation:**
+```typescript
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable, throwError, timer } from 'rxjs';
+import { map, catchError, retry, delayWhen, tap } from 'rxjs/operators';
+import { 
+  Todo, 
+  TodoStats, 
+  CreateTodoRequest, 
+  UpdateTodoRequest,
+  TodoApiError,
+  TodoId 
+} from '../../features/todos/models';
+import { TodoValidator } from '../../features/todos/models/todo-validation';
+
 @Injectable({
   providedIn: 'root'
 })
 export class TodoService {
   private readonly apiUrl = '/api/todos';
   private todosSubject = new BehaviorSubject<Todo[]>([]);
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  
   public todos$ = this.todosSubject.asObservable();
+  public loading$ = this.loadingSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
-  // CRUD Operations
-  getTodos(): Observable<Todo[]>
-  createTodo(title: string): Observable<Todo>
-  updateTodo(id: number, updates: Partial<Todo>): Observable<Todo>
-  deleteTodo(id: number): Observable<void>
-  toggleTodo(id: number): Observable<Todo>
-  clearCompleted(): Observable<void>
-
-  // State Management
-  private updateTodos(todos: Todo[]): void
-  getStats(): Observable<TodoStats>
-}
-```
-
-#### `src/app/core/services/error.service.ts`
-```typescript
-@Injectable({
-  providedIn: 'root'
-})
-export class ErrorService {
-  private errorSubject = new Subject<string>();
-  public error$ = this.errorSubject.asObservable();
-
-  handleError(error: any): void
-  clearError(): void
-}
-```
-
-### 4. HTTP Interceptors
-
-#### `src/app/core/interceptors/error.interceptor.ts`
-```typescript
-@Injectable()
-export class ErrorInterceptor implements HttpInterceptor {
-  constructor(private errorService: ErrorService) {}
-
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(req).pipe(
-      catchError((error: HttpErrorResponse) => {
-        this.errorService.handleError(error);
-        return throwError(() => error);
+  // GET /api/todos - Retrieve all todos
+  getTodos(): Observable<Todo[]> {
+    this.setLoading(true);
+    
+    return this.http.get<Todo[]>(this.apiUrl).pipe(
+      retry({
+        count: 3,
+        delay: (error, retryCount) => timer(retryCount * 1000)
+      }),
+      tap(todos => {
+        this.updateTodos(todos);
+        this.setLoading(false);
+      }),
+      catchError(error => {
+        this.setLoading(false);
+        return this.handleError(error);
       })
     );
   }
-}
-```
 
-#### `src/app/core/interceptors/loading.interceptor.ts`
-```typescript
-@Injectable()
-export class LoadingInterceptor implements HttpInterceptor {
-  private loadingCount = 0;
-  private loadingSubject = new BehaviorSubject<boolean>(false);
-  public loading$ = this.loadingSubject.asObservable();
+  // POST /api/todos - Create new todo
+  createTodo(title: string): Observable<Todo> {
+    // Client-side validation
+    const validationErrors = TodoValidator.validateTitle(title);
+    if (validationErrors.length > 0) {
+      return throwError(() => new Error(validationErrors[0].message));
+    }
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>
-}
-```
+    const request: CreateTodoRequest = { 
+      title: title.trim() 
+    };
 
-### 5. Feature Components
+    // Optimistic update
+    const optimisticTodo: Todo = {
+      id: Date.now(), // Temporary ID for optimistic update
+      title: request.title,
+      completed: false
+    };
 
-#### `src/app/features/todos/components/todo-app/todo-app.component.ts`
-```typescript
-@Component({
-  selector: 'app-todo-app',
-  templateUrl: './todo-app.component.html',
-  styleUrls: ['./todo-app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class TodoAppComponent implements OnInit {
-  todos$ = this.todoService.todos$;
-  stats$ = this.todoService.getStats();
-  currentFilter: TodoFilter = { type: 'all', label: 'All' };
-  
-  constructor(
-    private todoService: TodoService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    const currentTodos = this.todosSubject.value;
+    this.updateTodos([...currentTodos, optimisticTodo]);
 
-  ngOnInit(): void {
-    this.todoService.getTodos().subscribe();
+    return this.http.post<Todo>(this.apiUrl, request).pipe(
+      tap(createdTodo => {
+        // Replace optimistic todo with real todo from server
+        const updatedTodos = currentTodos.concat(createdTodo);
+        this.updateTodos(updatedTodos);
+      }),
+      catchError(error => {
+        // Rollback optimistic update
+        this.updateTodos(currentTodos);
+        return this.handleError(error);
+      })
+    );
   }
 
-  onCreateTodo(title: string): void
-  onFilterChange(filter: TodoFilter): void
-  onToggleAll(): void
-  onClearCompleted(): void
-}
-```
+  // PUT /api/todos/{id} - Update todo
+  updateTodo(id: TodoId, updates: UpdateTodoRequest): Observable<Todo> {
+    // Client-side validation if title is being updated
+    if (updates.title !== undefined) {
+      const validationErrors = TodoValidator.validateTitle(updates.title);
+      if (validationErrors.length > 0) {
+        return throwError(() => new Error(validationErrors[0].message));
+      }
+      updates.title = updates.title.trim();
+    }
 
-#### `src/app/features/todos/components/todo-app/todo-app.component.html`
-```html
-<section class="todoapp">
-  <header class="header">
-    <h1>todos</h1>
-    <input 
-      class="new-todo" 
-      placeholder="What needs to be done?" 
-      autofocus 
-      #newTodoInput
-      (keyup.enter)="onCreateTodo(newTodoInput.value); newTodoInput.value = ''"
-      [disabled]="(loading$ | async)">
-  </header>
+    // Optimistic update
+    const currentTodos = this.todosSubject.value;
+    const optimisticTodos = currentTodos.map(todo => 
+      todo.id === id ? { ...todo, ...updates } : todo
+    );
+    this.updateTodos(optimisticTodos);
 
-  <section class="main" *ngIf="(stats$ | async)?.total > 0">
-    <input 
-      id="toggle-all" 
-      class="toggle-all" 
-      type="checkbox"
-      [checked]="(stats$ | async)?.active === 0"
-      (change)="onToggleAll()">
-    <label for="toggle-all">Mark all as complete</label>
+    return this.http.put<Todo>(`${this.apiUrl}/${id}`, updates).pipe(
+      tap(updatedTodo => {
+        // Update with server response
+        const serverUpdatedTodos = currentTodos.map(todo => 
+          todo.id === id ? updatedTodo : todo
+        );
+        this.updateTodos(serverUpdatedTodos);
+      }),
+      catchError(error => {
+        // Rollback optimistic update
+        this.updateTodos(currentTodos);
+        return this.handleError(error);
+      })
+    );
+  }
+
+  // DELETE /api/todos/{id} - Delete todo
+  deleteTodo(id: TodoId): Observable<void> {
+    // Optimistic update
+    const currentTodos = this.todosSubject.value;
+    const optimisticTodos = currentTodos.filter(todo => todo.id !== id);
+    this.updateTodos(optimisticTodos);
+
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      catchError(error => {
+        // Rollback optimistic update
+        this.updateTodos(currentTodos);
+        return this.handleError(error);
+      })
+    );
+  }
+
+  // PUT /api/todos/{id}/toggle - Toggle todo completion status
+  toggleTodo(id: TodoId): Observable<Todo> {
+    // Optimistic update
+    const currentTodos = this.todosSubject.value;
+    const optimisticTodos = currentTodos.map(todo => 
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    );
+    this.updateTodos(optimisticTodos);
+
+    return this.http.put<Todo>(`${this.apiUrl}/${id}/toggle`, {}).pipe(
+      tap(updatedTodo => {
+        // Update with server response
+        const serverUpdatedTodos = currentTodos.map(todo => 
+          todo.id === id ? updatedTodo : todo
+        );
+        this.updateTodos(serverUpdatedTodos);
+      }),
+      catchError(error => {
+        // Rollback optimistic update
+        this.updateTodos(currentTodos);
+        return this.handleError(error);
+      })
+    );
+  }
+
+  // DELETE /api/todos/completed - Delete all completed todos
+  clearCompleted(): Observable<void> {
+    // Optimistic update
+    const currentTodos = this.todosSubject.value;
+    const optimisticTodos = currentTodos.filter(todo => !todo.completed);
+    this.updateTodos(optimisticTodos);
+
+    return this.http.delete<void>(`${this.apiUrl}/completed`).pipe(
+      catchError(error => {
+        // Rollback optimistic update
+        this.updateTodos(currentTodos);
+        return this.handleError(error);
+      })
+    );
+  }
+
+  // Toggle all todos (not available in backend spec - removed)
+  // This functionality would need to be implemented as individual toggle calls
+  toggleAllTodos(completed: boolean): Observable<Todo[]> {
+    const currentTodos = this.todosSubject.value;
+    const todosToToggle = currentTodos.filter(todo => todo.completed !== completed);
     
-    <app-todo-list 
-      [todos]="todos$ | async" 
-      [filter]="currentFilter">
-    </app-todo-list>
-  </section>
-
-  <footer class="footer" *ngIf="(stats$ | async)?.total > 0">
-    <span class="todo-count">
-      <strong>{{ (stats$ | async)?.active }}</strong>
-      {{ (stats$ | async)?.active === 1 ? 'item' : 'items' }} left
-    </span>
-    
-    <app-todo-filter 
-      [currentFilter]="currentFilter" 
-      (filterChange)="onFilterChange($event)">
-    </app-todo-filter>
-    
-    <button 
-      class="clear-completed" 
-      *ngIf="(stats$ | async)?.completed > 0"
-      (click)="onClearCompleted()">
-      Clear completed
-    </button>
-  </footer>
-</section>
-```
-
-#### `src/app/features/todos/components/todo-list/todo-list.component.ts`
-```typescript
-@Component({
-  selector: 'app-todo-list',
-  templateUrl: './todo-list.component.html',
-  styleUrls: ['./todo-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class TodoListComponent {
-  @Input() todos: Todo[] = [];
-  @Input() filter: TodoFilter = { type: 'all', label: 'All' };
-
-  get filteredTodos(): Todo[] {
-    switch (this.filter.type) {
-      case 'active':
-        return this.todos.filter(todo => !todo.completed);
-      case 'completed':
-        return this.todos.filter(todo => todo.completed);
-      default:
-        return this.todos;
+    if (todosToToggle.length === 0) {
+      return new Observable(subscriber => {
+        subscriber.next(currentTodos);
+        subscriber.complete();
+      });
     }
+
+    // Optimistic update
+    const optimisticTodos = currentTodos.map(todo => ({ ...todo, completed }));
+    this.updateTodos(optimisticTodos);
+
+    // Execute individual toggle requests
+    const toggleRequests = todosToToggle.map(todo => 
+      this.http.put<Todo>(`${this.apiUrl}/${todo.id}/toggle`, {})
+    );
+
+    // Execute all toggles in parallel - this would need backend support for bulk operations
+    // For now, return error as this endpoint doesn't exist
+    return throwError(() => new Error('Bulk toggle operation not supported by backend'));
   }
 
-  trackByTodo(index: number, todo: Todo): number {
-    return todo.id || index;
-  }
-}
-```
-
-#### `src/app/features/todos/components/todo-item/todo-item.component.ts`
-```typescript
-@Component({
-  selector: 'app-todo-item',
-  templateUrl: './todo-item.component.html',
-  styleUrls: ['./todo-item.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class TodoItemComponent {
-  @Input() todo!: Todo;
-  @Output() toggle = new EventEmitter<number>();
-  @Output() delete = new EventEmitter<number>();
-  @Output() update = new EventEmitter<{id: number, title: string}>();
-
-  isEditing = false;
-  editingTitle = '';
-
-  onToggle(): void {
-    this.toggle.emit(this.todo.id);
+  // Get todo statistics (derived from current state)
+  getStats(): Observable<TodoStats> {
+    return this.todos$.pipe(
+      map(todos => {
+        const total = todos.length;
+        const completed = todos.filter(todo => todo.completed).length;
+        const active = total - completed;
+        return { total, active, completed };
+      })
+    );
   }
 
-  onDelete(): void {
-    this.delete.emit(this.todo.id);
+  // Get todo by ID
+  getTodoById(id: TodoId): Observable<Todo | undefined> {
+    return this.todos$.pipe(
+      map(todos => todos.find(todo => todo.id === id))
+    );
   }
 
-  startEditing(): void {
-    this.isEditing = true;
-    this.editingTitle = this.todo.title;
+  // Private helper methods
+  private updateTodos(todos: Todo[]): void {
+    this.todosSubject.next(todos);
   }
 
-  saveEdit(): void {
-    const title = this.editingTitle.trim();
-    if (title && title !== this.todo.title) {
-      this.update.emit({ id: this.todo.id!, title });
+  private setLoading(loading: boolean): void {
+    this.loadingSubject.next(loading);
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let apiError: TodoApiError;
+
+    if (error.status === 0) {
+      // Network error
+      apiError = {
+        status: 0,
+        message: 'Network error. Please check your connection.'
+      };
+    } else if (error.status === 400 && error.error?.message) {
+      // Validation error from backend
+      apiError = {
+        status: 400,
+        message: error.error.message,
+        errors: error.error.errors || []
+      };
+    } else if (error.status === 404) {
+      apiError = {
+        status: 404,
+        message: 'Todo not found.'
+      };
+    } else if (error.status >= 500) {
+      apiError = {
+        status: error.status,
+        message: 'Server error. Please try again later.'
+      };
+    } else {
+      apiError = {
+        status: error.status,
+        message: error.error?.message || 'An unexpected error occurred.'
+      };
     }
-    this.isEditing = false;
-  }
 
-  cancelEdit(): void {
-    this.isEditing = false;
-    this.editingTitle = '';
-  }
-
-  @HostListener('keyup.enter')
-  onEnter(): void {
-    if (this.isEditing) {
-      this.saveEdit();
-    }
-  }
-
-  @HostListener('keyup.escape')
-  onEscape(): void {
-    this.cancelEdit();
+    console.error('TodoService error:', error);
+    return throwError(() => apiError);
   }
 }
 ```
 
-#### `src/app/features/todos/components/todo-filter/todo-filter.component.ts`
+### 3. Component Integration Updates
+
+#### Update `/Users/jurgenpetri/git/github/ai-dev-demo/todo-frontend/src/app/features/todos/components/todo-app/todo-app.component.ts`
+
+**Key Changes:**
+- Remove toggleAllTodos call since it's not supported by backend
+- Add proper error handling with user feedback
+- Improve validation feedback
+
 ```typescript
-@Component({
-  selector: 'app-todo-filter',
-  templateUrl: './todo-filter.component.html',
-  styleUrls: ['./todo-filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class TodoFilterComponent {
-  @Input() currentFilter!: TodoFilter;
-  @Output() filterChange = new EventEmitter<TodoFilter>();
-
-  filters: TodoFilter[] = [
-    { type: 'all', label: 'All' },
-    { type: 'active', label: 'Active' },
-    { type: 'completed', label: 'Completed' }
-  ];
-
-  onFilterSelect(filter: TodoFilter): void {
-    this.filterChange.emit(filter);
-  }
-}
-```
-
-### 6. Shared Pipes
-
-#### `src/app/shared/pipes/pluralize.pipe.ts`
-```typescript
-@Pipe({ name: 'pluralize' })
-export class PluralizePipe implements PipeTransform {
-  transform(count: number, singular: string, plural?: string): string {
-    if (count === 1) {
-      return `${count} ${singular}`;
-    }
-    return `${count} ${plural || singular + 's'}`;
-  }
-}
-```
-
-### 7. CSS Integration
-
-#### `src/styles.css` (Global TodoMVC Styles)
-```css
-/* Import existing TodoMVC CSS from resources/css/main.css */
-@import './assets/css/main.css';
-
-/* TodoMVC specific styles */
-.todoapp {
-  background: #fff;
-  margin: 130px 0 40px 0;
-  position: relative;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2),
-              0 25px 50px 0 rgba(0, 0, 0, 0.1);
-}
-
-/* Additional TodoMVC styling... */
-```
-
-### 8. Module Configuration
-
-#### `src/app/features/todos/todos.module.ts`
-```typescript
-@NgModule({
-  declarations: [
-    TodoAppComponent,
-    TodoListComponent,
-    TodoItemComponent,
-    TodoFilterComponent
-  ],
-  imports: [
-    CommonModule,
-    SharedModule
-  ],
-  exports: [
-    TodoAppComponent
-  ]
-})
-export class TodosModule { }
-```
-
-#### `src/app/core/core.module.ts`
-```typescript
-@NgModule({
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ErrorInterceptor,
-      multi: true
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: LoadingInterceptor,
-      multi: true
-    }
-  ]
-})
-export class CoreModule {
-  constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
-    if (parentModule) {
-      throw new Error('CoreModule is already loaded. Import only once.');
-    }
-  }
-}
-```
-
-## Commands
-
-### Angular CLI Commands for Initial Setup
-```bash
-# 1. Create new Angular project
-ng new todo-frontend --routing --style=css --strict
-cd todo-frontend
-
-# 2. Generate feature modules
-ng generate module features/todos --route todos --module app
-ng generate module core
-ng generate module shared
-
-# 3. Generate components
-ng generate component features/todos/components/todo-app --module features/todos
-ng generate component features/todos/components/todo-list --module features/todos
-ng generate component features/todos/components/todo-item --module features/todos
-ng generate component features/todos/components/todo-filter --module features/todos
-
-# 4. Generate services
-ng generate service core/services/todo
-ng generate service core/services/error
-
-# 5. Generate interceptors
-ng generate interceptor core/interceptors/error
-ng generate interceptor core/interceptors/loading
-
-# 6. Generate interfaces
-ng generate interface features/todos/models/todo
-
-# 7. Generate pipes
-ng generate pipe shared/pipes/pluralize --module shared
-
-# 8. Install additional dependencies
-npm install @angular/material @angular/cdk
-npm install --save-dev @types/jasmine @types/node
-```
-
-### Development Commands
-```bash
-# Start development server with proxy
-ng serve --proxy-config proxy.conf.json
-
-# Build for production
-ng build --configuration production
-
-# Run unit tests
-ng test
-
-# Run e2e tests
-ng e2e
-
-# Lint code
-ng lint
-
-# Generate code coverage
-ng test --code-coverage
-```
-
-### Package Dependencies
-```json
-{
-  "dependencies": {
-    "@angular/animations": "^17.0.0",
-    "@angular/common": "^17.0.0",
-    "@angular/compiler": "^17.0.0",
-    "@angular/core": "^17.0.0",
-    "@angular/forms": "^17.0.0",
-    "@angular/platform-browser": "^17.0.0",
-    "@angular/platform-browser-dynamic": "^17.0.0",
-    "@angular/router": "^17.0.0",
-    "rxjs": "~7.8.0",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.14.0"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "^17.0.0",
-    "@angular/cli": "^17.0.0",
-    "@angular/compiler-cli": "^17.0.0",
-    "@types/jasmine": "~5.1.0",
-    "@types/node": "^18.7.0",
-    "jasmine-core": "~5.1.0",
-    "karma": "~6.4.0",
-    "karma-chrome-headless": "~3.1.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.2.0"
-  }
-}
-```
-
-## Testing
-
-### Testing Strategy
-
-#### Unit Testing Approach
-- **Components**: Test user interactions, event emissions, and template rendering
-- **Services**: Test HTTP calls, state management, and business logic
-- **Pipes**: Test transformation logic with various inputs
-- **Interceptors**: Test request/response handling and error management
-
-#### Test File Structure
-```
-src/
-├── app/
-│   ├── features/todos/
-│   │   ├── components/
-│   │   │   ├── todo-app/
-│   │   │   │   ├── todo-app.component.spec.ts
-│   │   │   │   └── todo-app.component.ts
-│   │   │   ├── todo-item/
-│   │   │   │   ├── todo-item.component.spec.ts
-│   │   │   │   └── todo-item.component.ts
-│   │   ├── services/
-│   │   │   └── todo.service.spec.ts
-│   │   └── models/
-│   │       └── todo.interface.spec.ts
-└── e2e/
-    ├── src/
-    │   ├── app.e2e-spec.ts
-    │   ├── todo-crud.e2e-spec.ts
-    │   └── todo-filtering.e2e-spec.ts
-```
-
-#### Key Test Scenarios
-
-**Component Tests (todo-app.component.spec.ts)**
-```typescript
-describe('TodoAppComponent', () => {
-  let component: TodoAppComponent;
-  let fixture: ComponentFixture<TodoAppComponent>;
-  let todoService: jasmine.SpyObj<TodoService>;
-
-  beforeEach(() => {
-    const todoServiceSpy = jasmine.createSpyObj('TodoService', ['getTodos', 'createTodo']);
-    
-    TestBed.configureTestingModule({
-      declarations: [TodoAppComponent],
-      providers: [
-        { provide: TodoService, useValue: todoServiceSpy }
-      ]
+// In onToggleAll method, replace with individual toggles:
+onToggleAll(): void {
+  this.stats$
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(stats => {
+      const shouldComplete = stats.active > 0;
+      const currentTodos = this.todosSubject.value;
+      const todosToToggle = currentTodos.filter(todo => todo.completed !== shouldComplete);
+      
+      // Execute individual toggle operations
+      todosToToggle.forEach(todo => {
+        this.todoService.toggleTodo(todo.id!)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: () => this.cdr.markForCheck(),
+            error: (error) => console.error('Failed to toggle todo:', error)
+          });
+      });
     });
-    
-    fixture = TestBed.createComponent(TodoAppComponent);
-    component = fixture.componentInstance;
-    todoService = TestBed.inject(TodoService) as jasmine.SpyObj<TodoService>;
-  });
+}
 
-  it('should create todo when enter is pressed', () => {
-    // Test implementation
-  });
+// Add validation for create todo
+onCreateTodo(title: string): void {
+  const trimmedTitle = title.trim();
+  if (!trimmedTitle) {
+    this.errorService.handleError('Todo title cannot be empty');
+    return;
+  }
 
-  it('should filter todos correctly', () => {
-    // Test implementation
-  });
+  if (trimmedTitle.length > 500) {
+    this.errorService.handleError('Todo title cannot exceed 500 characters');
+    return;
+  }
 
-  it('should toggle all todos', () => {
-    // Test implementation
-  });
-});
+  this.todoService.createTodo(trimmedTitle)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: () => {
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Failed to create todo:', error);
+        // ErrorService will handle user notification via interceptor
+      }
+    });
+}
 ```
 
-**Service Tests (todo.service.spec.ts)**
+### 4. Testing Strategy
+
+#### Update `/Users/jurgenpetri/git/github/ai-dev-demo/todo-frontend/src/app/core/services/todo.service.spec.ts`
+
+**Enhanced Test Coverage:**
 ```typescript
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TodoService } from './todo.service';
+import { Todo, CreateTodoRequest, UpdateTodoRequest } from '../../features/todos/models';
+
 describe('TodoService', () => {
   let service: TodoService;
   let httpMock: HttpTestingController;
+
+  const mockTodos: Todo[] = [
+    { id: 1, title: 'Test Todo 1', completed: false },
+    { id: 2, title: 'Test Todo 2', completed: true }
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -638,171 +531,504 @@ describe('TodoService', () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should create todo via POST request', () => {
-    const mockTodo: Todo = { id: 1, title: 'Test Todo', completed: false };
-    
-    service.createTodo('Test Todo').subscribe(todo => {
-      expect(todo).toEqual(mockTodo);
-    });
-
-    const req = httpMock.expectOne('/api/todos');
-    expect(req.request.method).toBe('POST');
-    req.flush(mockTodo);
-  });
-
   afterEach(() => {
     httpMock.verify();
   });
+
+  describe('getTodos', () => {
+    it('should retrieve todos from API', () => {
+      service.getTodos().subscribe(todos => {
+        expect(todos).toEqual(mockTodos);
+      });
+
+      const req = httpMock.expectOne('/api/todos');
+      expect(req.request.method).toBe('GET');
+      req.flush(mockTodos);
+    });
+
+    it('should retry failed requests', () => {
+      let callCount = 0;
+      service.getTodos().subscribe({
+        next: todos => expect(todos).toEqual(mockTodos),
+        error: () => fail('Should not error after retries')
+      });
+
+      // Simulate 2 failures, then success
+      for (let i = 0; i < 3; i++) {
+        const req = httpMock.expectOne('/api/todos');
+        if (i < 2) {
+          req.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });
+        } else {
+          req.flush(mockTodos);
+        }
+      }
+    });
+  });
+
+  describe('createTodo', () => {
+    it('should create todo via POST request', () => {
+      const newTodoTitle = 'New Test Todo';
+      const createdTodo: Todo = { id: 3, title: newTodoTitle, completed: false };
+
+      service.createTodo(newTodoTitle).subscribe(todo => {
+        expect(todo).toEqual(createdTodo);
+      });
+
+      const req = httpMock.expectOne('/api/todos');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual({ title: newTodoTitle });
+      req.flush(createdTodo);
+    });
+
+    it('should validate title before API call', () => {
+      service.createTodo('').subscribe({
+        next: () => fail('Should not succeed with empty title'),
+        error: error => expect(error.message).toContain('cannot be empty')
+      });
+
+      httpMock.expectNone('/api/todos');
+    });
+
+    it('should validate title length', () => {
+      const longTitle = 'a'.repeat(501);
+      
+      service.createTodo(longTitle).subscribe({
+        next: () => fail('Should not succeed with long title'),
+        error: error => expect(error.message).toContain('cannot exceed 500 characters')
+      });
+
+      httpMock.expectNone('/api/todos');
+    });
+
+    it('should trim title before sending', () => {
+      const titleWithSpaces = '  Test Todo  ';
+      const trimmedTitle = 'Test Todo';
+      const createdTodo: Todo = { id: 3, title: trimmedTitle, completed: false };
+
+      service.createTodo(titleWithSpaces).subscribe();
+
+      const req = httpMock.expectOne('/api/todos');
+      expect(req.request.body).toEqual({ title: trimmedTitle });
+      req.flush(createdTodo);
+    });
+  });
+
+  describe('updateTodo', () => {
+    it('should update todo via PUT request', () => {
+      const todoId = 1;
+      const updates: UpdateTodoRequest = { title: 'Updated Title' };
+      const updatedTodo: Todo = { id: todoId, title: 'Updated Title', completed: false };
+
+      service.updateTodo(todoId, updates).subscribe(todo => {
+        expect(todo).toEqual(updatedTodo);
+      });
+
+      const req = httpMock.expectOne(`/api/todos/${todoId}`);
+      expect(req.request.method).toBe('PUT');
+      expect(req.request.body).toEqual({ title: 'Updated Title' });
+      req.flush(updatedTodo);
+    });
+
+    it('should handle 404 error for non-existent todo', () => {
+      const todoId = 999;
+      const updates: UpdateTodoRequest = { title: 'Updated Title' };
+
+      service.updateTodo(todoId, updates).subscribe({
+        next: () => fail('Should not succeed for non-existent todo'),
+        error: error => expect(error.status).toBe(404)
+      });
+
+      const req = httpMock.expectOne(`/api/todos/${todoId}`);
+      req.flush('Not Found', { status: 404, statusText: 'Not Found' });
+    });
+  });
+
+  describe('toggleTodo', () => {
+    it('should toggle todo via PUT request', () => {
+      const todoId = 1;
+      const toggledTodo: Todo = { id: todoId, title: 'Test Todo 1', completed: true };
+
+      service.toggleTodo(todoId).subscribe(todo => {
+        expect(todo).toEqual(toggledTodo);
+      });
+
+      const req = httpMock.expectOne(`/api/todos/${todoId}/toggle`);
+      expect(req.request.method).toBe('PUT');
+      expect(req.request.body).toEqual({});
+      req.flush(toggledTodo);
+    });
+  });
+
+  describe('deleteTodo', () => {
+    it('should delete todo via DELETE request', () => {
+      const todoId = 1;
+
+      service.deleteTodo(todoId).subscribe();
+
+      const req = httpMock.expectOne(`/api/todos/${todoId}`);
+      expect(req.request.method).toBe('DELETE');
+      req.flush(null);
+    });
+  });
+
+  describe('clearCompleted', () => {
+    it('should clear completed todos via DELETE request', () => {
+      service.clearCompleted().subscribe();
+
+      const req = httpMock.expectOne('/api/todos/completed');
+      expect(req.request.method).toBe('DELETE');
+      req.flush(null);
+    });
+  });
+
+  describe('optimistic updates', () => {
+    it('should perform optimistic update and rollback on error', () => {
+      // Set initial state
+      service.getTodos().subscribe();
+      const req = httpMock.expectOne('/api/todos');
+      req.flush(mockTodos);
+
+      let todosState: Todo[] = [];
+      service.todos$.subscribe(todos => todosState = todos);
+
+      // Attempt to create todo that will fail
+      service.createTodo('Test').subscribe({
+        error: () => {} // Ignore error for this test
+      });
+
+      // Should see optimistic update first
+      expect(todosState.length).toBe(3); // Original 2 + optimistic 1
+
+      // Then API call fails
+      const createReq = httpMock.expectOne('/api/todos');
+      createReq.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });
+
+      // Should rollback to original state
+      expect(todosState.length).toBe(2);
+      expect(todosState).toEqual(mockTodos);
+    });
+  });
+
+  describe('getStats', () => {
+    it('should calculate stats correctly', () => {
+      service.getTodos().subscribe();
+      const req = httpMock.expectOne('/api/todos');
+      req.flush(mockTodos);
+
+      service.getStats().subscribe(stats => {
+        expect(stats.total).toBe(2);
+        expect(stats.active).toBe(1);
+        expect(stats.completed).toBe(1);
+      });
+    });
+  });
 });
 ```
 
-**E2E Tests (app.e2e-spec.ts)**
+### 5. E2E Testing Scenarios
+
+#### `/Users/jurgenpetri/git/github/ai-dev-demo/todo-frontend/e2e/todo-model.e2e-spec.ts`
+
+**New File - Todo Model E2E Tests:**
 ```typescript
-describe('TodoMVC App', () => {
+describe('Todo Model Integration', () => {
   beforeEach(() => {
     cy.visit('/');
+    // Clear existing todos
+    cy.request('DELETE', '/api/todos/completed');
   });
 
-  it('should display todo input on load', () => {
-    cy.get('.new-todo').should('be.visible').and('be.focused');
-  });
-
-  it('should create and display new todo', () => {
-    cy.get('.new-todo').type('Buy groceries{enter}');
+  it('should create todo with valid title', () => {
+    const todoTitle = 'Test Todo Creation';
+    
+    cy.get('.new-todo').type(`${todoTitle}{enter}`);
+    
     cy.get('.todo-list li').should('have.length', 1);
-    cy.get('.todo-list li label').should('contain', 'Buy groceries');
+    cy.get('.todo-list li label').should('contain', todoTitle);
+    
+    // Verify it was saved to backend
+    cy.request('GET', '/api/todos').then(response => {
+      expect(response.body).to.have.length(1);
+      expect(response.body[0].title).to.equal(todoTitle);
+      expect(response.body[0].completed).to.be.false;
+    });
   });
 
-  it('should toggle todo completion', () => {
-    cy.get('.new-todo').type('Test todo{enter}');
-    cy.get('.toggle').click();
+  it('should not create todo with empty title', () => {
+    cy.get('.new-todo').type('   {enter}');
+    cy.get('.todo-list li').should('have.length', 0);
+    
+    // Should show error message
+    cy.get('.error-message').should('contain', 'cannot be empty');
+  });
+
+  it('should not create todo with title exceeding 500 characters', () => {
+    const longTitle = 'a'.repeat(501);
+    
+    cy.get('.new-todo').type(`${longTitle}{enter}`);
+    cy.get('.todo-list li').should('have.length', 0);
+    
+    // Should show error message
+    cy.get('.error-message').should('contain', 'cannot exceed 500 characters');
+  });
+
+  it('should toggle todo completion status', () => {
+    // Create a todo first
+    cy.request('POST', '/api/todos', { title: 'Toggle Test Todo' });
+    cy.reload();
+    
+    cy.get('.todo-list li .toggle').click();
     cy.get('.todo-list li').should('have.class', 'completed');
+    
+    // Verify backend state
+    cy.request('GET', '/api/todos').then(response => {
+      expect(response.body[0].completed).to.be.true;
+    });
+    
+    // Toggle back
+    cy.get('.todo-list li .toggle').click();
+    cy.get('.todo-list li').should('not.have.class', 'completed');
+    
+    cy.request('GET', '/api/todos').then(response => {
+      expect(response.body[0].completed).to.be.false;
+    });
   });
 
-  it('should filter todos correctly', () => {
-    // Create test todos
-    cy.get('.new-todo').type('Active todo{enter}');
-    cy.get('.new-todo').type('Completed todo{enter}');
+  it('should update todo title', () => {
+    const originalTitle = 'Original Title';
+    const updatedTitle = 'Updated Title';
     
-    // Complete second todo
-    cy.get('.todo-list li').eq(1).find('.toggle').click();
+    // Create todo
+    cy.request('POST', '/api/todos', { title: originalTitle });
+    cy.reload();
     
-    // Test filtering
-    cy.get('[href="#/active"]').click();
+    // Start editing
+    cy.get('.todo-list li label').dblclick();
+    cy.get('.todo-list li .edit')
+      .clear()
+      .type(`${updatedTitle}{enter}`);
+    
+    cy.get('.todo-list li label').should('contain', updatedTitle);
+    
+    // Verify backend
+    cy.request('GET', '/api/todos').then(response => {
+      expect(response.body[0].title).to.equal(updatedTitle);
+    });
+  });
+
+  it('should delete todo', () => {
+    // Create todo
+    cy.request('POST', '/api/todos', { title: 'Delete Test Todo' });
+    cy.reload();
+    
     cy.get('.todo-list li').should('have.length', 1);
     
-    cy.get('[href="#/completed"]').click();
-    cy.get('.todo-list li').should('have.length', 1);
+    // Hover and click destroy button
+    cy.get('.todo-list li').trigger('mouseover');
+    cy.get('.todo-list li .destroy').click();
+    
+    cy.get('.todo-list li').should('have.length', 0);
+    
+    // Verify backend
+    cy.request('GET', '/api/todos').then(response => {
+      expect(response.body).to.have.length(0);
+    });
+  });
+
+  it('should handle server errors gracefully', () => {
+    // Intercept API call to simulate server error
+    cy.intercept('POST', '/api/todos', { statusCode: 500 }).as('createTodoError');
+    
+    cy.get('.new-todo').type('Test Error Handling{enter}');
+    
+    cy.wait('@createTodoError');
+    
+    // Should show error message
+    cy.get('.error-message').should('contain', 'Server error');
+    
+    // Todo should not appear in list
+    cy.get('.todo-list li').should('have.length', 0);
+  });
+
+  it('should perform optimistic updates', () => {
+    // Create a todo first
+    cy.request('POST', '/api/todos', { title: 'Optimistic Test' });
+    cy.reload();
+    
+    // Intercept toggle request with delay to see optimistic update
+    cy.intercept('PUT', '/api/todos/*/toggle', (req) => {
+      req.reply((res) => {
+        // Delay response to see optimistic update
+        setTimeout(() => res.send({ statusCode: 200 }), 500);
+      });
+    }).as('toggleTodo');
+    
+    // Click toggle
+    cy.get('.todo-list li .toggle').click();
+    
+    // Should immediately show as completed (optimistic update)
+    cy.get('.todo-list li').should('have.class', 'completed');
+    
+    // Wait for actual API response
+    cy.wait('@toggleTodo');
+    
+    // Should still be completed
+    cy.get('.todo-list li').should('have.class', 'completed');
   });
 });
 ```
 
-#### Test Coverage Goals
-- **Components**: 90%+ line coverage
-- **Services**: 95%+ line coverage
-- **Critical user flows**: 100% E2E coverage
-- **Error scenarios**: Comprehensive error handling tests
+## Commands
 
-### Testing Tools Configuration
+### Angular CLI Commands for Implementation
 
-#### Karma Configuration (karma.conf.js)
-```javascript
-module.exports = function (config) {
-  config.set({
-    basePath: '',
-    frameworks: ['jasmine', '@angular-devkit/build-angular'],
-    plugins: [
-      require('karma-jasmine'),
-      require('karma-chrome-headless'),
-      require('karma-jasmine-html-reporter'),
-      require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma')
-    ],
-    coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/'),
-      subdir: '.',
-      reporters: [
-        { type: 'html' },
-        { type: 'text-summary' },
-        { type: 'lcovonly' }
-      ]
-    },
-    browsers: ['ChromeHeadless'],
-    singleRun: true
-  });
-};
+```bash
+# 1. Create new model files
+touch src/app/features/todos/models/todo-validation.ts
+touch src/app/features/todos/models/index.ts
+
+# 2. Update existing service (manual editing required)
+# File: src/app/core/services/todo.service.ts
+
+# 3. Run tests to verify implementation
+ng test --watch=false
+ng test --code-coverage
+
+# 4. Add E2E tests
+ng generate e2e todo-model
+
+# 5. Run E2E tests
+ng e2e
+
+# 6. Lint and format code
+ng lint
+npx prettier --write "src/**/*.{ts,html,css}"
 ```
+
+### NPM Package Dependencies
+
+**No additional packages required** - implementation uses existing Angular and RxJS features.
+
+### Testing Commands
+
+```bash
+# Unit tests
+ng test --watch=false --code-coverage
+
+# E2E tests
+ng e2e
+
+# Specific test suites
+ng test --include="**/todo.service.spec.ts"
+ng test --include="**/todo-validation.spec.ts"
+
+# Test with backend integration
+ng serve --proxy-config proxy.conf.json &
+npm run test:e2e:integration
+```
+
+## Testing
+
+### Testing Strategy
+
+#### 1. Unit Testing Focus Areas
+- **TodoValidator**: Input validation logic
+- **TodoService**: HTTP client integration, error handling, optimistic updates
+- **Component Integration**: Service interaction, error handling
+- **Error Scenarios**: Network failures, validation errors, server errors
+
+#### 2. Integration Testing
+- **API Integration**: Real backend API calls
+- **Error Recovery**: Optimistic update rollbacks
+- **State Synchronization**: Component state vs service state
+- **Validation Flow**: Client-side validation + server-side validation
+
+#### 3. E2E Testing Scenarios
+- **Happy Path**: Create, read, update, delete todos
+- **Validation**: Empty titles, long titles, special characters
+- **Error Handling**: Server errors, network failures
+- **Optimistic Updates**: Immediate UI feedback
+- **State Persistence**: Page refresh, browser back/forward
+
+### Test Coverage Goals
+- **TodoValidator**: 100% line coverage
+- **TodoService**: 95% line coverage
+- **Component Integration**: 90% line coverage
+- **E2E Critical Flows**: 100% coverage
 
 ## Risks
 
-### Performance Considerations
-- **Large Todo Lists**: Implement virtual scrolling for 1000+ items
-- **Change Detection**: Use OnPush strategy and immutable state updates
-- **Bundle Size**: Lazy load modules and tree-shake unused code
-- **Memory Leaks**: Proper subscription management with takeUntil pattern
+### Technical Risks
 
-### Compatibility Issues
-- **Browser Support**: Modern browsers only (ES2020+)
-- **Mobile Responsive**: Ensure touch-friendly interactions
-- **Accessibility**: ARIA labels and keyboard navigation
-- **API Compatibility**: Handle backend API changes gracefully
+#### 1. API Compatibility Issues
+- **Risk**: Backend API changes breaking frontend integration
+- **Mitigation**: Comprehensive integration tests, API contract testing
+- **Detection**: Automated E2E tests in CI/CD pipeline
 
-### Development Risks
-- **Proxy Configuration**: Backend connection issues during development
-- **State Management**: Complex state synchronization between components
-- **Error Handling**: Comprehensive error boundary implementation
-- **Testing Complexity**: Mocking HTTP calls and component interactions
+#### 2. State Synchronization Problems
+- **Risk**: Optimistic updates causing UI/backend state mismatch
+- **Mitigation**: Proper error handling with rollback mechanisms
+- **Detection**: Integration tests with simulated network failures
+
+#### 3. Validation Inconsistency
+- **Risk**: Client-side validation not matching backend validation
+- **Mitigation**: Shared validation rules, comprehensive test coverage
+- **Detection**: E2E tests covering validation edge cases
+
+#### 4. Performance with Large Datasets
+- **Risk**: Poor performance with many todos
+- **Mitigation**: Efficient filtering, OnPush change detection
+- **Detection**: Performance testing with large datasets
+
+### Implementation Risks
+
+#### 1. Error Handling Gaps
+- **Risk**: Unhandled error scenarios causing poor UX
+- **Mitigation**: Comprehensive error interceptor, user-friendly error messages
+- **Detection**: Error scenario testing
+
+#### 2. Memory Leaks
+- **Risk**: Subscription leaks in components
+- **Mitigation**: Proper subscription management with takeUntil pattern
+- **Detection**: Memory profiling during testing
+
+#### 3. Race Conditions
+- **Risk**: Multiple concurrent API calls causing state corruption
+- **Mitigation**: Proper state management, request cancellation
+- **Detection**: Concurrency testing
 
 ### Mitigation Strategies
-- **Progressive Enhancement**: Basic functionality without JavaScript
-- **Offline Support**: Service worker for basic offline functionality
-- **Error Recovery**: Automatic retry mechanisms and user feedback
-- **Performance Monitoring**: Bundle analysis and runtime performance tracking
 
-## Development Workflow
+1. **Comprehensive Testing**: Unit, integration, and E2E tests
+2. **Error Boundaries**: Global error handling with user feedback
+3. **State Management**: Immutable state updates, proper subscription handling
+4. **Performance Monitoring**: Bundle size analysis, runtime performance tracking
+5. **Code Quality**: Linting, type checking, code reviews
 
-### 1. Initial Setup Phase
-```bash
-# Setup Angular project with proxy
-ng new todo-frontend --routing --style=css --strict
-cd todo-frontend
-# Configure proxy.conf.json
-# Copy TodoMVC CSS to assets
-ng serve --proxy-config proxy.conf.json
-```
+## Integration Points
 
-### 2. Core Implementation Phase
-```bash
-# Generate core services and interceptors
-ng generate service core/services/todo
-ng generate interceptor core/interceptors/error
-# Implement HTTP client and error handling
-```
+### Existing Component Updates Required
 
-### 3. Component Development Phase
-```bash
-# Generate components following hierarchy
-ng generate component features/todos/components/todo-app
-# Implement template and component logic
-# Add unit tests for each component
-```
+1. **TodoAppComponent**:
+   - Remove `toggleAllTodos` call (not supported by backend)
+   - Add validation error handling for user feedback
+   - Implement individual toggle operations for "toggle all" functionality
 
-### 4. Integration Testing Phase
-```bash
-# Run unit tests
-ng test --code-coverage
-# Setup E2E tests
-ng e2e
-# Test with backend integration
-```
+2. **TodoService**:
+   - Update all methods to match exact backend API specification
+   - Add comprehensive error handling and validation
+   - Implement optimistic updates with rollback
 
-### 5. Production Preparation
-```bash
-# Build optimized bundle
-ng build --configuration production
-# Analyze bundle size
-npx webpack-bundle-analyzer dist/todo-frontend/main.*.js
-# Performance testing and optimization
-```
+3. **Error Handling**:
+   - Update ErrorService to handle TodoApiError types
+   - Add user-friendly validation error messages
+   - Implement retry mechanisms for failed requests
 
-This comprehensive plan provides a solid foundation for implementing the TodoMVC Angular frontend with modern best practices, comprehensive testing, and production-ready architecture.
+### No Changes Required
+
+1. **TodoListComponent**: Filtering logic remains the same
+2. **TodoItemComponent**: Event emissions work with updated service
+3. **TodoFilterComponent**: No changes needed
+4. **HTTP Interceptors**: Work with enhanced error handling
+
+This implementation plan provides a robust foundation for the Todo model feature while maintaining compatibility with existing components and following Angular best practices.

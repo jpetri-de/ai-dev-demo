@@ -1,0 +1,14 @@
+package com.example.todobackend.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+/**
+ * Request DTO for updating an existing todo.
+ */
+public record UpdateTodoRequest(
+    @NotBlank(message = "Title cannot be blank")
+    @Size(max = 500, message = "Title cannot exceed 500 characters")
+    String title,
+    Boolean completed
+) {}

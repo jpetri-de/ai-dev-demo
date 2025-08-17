@@ -1,9 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TodoService } from '../../../../core/services/todo.service';
 import { ErrorService } from '../../../../core/services/error.service';
 import { Todo, TodoFilter } from '../../models/todo.interface';
+import { TodoValidator } from '../../models/todo-validation';
 
 @Component({
   selector: 'app-todo-app',
@@ -16,6 +17,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   
   todos$ = this.todoService.todos$;
   stats$ = this.todoService.getStats();
+  loading$ = this.todoService.loading$;
   error$ = this.errorService.error$;
   currentFilter: TodoFilter = { type: 'all', label: 'All' };
   
@@ -43,13 +45,22 @@ export class TodoAppComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Failed to load todos:', error);
+          this.errorService.handleError(error.message || 'Failed to load todos');
         }
       });
   }
 
   onCreateTodo(title: string): void {
     const trimmedTitle = title.trim();
+    
+    // Client-side validation with user feedback
     if (!trimmedTitle) {
+      this.errorService.handleError('Todo title cannot be empty');
+      return;
+    }
+
+    if (trimmedTitle.length > TodoValidator.MAX_TITLE_LENGTH) {
+      this.errorService.handleError(`Todo title cannot exceed ${TodoValidator.MAX_TITLE_LENGTH} characters`);
       return;
     }
 
@@ -61,6 +72,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Failed to create todo:', error);
+          this.errorService.handleError(error.message || 'Failed to create todo');
         }
       });
   }
@@ -75,15 +87,33 @@ export class TodoAppComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(stats => {
         const shouldComplete = stats.active > 0;
-        this.todoService.toggleAllTodos(shouldComplete)
+        
+        // Get current todos and filter those that need to be toggled
+        this.todos$
           .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: () => {
-              this.cdr.markForCheck();
-            },
-            error: (error) => {
-              console.error('Failed to toggle all todos:', error);
+          .subscribe(todos => {
+            const todosToToggle = todos.filter(todo => todo.completed !== shouldComplete);
+            
+            if (todosToToggle.length === 0) {
+              return;
             }
+
+            // Execute individual toggle operations in parallel
+            const toggleOperations = todosToToggle.map(todo => 
+              this.todoService.toggleTodo(todo.id)
+            );
+
+            forkJoin(toggleOperations)
+              .pipe(takeUntil(this.destroy$))
+              .subscribe({
+                next: () => {
+                  this.cdr.markForCheck();
+                },
+                error: (error) => {
+                  console.error('Failed to toggle all todos:', error);
+                  this.errorService.handleError('Failed to toggle all todos');
+                }
+              });
           });
       });
   }
@@ -97,6 +127,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Failed to clear completed todos:', error);
+          this.errorService.handleError(error.message || 'Failed to clear completed todos');
         }
       });
   }
@@ -110,6 +141,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Failed to toggle todo:', error);
+          this.errorService.handleError(error.message || 'Failed to toggle todo');
         }
       });
   }
@@ -123,12 +155,26 @@ export class TodoAppComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Failed to delete todo:', error);
+          this.errorService.handleError(error.message || 'Failed to delete todo');
         }
       });
   }
 
   onUpdateTodo(data: { id: number; title: string }): void {
-    this.todoService.updateTodo(data.id, { title: data.title })
+    const trimmedTitle = data.title.trim();
+    
+    // Client-side validation
+    if (!trimmedTitle) {
+      this.errorService.handleError('Todo title cannot be empty');
+      return;
+    }
+
+    if (trimmedTitle.length > TodoValidator.MAX_TITLE_LENGTH) {
+      this.errorService.handleError(`Todo title cannot exceed ${TodoValidator.MAX_TITLE_LENGTH} characters`);
+      return;
+    }
+
+    this.todoService.updateTodo(data.id, { title: trimmedTitle })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
@@ -136,6 +182,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Failed to update todo:', error);
+          this.errorService.handleError(error.message || 'Failed to update todo');
         }
       });
   }

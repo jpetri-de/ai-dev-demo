@@ -1,8 +1,8 @@
-# TodoMVC Full-Stack Implementation - Feature 01
+# TodoMVC Full-Stack Implementation - Features 01 & 02
 
 ## Implementation Summary
 
-This document provides a comprehensive overview of the Feature 01 implementation, which establishes the foundation for the TodoMVC application with Spring Boot backend and Angular frontend.
+This document provides a comprehensive overview of Features 01 & 02 implementation, establishing the complete Todo model foundation with full CRUD operations for the TodoMVC application with Spring Boot backend and Angular frontend.
 
 ## Project Structure
 ```
@@ -84,20 +84,23 @@ ai-dev-demo/
 
 ## API Endpoints
 
-### Current Endpoints (Feature 01)
+### ✅ Implemented Endpoints (Features 01 & 02)
 ```
-GET    /actuator/health     - Application health status
-GET    /actuator/info       - Application information
-```
+# Health & Monitoring
+GET    /actuator/health        - Application health status
+GET    /actuator/info          - Application information
 
-### Planned Endpoints (Future Features)
-```
-GET    /api/todos           - Retrieve all todos
-POST   /api/todos           - Create new todo
-PUT    /api/todos/{id}      - Update todo
-DELETE /api/todos/{id}      - Delete todo
-PUT    /api/todos/{id}/toggle  - Toggle todo status
-DELETE /api/todos/completed - Delete all completed todos
+# Todo CRUD Operations
+GET    /api/todos              - Retrieve all todos
+POST   /api/todos              - Create new todo
+PUT    /api/todos/{id}         - Update todo
+DELETE /api/todos/{id}          - Delete todo
+PUT    /api/todos/{id}/toggle  - Toggle todo completion status
+DELETE /api/todos/completed     - Delete all completed todos
+
+# Additional Utility Endpoints
+GET    /api/todos/count/active - Get count of active todos
+GET    /api/todos/count/total  - Get count of total todos
 ```
 
 ## Development Commands

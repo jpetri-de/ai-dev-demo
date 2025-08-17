@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">todo-backend</a> &gt; <a href="index.source.html" class="el_package">com.example.todobackend.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package com.example.todobackend.exception;
+
+import com.example.todobackend.dto.ErrorResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+
+/**
+ * Global exception handler for REST controllers.
+ * Handles various exceptions and converts them to appropriate HTTP responses.
+ */
+@RestControllerAdvice
+<span class="fc" id="L18">public class GlobalExceptionHandler {</span>
+
+    /**
+     * Handles TodoNotFoundException.
+     * @param ex The exception
+     * @return 404 NOT FOUND response
+     */
+    @ExceptionHandler(TodoNotFoundException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleTodoNotFound(TodoNotFoundException ex) {
+<span class="nc" id="L27">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L28">                ex.getMessage(),</span>
+                &quot;The requested todo does not exist&quot;,
+<span class="nc" id="L30">                HttpStatus.NOT_FOUND.value(),</span>
+<span class="nc" id="L31">                LocalDateTime.now().toString()</span>
+        );
+<span class="nc" id="L33">        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);</span>
+    }
+
+    /**
+     * Handles Bean Validation errors.
+     * @param ex The validation exception
+     * @return 400 BAD REQUEST response
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleValidationErrors(MethodArgumentNotValidException ex) {
+<span class="nc" id="L43">        String details = ex.getBindingResult().getFieldErrors().stream()</span>
+<span class="nc" id="L44">                .map(error -&gt; error.getField() + &quot;: &quot; + error.getDefaultMessage())</span>
+<span class="nc" id="L45">                .collect(Collectors.joining(&quot;, &quot;));</span>
+
+<span class="nc" id="L47">        ErrorResponse error = new ErrorResponse(</span>
+                &quot;Validation failed&quot;,
+                details,
+<span class="nc" id="L50">                HttpStatus.BAD_REQUEST.value(),</span>
+<span class="nc" id="L51">                LocalDateTime.now().toString()</span>
+        );
+<span class="nc" id="L53">        return ResponseEntity.badRequest().body(error);</span>
+    }
+
+    /**
+     * Handles IllegalArgumentException (e.g., empty title).
+     * @param ex The exception
+     * @return 400 BAD REQUEST response
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleIllegalArgument(IllegalArgumentException ex) {
+<span class="nc" id="L63">        ErrorResponse error = new ErrorResponse(</span>
+<span class="nc" id="L64">                ex.getMessage(),</span>
+                &quot;Invalid request parameters&quot;,
+<span class="nc" id="L66">                HttpStatus.BAD_REQUEST.value(),</span>
+<span class="nc" id="L67">                LocalDateTime.now().toString()</span>
+        );
+<span class="nc" id="L69">        return ResponseEntity.badRequest().body(error);</span>
+    }
+
+    /**
+     * Handles generic exceptions.
+     * @param ex The exception
+     * @return 500 INTERNAL SERVER ERROR response
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleGenericException(Exception ex) {
+<span class="nc" id="L79">        ErrorResponse error = new ErrorResponse(</span>
+                &quot;Internal server error&quot;,
+<span class="nc" id="L81">                ex.getMessage(),</span>
+<span class="nc" id="L82">                HttpStatus.INTERNAL_SERVER_ERROR.value(),</span>
+<span class="nc" id="L83">                LocalDateTime.now().toString()</span>
+        );
+<span class="nc" id="L85">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

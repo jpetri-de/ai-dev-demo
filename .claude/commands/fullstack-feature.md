@@ -20,20 +20,20 @@ allowed-tools: Read, Grep, Glob, Edit, Write, MultiEdit, Bash(ng:*), Bash(npm:*)
 **IMPLEMENT COMPLETE FULL-STACK FEATURE**: $ARGUMENTS
 
 ### Phase 1: Architecture Planning
-1) Use the **angular-planner** sub agent to create `/frontend-plan.md` for: $ARGUMENTS
+1) Use the **angular_planner** sub agent to create `/frontend-plan.md` for: $ARGUMENTS
    - Include component hierarchy, services, models, routing, guards
    - Define Angular CLI commands needed
    - Plan integration with backend APIs
    - Design testing strategy
 
-2) Use the **springboot-planner** sub agent to create `/backend-plan.md` for: $ARGUMENTS
+2) Use the **springboot_planner_agent** sub agent to create `/backend-plan.md` for: $ARGUMENTS
    - Include REST endpoints, DTOs, entities, repositories, services
    - Define database schema and migrations
    - Plan security configuration
    - Include Maven/Gradle dependencies and commands
 
 ### Phase 2: Backend Implementation
-3) Use the **springboot-developer** sub agent to implement the backend plan:
+3) Use the **springboot_developer_agent** sub agent to implement the backend plan:
    - Create all Java classes (entities, repositories, services, controllers)
    - Implement REST API endpoints with proper validation
    - Configure security, exception handling, and database setup
@@ -41,7 +41,7 @@ allowed-tools: Read, Grep, Glob, Edit, Write, MultiEdit, Bash(ng:*), Bash(npm:*)
    - Execute build commands: `./mvnw clean compile` or `./gradlew build`
 
 ### Phase 3: Frontend Implementation  
-4) Use the **angular-developer** sub agent to implement the frontend plan:
+4) Use the **angular_developer** sub agent to implement the frontend plan:
    - Create Angular components, services, and models
    - Implement routing and navigation
    - Connect to backend REST APIs
@@ -50,7 +50,7 @@ allowed-tools: Read, Grep, Glob, Edit, Write, MultiEdit, Bash(ng:*), Bash(npm:*)
    - Execute build commands: `ng build` and `npm test`
 
 ### Phase 4: Backend Quality Assurance
-5) Use the **springboot-tester** sub agent to validate backend implementation:
+5) Use the **springboot_tester** sub agent to validate backend implementation:
    - Run complete test suite: `./mvnw test`
    - Execute integration tests with TestContainers
    - Validate security configuration and API contracts
@@ -59,7 +59,7 @@ allowed-tools: Read, Grep, Glob, Edit, Write, MultiEdit, Bash(ng:*), Bash(npm:*)
    - Run performance benchmarks
 
 ### Phase 5: Frontend Quality Assurance
-6) Use the **angular-tester** sub agent to validate frontend implementation:
+6) Use the **angular_tester** sub agent to validate frontend implementation:
    - Run unit tests: `ng test --watch=false --code-coverage`
    - Execute e2e tests: `ng e2e` or equivalent
    - Test API integration and error handling

@@ -133,6 +133,28 @@ mvn package                 # Create executable JAR
 - **Input Validation**: HTML escaping, max length (500 chars), whitespace trimming
 - **Optimistic Updates**: Immediate UI updates, rollback on errors
 
+## Implementation Specifications
+
+The `specs/` directory contains 15 detailed feature specifications (in German) that define step-by-step implementation requirements:
+
+- **01-backend-setup.md**: Spring Boot 3.2 setup with Maven and Java 17
+- **02-todo-model.md**: Todo entity and data model
+- **03-frontend-setup.md**: Angular 17 setup with proxy configuration
+- **04-create-todo.md**: Create todo functionality
+- **05-display-todos.md**: Display todo list
+- **06-toggle-todo.md**: Toggle todo completion status
+- **07-delete-todo.md**: Delete individual todos
+- **08-edit-todo.md**: Edit todo titles
+- **09-counter.md**: Active todo counter
+- **10-filter-todos.md**: Filter by all/active/completed
+- **11-toggle-all.md**: Toggle all todos at once
+- **12-clear-completed.md**: Clear completed todos
+- **13-ui-states.md**: UI state management
+- **14-integration.md**: Frontend-backend integration
+- **15-deployment.md**: Single JAR deployment
+
+Each spec includes acceptance criteria, technical requirements, and test scenarios.
+
 ## Reference Materials
 
 - **Primary specification**: `resources/project.md` (German, comprehensive technical requirements)

@@ -1,0 +1,45 @@
+/* Clear completed button styling */
+.clear-completed {
+  float: right;
+  position: relative;
+  line-height: 20px;
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: inherit;
+}
+
+.clear-completed:hover {
+  text-decoration: underline;
+}
+
+.clear-completed:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.clear-completed.loading {
+  opacity: 0.8;
+}
+
+.loading-text {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #e6e6e6;
+  border-top: 2px solid #af5b5e;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

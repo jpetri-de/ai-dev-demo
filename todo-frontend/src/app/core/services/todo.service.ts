@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError, timer } from 'rxjs';
-import { map, catchError, retry, delayWhen, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError, timer, forkJoin, of } from 'rxjs';
+import { map, catchError, retry, delayWhen, tap, switchMap } from 'rxjs/operators';
 import { 
   Todo, 
   TodoStats, 
@@ -22,6 +22,27 @@ export class TodoService {
   
   public todos$ = this.todosSubject.asObservable();
   public loading$ = this.loadingSubject.asObservable();
+
+  // Enhanced observable streams for reactive UI components
+  public activeCount$ = this.todos$.pipe(
+    map(todos => todos.filter(todo => !todo.completed).length)
+  );
+
+  public completedCount$ = this.todos$.pipe(
+    map(todos => todos.filter(todo => todo.completed).length)
+  );
+
+  public hasTodos$ = this.todos$.pipe(
+    map(todos => todos.length > 0)
+  );
+
+  public hasCompleted$ = this.todos$.pipe(
+    map(todos => todos.some(todo => todo.completed))
+  );
+
+  public allCompleted$ = this.todos$.pipe(
+    map(todos => todos.length > 0 && todos.every(todo => todo.completed))
+  );
 
   constructor(private http: HttpClient) {}
 
@@ -45,7 +66,7 @@ export class TodoService {
     );
   }
 
-  // POST /api/todos - Create new todo
+  // POST /api/todos - Create new todo with enhanced error handling
   createTodo(title: string): Observable<Todo> {
     // Exact specification validation
     const trimmedTitle = title.trim();
@@ -73,6 +94,10 @@ export class TodoService {
     this.updateTodos([...currentTodos, tempTodo]);
 
     return this.http.post<Todo>(this.apiUrl, request).pipe(
+      retry({
+        count: 2,
+        delay: (error, retryCount) => timer(retryCount * 500)
+      }),
       tap(createdTodo => {
         // Replace temp todo with real todo from server
         const updatedTodos = currentTodos.concat(createdTodo);
@@ -86,7 +111,7 @@ export class TodoService {
     );
   }
 
-  // PUT /api/todos/{id} - Update todo (standardized to match specification)
+  // PUT /api/todos/{id} - Update todo with enhanced validation
   updateTodo(id: TodoId, title: string): Observable<Todo> {
     // Exact specification validation
     const trimmedTitle = title.trim();
@@ -109,6 +134,10 @@ export class TodoService {
     this.updateTodos(optimisticTodos);
 
     return this.http.put<Todo>(`${this.apiUrl}/${id}`, request).pipe(
+      retry({
+        count: 2,
+        delay: (error, retryCount) => timer(retryCount * 500)
+      }),
       tap(updatedTodo => {
         // Update with server response
         const serverUpdatedTodos = currentTodos.map(todo => 
@@ -132,6 +161,10 @@ export class TodoService {
     this.updateTodos(optimisticTodos);
 
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      retry({
+        count: 2,
+        delay: (error, retryCount) => timer(retryCount * 500)
+      }),
       catchError(error => {
         // Rollback optimistic update
         this.updateTodos(currentTodos);
@@ -150,6 +183,10 @@ export class TodoService {
     this.updateTodos(optimisticTodos);
 
     return this.http.put<Todo>(`${this.apiUrl}/${id}/toggle`, {}).pipe(
+      retry({
+        count: 2,
+        delay: (error, retryCount) => timer(retryCount * 500)
+      }),
       tap(updatedTodo => {
         // Update with server response
         const serverUpdatedTodos = currentTodos.map(todo => 
@@ -173,6 +210,10 @@ export class TodoService {
     this.updateTodos(optimisticTodos);
 
     return this.http.delete<void>(`${this.apiUrl}/completed`).pipe(
+      retry({
+        count: 2,
+        delay: (error, retryCount) => timer(retryCount * 500)
+      }),
       catchError(error => {
         // Rollback optimistic update
         this.updateTodos(currentTodos);
@@ -181,25 +222,50 @@ export class TodoService {
     );
   }
 
-  // Toggle all todos - implemented as individual toggle calls since backend doesn't support bulk operations
+  // Enhanced toggle all todos with optimistic updates and retry mechanism
   toggleAllTodos(completed: boolean): Observable<Todo[]> {
     const currentTodos = this.todosSubject.value;
     const todosToToggle = currentTodos.filter(todo => todo.completed !== completed);
     
     if (todosToToggle.length === 0) {
-      return new Observable(subscriber => {
-        subscriber.next(currentTodos);
-        subscriber.complete();
-      });
+      return of(currentTodos);
     }
 
-    // Optimistic update
+    // Optimistic update - immediately update UI
     const optimisticTodos = currentTodos.map(todo => ({ ...todo, completed }));
     this.updateTodos(optimisticTodos);
 
-    // Execute individual toggle requests - for now we'll handle this in components
-    // since backend doesn't support bulk toggle
-    return throwError(() => new Error('Bulk toggle operation should be handled at component level'));
+    // Execute individual toggle requests in parallel
+    const toggleOperations = todosToToggle.map(todo => 
+      this.http.put<Todo>(`${this.apiUrl}/${todo.id}/toggle`, {}).pipe(
+        retry({
+          count: 2,
+          delay: (error, retryCount) => timer(retryCount * 500)
+        }),
+        catchError(error => {
+          console.warn(`Failed to toggle todo ${todo.id}:`, error);
+          // Return the original todo on error
+          return of(todo);
+        })
+      )
+    );
+
+    return forkJoin(toggleOperations).pipe(
+      map(updatedTodos => {
+        // Update with server responses
+        const finalTodos = currentTodos.map(todo => {
+          const updatedTodo = updatedTodos.find(updated => updated.id === todo.id);
+          return updatedTodo || todo;
+        });
+        this.updateTodos(finalTodos);
+        return finalTodos;
+      }),
+      catchError(error => {
+        // Rollback optimistic update on complete failure
+        this.updateTodos(currentTodos);
+        return this.handleError(error);
+      })
+    );
   }
 
   // Get todo statistics (derived from current state)
@@ -214,11 +280,41 @@ export class TodoService {
     );
   }
 
+  // Get individual count observables for reactive components
+  getActiveCount(): Observable<number> {
+    return this.activeCount$;
+  }
+
+  getCompletedCount(): Observable<number> {
+    return this.completedCount$;
+  }
+
   // Get todo by ID
   getTodoById(id: TodoId): Observable<Todo | undefined> {
     return this.todos$.pipe(
       map(todos => todos.find(todo => todo.id === id))
     );
+  }
+
+  // Filter todos by type
+  getFilteredTodos(filter: 'all' | 'active' | 'completed'): Observable<Todo[]> {
+    return this.todos$.pipe(
+      map(todos => {
+        switch (filter) {
+          case 'active':
+            return todos.filter(todo => !todo.completed);
+          case 'completed':
+            return todos.filter(todo => todo.completed);
+          default:
+            return todos;
+        }
+      })
+    );
+  }
+
+  // Network status detection for enhanced error handling
+  isOnline(): boolean {
+    return navigator.onLine;
   }
 
   // Private helper methods
@@ -237,7 +333,9 @@ export class TodoService {
       // Network error
       apiError = {
         status: 0,
-        message: 'Network error. Please check your connection.'
+        message: this.isOnline() 
+          ? 'Network error. Please check your connection.'
+          : 'You are offline. Please check your internet connection.'
       };
     } else if (error.status === 400 && error.error?.message) {
       // Validation error from backend

@@ -5,17 +5,22 @@ import { of, throwError, forkJoin } from 'rxjs';
 import { TodoAppComponent } from './todo-app.component';
 import { TodoService } from '../../../../core/services/todo.service';
 import { ErrorService } from '../../../../core/services/error.service';
+import { UIStateService } from '../../../../core/services/ui-state.service';
 import { Todo } from '../../models/todo.interface';
 import { SharedModule } from '../../../../shared/shared.module';
 import { TodoListComponent } from '../todo-list/todo-list.component';
 import { TodoItemComponent } from '../todo-item/todo-item.component';
 import { TodoFilterComponent } from '../todo-filter/todo-filter.component';
+import { TodoCounterComponent } from '../todo-counter/todo-counter.component';
+import { ClearCompletedComponent } from '../clear-completed/clear-completed.component';
+import { ToggleAllComponent } from '../toggle-all/toggle-all.component';
 
 describe('TodoAppComponent', () => {
   let component: TodoAppComponent;
   let fixture: ComponentFixture<TodoAppComponent>;
   let todoService: jasmine.SpyObj<TodoService>;
   let errorService: jasmine.SpyObj<ErrorService>;
+  let uiStateService: jasmine.SpyObj<UIStateService>;
 
   const mockTodos: Todo[] = [
     { id: 1, title: 'Test Todo 1', completed: false },
@@ -25,9 +30,14 @@ describe('TodoAppComponent', () => {
   beforeEach(async () => {
     const todoServiceSpy = jasmine.createSpyObj('TodoService', [
       'getTodos', 'createTodo', 'updateTodo', 'deleteTodo', 
-      'toggleTodo', 'toggleAllTodos', 'clearCompleted', 'getStats'
+      'toggleTodo', 'toggleAllTodos', 'clearCompleted', 'getStats',
+      'getActiveCount', 'getCompletedCount'
     ], {
-      todos$: of(mockTodos)
+      todos$: of(mockTodos),
+      hasTodos$: of(true),
+      hasCompleted$: of(true),
+      allCompleted$: of(false),
+      loading$: of(false)
     });
 
     const errorServiceSpy = jasmine.createSpyObj('ErrorService', [
@@ -36,20 +46,34 @@ describe('TodoAppComponent', () => {
       error$: of('')
     });
 
+    const uiStateServiceSpy = jasmine.createSpyObj('UIStateService', [
+      'setCurrentFilter', 'updateVisibility', 'setLoading', 'focusNewTodoInput', 'setupKeyboardNavigation'
+    ], {
+      showMain$: of(true),
+      showFooter$: of(true),
+      currentFilter$: of('all')
+    });
+
     todoServiceSpy.getTodos.and.returnValue(of(mockTodos));
     todoServiceSpy.getStats.and.returnValue(of({ total: 2, active: 1, completed: 1 }));
+    todoServiceSpy.getActiveCount.and.returnValue(of(1));
+    todoServiceSpy.getCompletedCount.and.returnValue(of(1));
 
     await TestBed.configureTestingModule({
       declarations: [
         TodoAppComponent,
         TodoListComponent,
         TodoItemComponent,
-        TodoFilterComponent
+        TodoFilterComponent,
+        TodoCounterComponent,
+        ClearCompletedComponent,
+        ToggleAllComponent
       ],
       imports: [HttpClientTestingModule, RouterTestingModule, SharedModule],
       providers: [
         { provide: TodoService, useValue: todoServiceSpy },
-        { provide: ErrorService, useValue: errorServiceSpy }
+        { provide: ErrorService, useValue: errorServiceSpy },
+        { provide: UIStateService, useValue: uiStateServiceSpy }
       ]
     }).compileComponents();
 
@@ -57,6 +81,7 @@ describe('TodoAppComponent', () => {
     component = fixture.componentInstance;
     todoService = TestBed.inject(TodoService) as jasmine.SpyObj<TodoService>;
     errorService = TestBed.inject(ErrorService) as jasmine.SpyObj<ErrorService>;
+    uiStateService = TestBed.inject(UIStateService) as jasmine.SpyObj<UIStateService>;
   });
 
   it('should create', () => {
@@ -120,13 +145,7 @@ describe('TodoAppComponent', () => {
     expect(todoService.updateTodo).not.toHaveBeenCalled();
   });
 
-  it('should clear completed todos', () => {
-    todoService.clearCompleted.and.returnValue(of(undefined));
-    
-    component.onClearCompleted();
-    
-    expect(todoService.clearCompleted).toHaveBeenCalled();
-  });
+  // Note: Clear completed functionality has been moved to ClearCompletedComponent
 
   it('should clear error', () => {
     component.clearError();
@@ -194,13 +213,7 @@ describe('TodoAppComponent', () => {
       expect(errorService.handleError).toHaveBeenCalledWith('Server error');
     });
 
-    it('should handle error when clearing completed todos fails', () => {
-      todoService.clearCompleted.and.returnValue(throwError(() => ({ message: 'Server error' })));
-      
-      component.onClearCompleted();
-      
-      expect(errorService.handleError).toHaveBeenCalledWith('Server error');
-    });
+    // Note: Clear completed error handling has been moved to ClearCompletedComponent
 
     it('should handle error when loading todos fails', () => {
       const errorMessage = 'Network error';
@@ -212,72 +225,9 @@ describe('TodoAppComponent', () => {
     });
   });
 
-  describe('filter functionality', () => {
-    it('should change current filter', () => {
-      const newFilter = { type: 'active' as const, label: 'Active' };
-      
-      component.onFilterChange(newFilter);
-      
-      expect(component.currentFilter).toEqual(newFilter);
-    });
-  });
+  // Note: Filter functionality has been moved to TodoFilterComponent and UIStateService
 
-  describe('toggle all functionality', () => {
-    it('should toggle all todos to completed when some are active', () => {
-      const stats = { total: 2, active: 1, completed: 1 };
-      const activeTodo = { id: 1, title: 'Active Todo', completed: false };
-      const completedTodo = { id: 2, title: 'Completed Todo', completed: true };
-      
-      todoService.getStats.and.returnValue(of(stats));
-      component.todos$ = of([activeTodo, completedTodo]);
-      todoService.toggleTodo.and.returnValue(of({ ...activeTodo, completed: true }));
-      
-      component.onToggleAll();
-      
-      expect(todoService.toggleTodo).toHaveBeenCalledWith(1);
-    });
-
-    it('should toggle all todos to active when all are completed', () => {
-      const stats = { total: 2, active: 0, completed: 2 };
-      const completedTodo1 = { id: 1, title: 'Todo 1', completed: true };
-      const completedTodo2 = { id: 2, title: 'Todo 2', completed: true };
-      
-      todoService.getStats.and.returnValue(of(stats));
-      component.todos$ = of([completedTodo1, completedTodo2]);
-      todoService.toggleTodo.and.returnValue(of({ ...completedTodo1, completed: false }));
-      
-      component.onToggleAll();
-      
-      expect(todoService.toggleTodo).toHaveBeenCalledWith(1);
-      expect(todoService.toggleTodo).toHaveBeenCalledWith(2);
-    });
-
-    it('should not perform any toggles when no todos need to be toggled', () => {
-      const stats = { total: 1, active: 1, completed: 0 };
-      const activeTodo = { id: 1, title: 'Active Todo', completed: false };
-      
-      todoService.getStats.and.returnValue(of(stats));
-      component.todos$ = of([activeTodo]);
-      
-      component.onToggleAll();
-      
-      expect(todoService.toggleTodo).not.toHaveBeenCalled();
-    });
-
-    it('should handle error when toggle all fails', () => {
-      const stats = { total: 2, active: 2, completed: 0 };
-      const activeTodo1 = { id: 1, title: 'Active Todo 1', completed: false };
-      const activeTodo2 = { id: 2, title: 'Active Todo 2', completed: false };
-      
-      todoService.getStats.and.returnValue(of(stats));
-      component.todos$ = of([activeTodo1, activeTodo2]);
-      todoService.toggleTodo.and.returnValue(throwError(() => new Error('Server error')));
-      
-      component.onToggleAll();
-      
-      expect(errorService.handleError).toHaveBeenCalledWith('Failed to toggle all todos');
-    });
-  });
+  // Note: Toggle all functionality has been moved to ToggleAllComponent
 
   describe('component lifecycle', () => {
     it('should clean up subscriptions on destroy', () => {

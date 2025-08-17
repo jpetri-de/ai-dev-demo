@@ -1,8 +1,10 @@
-<section class="todoapp">
+<section class="todoapp" [class.no-todos]="!(hasTodos$ | async)">
   <!-- Error display -->
-  <div *ngIf="error$ | async as error" class="error-banner" style="background: #f44336; color: white; padding: 10px; margin-bottom: 20px;">
+  <div *ngIf="error$ | async as error" class="error-banner" 
+       style="background: #f44336; color: white; padding: 10px; margin-bottom: 20px;">
     {{ error }}
-    <button (click)="clearError()" style="float: right; background: none; border: none; color: white; cursor: pointer;">×</button>
+    <button (click)="clearError()" 
+            style="float: right; background: none; border: none; color: white; cursor: pointer;">×</button>
   </div>
 
   <!-- Header with input -->
@@ -20,19 +22,11 @@
   </header>
 
   <!-- Main section with toggle all and todo list -->
-  <section class="main" *ngIf="(stats$ | async)?.total! > 0">
-    <input 
-      id="toggle-all" 
-      class="toggle-all" 
-      type="checkbox"
-      [checked]="(stats$ | async)?.active === 0 && (stats$ | async)?.total! > 0"
-      (change)="onToggleAll()"
-      [attr.aria-label]="'Toggle all todos ' + ((stats$ | async)?.active === 0 ? 'incomplete' : 'complete')">
-    <label for="toggle-all">Mark all as complete</label>
+  <section class="main" *ngIf="hasTodos$ | async">
+    <app-toggle-all></app-toggle-all>
     
     <app-todo-list 
-      [todos]="todos$ | async" 
-      [filter]="currentFilter"
+      [todos]="filteredTodos$ | async" 
       (toggleTodo)="onToggleTodo($event)"
       (deleteTodo)="onDeleteTodo($event)"
       (updateTodo)="onUpdateTodo($event)">
@@ -40,16 +34,11 @@
   </section>
 
   <!-- Footer with counter, filters, and clear completed -->
-  <footer class="footer" *ngIf="(stats$ | async)?.total! > 0">
+  <footer class="footer" *ngIf="hasTodos$ | async">
     <app-todo-counter></app-todo-counter>
     
-    <app-todo-filter 
-      [currentFilter]="currentFilter" 
-      (filterChange)="onFilterChange($event)">
-    </app-todo-filter>
+    <app-todo-filter></app-todo-filter>
     
-    <app-clear-completed 
-      (clearCompleted)="onClearCompleted()">
-    </app-clear-completed>
+    <app-clear-completed></app-clear-completed>
   </footer>
 </section>

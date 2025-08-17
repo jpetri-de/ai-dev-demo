@@ -87,6 +87,26 @@ public class TodoStorageService {
     }
 
     /**
+     * Toggles all todos to the specified completion status.
+     * Feature 11: Toggle-All Functionality
+     * 
+     * @param completed The target completion status for all todos
+     * @return The number of todos that were actually updated
+     */
+    public int toggleAllTodos(boolean completed) {
+        synchronized (todos) {
+            int updatedCount = 0;
+            for (Todo todo : todos) {
+                if (todo.isCompleted() != completed) {
+                    todo.setCompleted(completed); // This method updates the timestamp automatically
+                    updatedCount++;
+                }
+            }
+            return updatedCount;
+        }
+    }
+
+    /**
      * Gets the current number of todos.
      * @return The count of todos
      */

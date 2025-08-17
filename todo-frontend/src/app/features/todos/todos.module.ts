@@ -7,6 +7,7 @@ import { TodoItemComponent } from './components/todo-item/todo-item.component';
 import { TodoFilterComponent } from './components/todo-filter/todo-filter.component';
 import { TodoCounterComponent } from './components/todo-counter/todo-counter.component';
 import { ClearCompletedComponent } from './components/clear-completed/clear-completed.component';
+import { ToggleAllComponent } from './components/toggle-all/toggle-all.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { ClearCompletedComponent } from './components/clear-completed/clear-comp
     TodoItemComponent,
     TodoFilterComponent,
     TodoCounterComponent,
-    ClearCompletedComponent
+    ClearCompletedComponent,
+    ToggleAllComponent
   ],
   imports: [
     SharedModule,

@@ -6,6 +6,7 @@ import com.example.todobackend.dto.UpdateTodoRequest;
 import com.example.todobackend.exception.TodoNotFoundException;
 import com.example.todobackend.mapper.TodoMapper;
 import com.example.todobackend.model.Todo;
+import com.example.todobackend.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,16 +19,21 @@ import java.util.List;
  * - Support for optional title updates in updateTodo method
  * - Empty title after trim deletes the todo (as per specification)
  * - Optimized for sub-50ms response times for optimistic updates
+ * 
+ * Enhanced for Feature 11: Toggle-All Functionality
+ * Enhanced for Feature 14: Enhanced Security with input sanitization
  */
 @Service
 public class TodoService {
     
     private final TodoStorageService storageService;
     private final TodoMapper mapper;
+    private final SecurityUtils securityUtils;
 
-    public TodoService(TodoStorageService storageService, TodoMapper mapper) {
+    public TodoService(TodoStorageService storageService, TodoMapper mapper, SecurityUtils securityUtils) {
         this.storageService = storageService;
         this.mapper = mapper;
+        this.securityUtils = securityUtils;
     }
 
     /**
@@ -54,17 +60,22 @@ public class TodoService {
 
     /**
      * Creates a new todo.
+     * Enhanced for Feature 14: Input sanitization and security validation
+     * 
      * @param request The create request
      * @return The created todo response
-     * @throws IllegalArgumentException if title is empty after trimming
+     * @throws IllegalArgumentException if title is invalid after sanitization
      */
     public TodoResponse createTodo(CreateTodoRequest request) {
-        String trimmedTitle = request.title().trim();
-        if (trimmedTitle.isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be empty");
+        // Security check for potential threats
+        if (securityUtils.containsSecurityThreats(request.title())) {
+            throw new IllegalArgumentException("Title contains potentially unsafe content");
         }
+        
+        // Sanitize and validate the title
+        String sanitizedTitle = securityUtils.sanitizeAndValidateTodoTitle(request.title());
 
-        Todo todo = new Todo(trimmedTitle);
+        Todo todo = new Todo(sanitizedTitle);
         Todo savedTodo = storageService.save(todo);
         return mapper.toResponse(savedTodo);
     }
@@ -77,25 +88,40 @@ public class TodoService {
      * - When title is provided but empty after trim, todo is deleted
      * - Supports both title-only and completed-only updates
      * 
+     * Enhanced for Feature 14: Input sanitization and security validation
+     * 
      * @param id The todo ID
      * @param request The update request
      * @return The updated todo response, or null if todo was deleted
      * @throws TodoNotFoundException if todo not found
-     * @throws IllegalArgumentException if title is empty after trimming
+     * @throws IllegalArgumentException if title contains security threats
      */
     public TodoResponse updateTodo(Long id, UpdateTodoRequest request) {
         Todo todo = storageService.findById(id)
                 .orElseThrow(() -> new TodoNotFoundException("Todo not found with id: " + id));
 
-        // Handle title update
+        // Handle title update with security validation
         if (request.title() != null) {
-            String trimmedTitle = request.title().trim();
-            if (trimmedTitle.isEmpty()) {
+            // Security check for potential threats
+            if (securityUtils.containsSecurityThreats(request.title())) {
+                throw new IllegalArgumentException("Title contains potentially unsafe content");
+            }
+            
+            // Sanitize the title first
+            String sanitizedTitle = securityUtils.sanitizeInput(request.title());
+            
+            if (sanitizedTitle.trim().isEmpty()) {
                 // As per Feature 04-08 specification: empty title deletes the todo
                 storageService.deleteById(id);
                 return null; // Indicate deletion occurred
             }
-            todo.updateTitle(trimmedTitle);
+            
+            // Additional validation after sanitization
+            if (!securityUtils.isValidTodoTitle(sanitizedTitle)) {
+                throw new IllegalArgumentException("Title is invalid after sanitization");
+            }
+            
+            todo.updateTitle(sanitizedTitle);
         }
         
         // Handle completed status update
@@ -139,6 +165,19 @@ public class TodoService {
      */
     public int deleteCompletedTodos() {
         return storageService.deleteCompleted();
+    }
+
+    /**
+     * Toggles all todos to the specified completion status.
+     * Feature 11: Toggle-All Functionality
+     * 
+     * @param completed The target completion status for all todos
+     * @return List of all todos after the operation
+     */
+    public List<TodoResponse> toggleAllTodos(boolean completed) {
+        storageService.toggleAllTodos(completed);
+        // Return all todos after the operation
+        return getAllTodos();
     }
 
     /**

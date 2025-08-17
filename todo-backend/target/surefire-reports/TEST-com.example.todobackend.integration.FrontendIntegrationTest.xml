@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.example.todobackend.integration.FrontendIntegrationTest" time="0.059" tests="8" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.example.todobackend.integration.FrontendIntegrationTest" time="0.057" tests="8" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="24"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
     <property name="java.class.path" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/test-classes:/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/classes:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-web/3.2.0/spring-boot-starter-web-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter/3.2.0/spring-boot-starter-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-logging/3.2.0/spring-boot-starter-logging-3.2.0.jar:/Users/jurgenpetri/.m2/repository/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar:/Users/jurgenpetri/.m2/repository/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11.jar:/Users/jurgenpetri/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.21.1/log4j-to-slf4j-2.21.1.jar:/Users/jurgenpetri/.m2/repository/org/apache/logging/log4j/log4j-api/2.21.1/log4j-api-2.21.1.jar:/Users/jurgenpetri/.m2/repository/org/slf4j/jul-to-slf4j/2.0.9/jul-to-slf4j-2.0.9.jar:/Users/jurgenpetri/.m2/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/Users/jurgenpetri/.m2/repository/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-json/3.2.0/spring-boot-starter-json-3.2.0.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.3/jackson-databind-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.3/jackson-annotations-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.3/jackson-core-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.15.3/jackson-datatype-jdk8-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.15.3/jackson-datatype-jsr310-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.15.3/jackson-module-parameter-names-2.15.3.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat/3.2.0/spring-boot-starter-tomcat-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.16/tomcat-embed-core-10.1.16.jar:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.16/tomcat-embed-websocket-10.1.16.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-web/6.1.1/spring-web-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-beans/6.1.1/spring-beans-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-webmvc/6.1.1/spring-webmvc-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-aop/6.1.1/spring-aop-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-context/6.1.1/spring-context-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-expression/6.1.1/spring-expression-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-validation/3.2.0/spring-boot-starter-validation-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-el/10.1.16/tomcat-embed-el-10.1.16.jar:/Users/jurgenpetri/.m2/repository/org/hibernate/validator/hibernate-validator/8.0.1.Final/hibernate-validator-8.0.1.Final.jar:/Users/jurgenpetri/.m2/repository/jakarta/validation/jakarta.validation-api/3.0.2/jakarta.validation-api-3.0.2.jar:/Users/jurgenpetri/.m2/repository/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/classmate/1.6.0/classmate-1.6.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-actuator/3.2.0/spring-boot-starter-actuator-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-actuator-autoconfigure/3.2.0/spring-boot-actuator-autoconfigure-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-actuator/3.2.0/spring-boot-actuator-3.2.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-observation/1.12.0/micrometer-observation-1.12.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-commons/1.12.0/micrometer-commons-1.12.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-jakarta9/1.12.0/micrometer-jakarta9-1.12.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-core/1.12.0/micrometer-core-1.12.0.jar:/Users/jurgenpetri/.m2/repository/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12.jar:/Users/jurgenpetri/.m2/repository/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3.jar:/Users/jurgenpetri/.m2/repository/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar:/Users/jurgenpetri/.m2/repository/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-devtools/3.2.0/spring-boot-devtools-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot/3.2.0/spring-boot-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/3.2.0/spring-boot-autoconfigure-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-test/3.2.0/spring-boot-starter-test-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-test/3.2.0/spring-boot-test-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-test-autoconfigure/3.2.0/spring-boot-test-autoconfigure-3.2.0.jar:/Users/jurgenpetri/.m2/repository/com/jayway/jsonpath/json-path/2.8.0/json-path-2.8.0.jar:/Users/jurgenpetri/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/Users/jurgenpetri/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.1/jakarta.xml.bind-api-4.0.1.jar:/Users/jurgenpetri/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.2/jakarta.activation-api-2.1.2.jar:/Users/jurgenpetri/.m2/repository/net/minidev/json-smart/2.5.0/json-smart-2.5.0.jar:/Users/jurgenpetri/.m2/repository/net/minidev/accessors-smart/2.5.0/accessors-smart-2.5.0.jar:/Users/jurgenpetri/.m2/repository/org/ow2/asm/asm/9.3/asm-9.3.jar:/Users/jurgenpetri/.m2/repository/org/assertj/assertj-core/3.24.2/assertj-core-3.24.2.jar:/Users/jurgenpetri/.m2/repository/net/bytebuddy/byte-buddy/1.14.10/byte-buddy-1.14.10.jar:/Users/jurgenpetri/.m2/repository/org/awaitility/awaitility/4.2.0/awaitility-4.2.0.jar:/Users/jurgenpetri/.m2/repository/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/jurgenpetri/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/jurgenpetri/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/jurgenpetri/.m2/repository/org/mockito/mockito-core/5.7.0/mockito-core-5.7.0.jar:/Users/jurgenpetri/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.10/byte-buddy-agent-1.14.10.jar:/Users/jurgenpetri/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/Users/jurgenpetri/.m2/repository/org/mockito/mockito-junit-jupiter/5.7.0/mockito-junit-jupiter-5.7.0.jar:/Users/jurgenpetri/.m2/repository/org/skyscreamer/jsonassert/1.5.1/jsonassert-1.5.1.jar:/Users/jurgenpetri/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-core/6.1.1/spring-core-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-jcl/6.1.1/spring-jcl-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-test/6.1.1/spring-test-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1.jar:"/>
     <property name="java.vm.vendor" value="Homebrew"/>
     <property name="sun.arch.data.model" value="64"/>
-    <property name="catalina.useNaming" value="false"/>
     <property name="java.vendor.url" value="https://github.com/Homebrew/homebrew-core/issues"/>
+    <property name="catalina.useNaming" value="false"/>
     <property name="user.timezone" value="Europe/Berlin"/>
     <property name="org.jboss.logging.provider" value="slf4j"/>
     <property name="os.name" value="Mac OS X"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="DE"/>
     <property name="sun.boot.library.path" value="/opt/homebrew/Cellar/openjdk/24.0.2/libexec/openjdk.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/surefire/surefirebooter-20250817190818935_3.jar /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/surefire 2025-08-17T19-08-18_896-jvmRun1 surefire-20250817190818935_1tmp surefire_0-20250817190818935_2tmp"/>
+    <property name="sun.java.command" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/surefire/surefirebooter-20250817210415363_3.jar /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/surefire 2025-08-17T21-04-15_318-jvmRun1 surefire-20250817210415363_1tmp surefire_0-20250817210415363_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/test-classes:/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/classes:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-web/3.2.0/spring-boot-starter-web-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter/3.2.0/spring-boot-starter-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-logging/3.2.0/spring-boot-starter-logging-3.2.0.jar:/Users/jurgenpetri/.m2/repository/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar:/Users/jurgenpetri/.m2/repository/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11.jar:/Users/jurgenpetri/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.21.1/log4j-to-slf4j-2.21.1.jar:/Users/jurgenpetri/.m2/repository/org/apache/logging/log4j/log4j-api/2.21.1/log4j-api-2.21.1.jar:/Users/jurgenpetri/.m2/repository/org/slf4j/jul-to-slf4j/2.0.9/jul-to-slf4j-2.0.9.jar:/Users/jurgenpetri/.m2/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/Users/jurgenpetri/.m2/repository/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-json/3.2.0/spring-boot-starter-json-3.2.0.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.3/jackson-databind-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.3/jackson-annotations-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.3/jackson-core-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.15.3/jackson-datatype-jdk8-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.15.3/jackson-datatype-jsr310-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.15.3/jackson-module-parameter-names-2.15.3.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat/3.2.0/spring-boot-starter-tomcat-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.16/tomcat-embed-core-10.1.16.jar:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.16/tomcat-embed-websocket-10.1.16.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-web/6.1.1/spring-web-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-beans/6.1.1/spring-beans-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-webmvc/6.1.1/spring-webmvc-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-aop/6.1.1/spring-aop-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-context/6.1.1/spring-context-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-expression/6.1.1/spring-expression-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-validation/3.2.0/spring-boot-starter-validation-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-el/10.1.16/tomcat-embed-el-10.1.16.jar:/Users/jurgenpetri/.m2/repository/org/hibernate/validator/hibernate-validator/8.0.1.Final/hibernate-validator-8.0.1.Final.jar:/Users/jurgenpetri/.m2/repository/jakarta/validation/jakarta.validation-api/3.0.2/jakarta.validation-api-3.0.2.jar:/Users/jurgenpetri/.m2/repository/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/classmate/1.6.0/classmate-1.6.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-actuator/3.2.0/spring-boot-starter-actuator-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-actuator-autoconfigure/3.2.0/spring-boot-actuator-autoconfigure-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-actuator/3.2.0/spring-boot-actuator-3.2.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-observation/1.12.0/micrometer-observation-1.12.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-commons/1.12.0/micrometer-commons-1.12.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-jakarta9/1.12.0/micrometer-jakarta9-1.12.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-core/1.12.0/micrometer-core-1.12.0.jar:/Users/jurgenpetri/.m2/repository/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12.jar:/Users/jurgenpetri/.m2/repository/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3.jar:/Users/jurgenpetri/.m2/repository/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar:/Users/jurgenpetri/.m2/repository/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-devtools/3.2.0/spring-boot-devtools-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot/3.2.0/spring-boot-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/3.2.0/spring-boot-autoconfigure-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-test/3.2.0/spring-boot-starter-test-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-test/3.2.0/spring-boot-test-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-test-autoconfigure/3.2.0/spring-boot-test-autoconfigure-3.2.0.jar:/Users/jurgenpetri/.m2/repository/com/jayway/jsonpath/json-path/2.8.0/json-path-2.8.0.jar:/Users/jurgenpetri/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/Users/jurgenpetri/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.1/jakarta.xml.bind-api-4.0.1.jar:/Users/jurgenpetri/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.2/jakarta.activation-api-2.1.2.jar:/Users/jurgenpetri/.m2/repository/net/minidev/json-smart/2.5.0/json-smart-2.5.0.jar:/Users/jurgenpetri/.m2/repository/net/minidev/accessors-smart/2.5.0/accessors-smart-2.5.0.jar:/Users/jurgenpetri/.m2/repository/org/ow2/asm/asm/9.3/asm-9.3.jar:/Users/jurgenpetri/.m2/repository/org/assertj/assertj-core/3.24.2/assertj-core-3.24.2.jar:/Users/jurgenpetri/.m2/repository/net/bytebuddy/byte-buddy/1.14.10/byte-buddy-1.14.10.jar:/Users/jurgenpetri/.m2/repository/org/awaitility/awaitility/4.2.0/awaitility-4.2.0.jar:/Users/jurgenpetri/.m2/repository/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/jurgenpetri/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/jurgenpetri/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/jurgenpetri/.m2/repository/org/mockito/mockito-core/5.7.0/mockito-core-5.7.0.jar:/Users/jurgenpetri/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.10/byte-buddy-agent-1.14.10.jar:/Users/jurgenpetri/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/Users/jurgenpetri/.m2/repository/org/mockito/mockito-junit-jupiter/5.7.0/mockito-junit-jupiter-5.7.0.jar:/Users/jurgenpetri/.m2/repository/org/skyscreamer/jsonassert/1.5.1/jsonassert-1.5.1.jar:/Users/jurgenpetri/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-core/6.1.1/spring-core-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-jcl/6.1.1/spring-jcl-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-test/6.1.1/spring-test-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1.jar:"/>
@@ -25,7 +25,6 @@
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="java.version.date" value="2025-07-15"/>
     <property name="java.home" value="/opt/homebrew/Cellar/openjdk/24.0.2/libexec/openjdk.jdk/Contents/Home"/>
-    <property name="spring.profiles.active" value="dev"/>
     <property name="file.separator" value="/"/>
     <property name="basedir" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
@@ -35,7 +34,7 @@
     <property name="FILE_LOG_CHARSET" value="UTF-8"/>
     <property name="java.awt.headless" value="true"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/surefire/surefirebooter-20250817190818935_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/surefire/surefirebooter-20250817210415363_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="24.0.2"/>
@@ -50,14 +49,14 @@
     <property name="localRepository" value="/Users/jurgenpetri/.m2/repository"/>
     <property name="java.vendor.url.bug" value="https://github.com/Homebrew/homebrew-core/issues"/>
     <property name="java.io.tmpdir" value="/var/folders/xb/0n3fbrkx319d9s68nhd8gb980000gn/T/"/>
-    <property name="catalina.home" value="/private/var/folders/xb/0n3fbrkx319d9s68nhd8gb980000gn/T/tomcat.0.5000742790988222299"/>
+    <property name="catalina.home" value="/private/var/folders/xb/0n3fbrkx319d9s68nhd8gb980000gn/T/tomcat.0.17622226600542935392"/>
     <property name="java.version" value="24.0.2"/>
     <property name="user.dir" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend"/>
     <property name="os.arch" value="aarch64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="PID" value="5196"/>
+    <property name="PID" value="29226"/>
     <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
-    <property name="catalina.base" value="/private/var/folders/xb/0n3fbrkx319d9s68nhd8gb980000gn/T/tomcat.0.5000742790988222299"/>
+    <property name="catalina.base" value="/private/var/folders/xb/0n3fbrkx319d9s68nhd8gb980000gn/T/tomcat.0.17622226600542935392"/>
     <property name="native.encoding" value="UTF-8"/>
     <property name="java.library.path" value="/Users/jurgenpetri/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
     <property name="java.vm.info" value="mixed mode, sharing"/>
@@ -70,169 +69,169 @@
     <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} - %msg%n"/>
     <property name="LOGGED_APPLICATION_NAME" value="[todo-backend] "/>
   </properties>
-  <testcase name="shouldReturnDebuggingHeadersOnCreateTodo" classname="com.example.todobackend.integration.FrontendIntegrationTest" time="0.007">
-    <system-out><![CDATA[2025-08-17 19:08:22 - Could not detect default configuration classes for test class [com.example.todobackend.integration.FrontendIntegrationTest]: FrontendIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2025-08-17 19:08:22 - Found @SpringBootConfiguration com.example.todobackend.TodoBackendApplication for test class com.example.todobackend.integration.FrontendIntegrationTest
-2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
-2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [CreateTodoRequest[title=Test todo]] as "application/json"
-2025-08-17 19:08:22 - POST "/api/todos", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
-2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Test todo]]
-2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [TodoResponse[id=12, title=Test todo, completed=false]]
-2025-08-17 19:08:22 - Completed 201 CREATED
-2025-08-17 19:08:22 - Response 201 CREATED
-2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+  <testcase name="shouldReturnDebuggingHeadersOnCreateTodo" classname="com.example.todobackend.integration.FrontendIntegrationTest" time="0.006">
+    <system-out><![CDATA[2025-08-17 21:04:19 - Could not detect default configuration classes for test class [com.example.todobackend.integration.FrontendIntegrationTest]: FrontendIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-08-17 21:04:19 - Found @SpringBootConfiguration com.example.todobackend.TodoBackendApplication for test class com.example.todobackend.integration.FrontendIntegrationTest
+2025-08-17 21:04:19 - HTTP POST http://localhost:55370/api/todos
+2025-08-17 21:04:19 - Accept=[application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [CreateTodoRequest[title=Test todo]] as "application/json"
+2025-08-17 21:04:19 - POST "/api/todos", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 21:04:19 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Test todo]]
+2025-08-17 21:04:19 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [TodoResponse[id=12, title=Test todo, completed=false]]
+2025-08-17 21:04:19 - Completed 201 CREATED
+2025-08-17 21:04:19 - Response 201 CREATED
+2025-08-17 21:04:19 - Reading to [com.example.todobackend.dto.TodoResponse]
 ]]></system-out>
   </testcase>
-  <testcase name="shouldReturnNotFoundErrorWithCorrelationId" classname="com.example.todobackend.integration.FrontendIntegrationTest" time="0.005">
-    <system-out><![CDATA[2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos/99999
-2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
-2025-08-17 19:08:22 - GET "/api/todos/99999", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getTodoById(Long)
-2025-08-17 19:08:22 - Using @ExceptionHandler com.example.todobackend.exception.GlobalExceptionHandler#handleTodoNotFound(TodoNotFoundException, HttpServletRequest)
-2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [ErrorResponse[message=Todo not found with id: 99999, details=The requested todo does not exist, stat (truncated)...]
-2025-08-17 19:08:22 - Resolved [com.example.todobackend.exception.TodoNotFoundException: Todo not found with id: 99999]
-2025-08-17 19:08:22 - Completed 404 NOT_FOUND
-2025-08-17 19:08:22 - Response 404 NOT_FOUND
-2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.ErrorResponse]
+  <testcase name="shouldReturnNotFoundErrorWithCorrelationId" classname="com.example.todobackend.integration.FrontendIntegrationTest" time="0.003">
+    <system-out><![CDATA[2025-08-17 21:04:19 - HTTP GET http://localhost:55370/api/todos/99999
+2025-08-17 21:04:19 - Accept=[application/json, application/*+json]
+2025-08-17 21:04:19 - GET "/api/todos/99999", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#getTodoById(Long)
+2025-08-17 21:04:19 - Using @ExceptionHandler com.example.todobackend.exception.GlobalExceptionHandler#handleTodoNotFound(TodoNotFoundException, HttpServletRequest)
+2025-08-17 21:04:19 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [ErrorResponse[message=Todo not found with id: 99999, details=The requested todo does not exist, stat (truncated)...]
+2025-08-17 21:04:19 - Resolved [com.example.todobackend.exception.TodoNotFoundException: Todo not found with id: 99999]
+2025-08-17 21:04:19 - Completed 404 NOT_FOUND
+2025-08-17 21:04:19 - Response 404 NOT_FOUND
+2025-08-17 21:04:19 - Reading to [com.example.todobackend.dto.ErrorResponse]
 ]]></system-out>
   </testcase>
-  <testcase name="shouldReturnCorrelationIdInErrorResponse" classname="com.example.todobackend.integration.FrontendIntegrationTest" time="0.006">
-    <system-out><![CDATA[2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
-2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [CreateTodoRequest[title=   ]] as "application/json"
-2025-08-17 19:08:22 - POST "/api/todos", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
-2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=   ]]
-2025-08-17 19:08:22 - Using @ExceptionHandler com.example.todobackend.exception.GlobalExceptionHandler#handleValidationErrors(MethodArgumentNotValidException, HttpServletRequest)
-2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [ErrorResponse[message=Validation failed, details=title: Title cannot be blank, status=400, timestamp (truncated)...]
-2025-08-17 19:08:22 - Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.example.todobackend.dto.TodoResponse> com.example.todobackend.controller.TodoController.createTodo(com.example.todobackend.dto.CreateTodoRequest): [Field error in object 'createTodoRequest' on field 'title': rejected value [   ]; codes [NotBlank.createTodoRequest.title,NotBlank.title,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [createTodoRequest.title,title]; arguments []; default message [title]]; default message [Title cannot be blank]] ]
-2025-08-17 19:08:22 - Completed 400 BAD_REQUEST
-2025-08-17 19:08:22 - Response 400 BAD_REQUEST
-2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.ErrorResponse]
+  <testcase name="shouldReturnCorrelationIdInErrorResponse" classname="com.example.todobackend.integration.FrontendIntegrationTest" time="0.005">
+    <system-out><![CDATA[2025-08-17 21:04:19 - HTTP POST http://localhost:55370/api/todos
+2025-08-17 21:04:19 - Accept=[application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [CreateTodoRequest[title=   ]] as "application/json"
+2025-08-17 21:04:19 - POST "/api/todos", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 21:04:19 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=   ]]
+2025-08-17 21:04:19 - Using @ExceptionHandler com.example.todobackend.exception.GlobalExceptionHandler#handleValidationErrors(MethodArgumentNotValidException, HttpServletRequest)
+2025-08-17 21:04:19 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [ErrorResponse[message=Validation failed, details=title: Title cannot be blank, status=400, timestamp (truncated)...]
+2025-08-17 21:04:19 - Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.example.todobackend.dto.TodoResponse> com.example.todobackend.controller.TodoController.createTodo(com.example.todobackend.dto.CreateTodoRequest): [Field error in object 'createTodoRequest' on field 'title': rejected value [   ]; codes [NotBlank.createTodoRequest.title,NotBlank.title,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [createTodoRequest.title,title]; arguments []; default message [title]]; default message [Title cannot be blank]] ]
+2025-08-17 21:04:19 - Completed 400 BAD_REQUEST
+2025-08-17 21:04:19 - Response 400 BAD_REQUEST
+2025-08-17 21:04:19 - Reading to [com.example.todobackend.dto.ErrorResponse]
 ]]></system-out>
   </testcase>
-  <testcase name="shouldReturnCountTypeHeaders" classname="com.example.todobackend.integration.FrontendIntegrationTest" time="0.006">
-    <system-out><![CDATA[2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos/count/active
-2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
-2025-08-17 19:08:22 - GET "/api/todos/count/active", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getActiveTodoCount()
-2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [1]
-2025-08-17 19:08:22 - Completed 200 OK
-2025-08-17 19:08:22 - Response 200 OK
-2025-08-17 19:08:22 - Reading to [java.lang.Long]
-2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos/count/total
-2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
-2025-08-17 19:08:22 - GET "/api/todos/count/total", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getTotalTodoCount()
-2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [1]
-2025-08-17 19:08:22 - Completed 200 OK
-2025-08-17 19:08:22 - Response 200 OK
-2025-08-17 19:08:22 - Reading to [java.lang.Integer]
+  <testcase name="shouldReturnCountTypeHeaders" classname="com.example.todobackend.integration.FrontendIntegrationTest" time="0.007">
+    <system-out><![CDATA[2025-08-17 21:04:19 - HTTP GET http://localhost:55370/api/todos/count/active
+2025-08-17 21:04:19 - Accept=[application/json, application/*+json]
+2025-08-17 21:04:19 - GET "/api/todos/count/active", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#getActiveTodoCount()
+2025-08-17 21:04:19 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [1]
+2025-08-17 21:04:19 - Completed 200 OK
+2025-08-17 21:04:19 - Response 200 OK
+2025-08-17 21:04:19 - Reading to [java.lang.Long]
+2025-08-17 21:04:19 - HTTP GET http://localhost:55370/api/todos/count/total
+2025-08-17 21:04:19 - Accept=[application/json, application/*+json]
+2025-08-17 21:04:19 - GET "/api/todos/count/total", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#getTotalTodoCount()
+2025-08-17 21:04:19 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [1]
+2025-08-17 21:04:19 - Completed 200 OK
+2025-08-17 21:04:19 - Response 200 OK
+2025-08-17 21:04:19 - Reading to [java.lang.Integer]
 ]]></system-out>
   </testcase>
   <testcase name="shouldReturnDeletedCountHeader" classname="com.example.todobackend.integration.FrontendIntegrationTest" time="0.014">
-    <system-out><![CDATA[2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
-2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [CreateTodoRequest[title=Todo 1]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-2025-08-17 19:08:22 - POST "/api/todos", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
-2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Todo 1]]
-2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [TodoResponse[id=13, title=Todo 1, completed=false]]
-2025-08-17 19:08:22 - Completed 201 CREATED
-2025-08-17 19:08:22 - Response 201 CREATED
-2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
-2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
-2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [CreateTodoRequest[title=Todo 2]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-2025-08-17 19:08:22 - POST "/api/todos", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
-2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Todo 2]]
-2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [TodoResponse[id=14, title=Todo 2, completed=false]]
-2025-08-17 19:08:22 - Completed 201 CREATED
-2025-08-17 19:08:22 - Response 201 CREATED
-2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
-2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/13/toggle
-2025-08-17 19:08:22 - PUT "/api/todos/13/toggle", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
-2025-08-17 19:08:22 - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [TodoResponse[id=13, title=Todo 1, completed=true]]
-2025-08-17 19:08:22 - Completed 200 OK
-2025-08-17 19:08:22 - Response 200 OK
-2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/14/toggle
-2025-08-17 19:08:22 - PUT "/api/todos/14/toggle", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
-2025-08-17 19:08:22 - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [TodoResponse[id=14, title=Todo 2, completed=true]]
-2025-08-17 19:08:22 - Completed 200 OK
-2025-08-17 19:08:22 - Response 200 OK
-2025-08-17 19:08:22 - HTTP DELETE http://localhost:63894/api/todos/completed
-2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
-2025-08-17 19:08:22 - DELETE "/api/todos/completed", parameters={masked}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#deleteCompletedTodos()
-2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Nothing to write: null body
-2025-08-17 19:08:22 - Completed 204 NO_CONTENT
-2025-08-17 19:08:22 - Response 204 NO_CONTENT
+    <system-out><![CDATA[2025-08-17 21:04:19 - HTTP POST http://localhost:55370/api/todos
+2025-08-17 21:04:19 - Accept=[application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [CreateTodoRequest[title=Todo 1]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 21:04:19 - POST "/api/todos", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 21:04:19 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Todo 1]]
+2025-08-17 21:04:19 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [TodoResponse[id=13, title=Todo 1, completed=false]]
+2025-08-17 21:04:19 - Completed 201 CREATED
+2025-08-17 21:04:19 - Response 201 CREATED
+2025-08-17 21:04:19 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 21:04:19 - HTTP POST http://localhost:55370/api/todos
+2025-08-17 21:04:19 - Accept=[application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [CreateTodoRequest[title=Todo 2]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 21:04:19 - POST "/api/todos", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 21:04:19 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Todo 2]]
+2025-08-17 21:04:19 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [TodoResponse[id=14, title=Todo 2, completed=false]]
+2025-08-17 21:04:19 - Completed 201 CREATED
+2025-08-17 21:04:19 - Response 201 CREATED
+2025-08-17 21:04:19 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 21:04:19 - HTTP PUT http://localhost:55370/api/todos/13/toggle
+2025-08-17 21:04:19 - PUT "/api/todos/13/toggle", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 21:04:19 - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [TodoResponse[id=13, title=Todo 1, completed=true]]
+2025-08-17 21:04:19 - Completed 200 OK
+2025-08-17 21:04:19 - Response 200 OK
+2025-08-17 21:04:19 - HTTP PUT http://localhost:55370/api/todos/14/toggle
+2025-08-17 21:04:19 - PUT "/api/todos/14/toggle", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 21:04:19 - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [TodoResponse[id=14, title=Todo 2, completed=true]]
+2025-08-17 21:04:19 - Completed 200 OK
+2025-08-17 21:04:19 - Response 200 OK
+2025-08-17 21:04:19 - HTTP DELETE http://localhost:55370/api/todos/completed
+2025-08-17 21:04:19 - Accept=[application/json, application/*+json]
+2025-08-17 21:04:19 - DELETE "/api/todos/completed", parameters={masked}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#deleteCompletedTodos()
+2025-08-17 21:04:19 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Nothing to write: null body
+2025-08-17 21:04:19 - Completed 204 NO_CONTENT
+2025-08-17 21:04:19 - Response 204 NO_CONTENT
 ]]></system-out>
   </testcase>
   <testcase name="shouldReturnToggleDebugInfo" classname="com.example.todobackend.integration.FrontendIntegrationTest" time="0.007">
-    <system-out><![CDATA[2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
-2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [CreateTodoRequest[title=Test toggle]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-2025-08-17 19:08:22 - POST "/api/todos", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
-2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Test toggle]]
-2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [TodoResponse[id=15, title=Test toggle, completed=false]]
-2025-08-17 19:08:22 - Completed 201 CREATED
-2025-08-17 19:08:22 - Response 201 CREATED
-2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
-2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/15/toggle
-2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
-2025-08-17 19:08:22 - PUT "/api/todos/15/toggle", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
-2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [TodoResponse[id=15, title=Test toggle, completed=true]]
-2025-08-17 19:08:22 - Completed 200 OK
-2025-08-17 19:08:22 - Response 200 OK
-2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+    <system-out><![CDATA[2025-08-17 21:04:19 - HTTP POST http://localhost:55370/api/todos
+2025-08-17 21:04:19 - Accept=[application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [CreateTodoRequest[title=Test toggle]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 21:04:19 - POST "/api/todos", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 21:04:19 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Test toggle]]
+2025-08-17 21:04:19 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [TodoResponse[id=15, title=Test toggle, completed=false]]
+2025-08-17 21:04:19 - Completed 201 CREATED
+2025-08-17 21:04:19 - Response 201 CREATED
+2025-08-17 21:04:19 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 21:04:19 - HTTP PUT http://localhost:55370/api/todos/15/toggle
+2025-08-17 21:04:19 - Accept=[application/json, application/*+json]
+2025-08-17 21:04:19 - PUT "/api/todos/15/toggle", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 21:04:19 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [TodoResponse[id=15, title=Test toggle, completed=true]]
+2025-08-17 21:04:19 - Completed 200 OK
+2025-08-17 21:04:19 - Response 200 OK
+2025-08-17 21:04:19 - Reading to [com.example.todobackend.dto.TodoResponse]
 ]]></system-out>
   </testcase>
   <testcase name="shouldReturnValidationErrorsInStructuredFormat" classname="com.example.todobackend.integration.FrontendIntegrationTest" time="0.006">
-    <system-out><![CDATA[2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
-2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [{}] as "application/json"
-2025-08-17 19:08:22 - POST "/api/todos", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
-2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=null]]
-2025-08-17 19:08:22 - Using @ExceptionHandler com.example.todobackend.exception.GlobalExceptionHandler#handleValidationErrors(MethodArgumentNotValidException, HttpServletRequest)
-2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [ErrorResponse[message=Validation failed, details=title: Title cannot be blank, status=400, timestamp (truncated)...]
-2025-08-17 19:08:22 - Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.example.todobackend.dto.TodoResponse> com.example.todobackend.controller.TodoController.createTodo(com.example.todobackend.dto.CreateTodoRequest): [Field error in object 'createTodoRequest' on field 'title': rejected value [null]; codes [NotBlank.createTodoRequest.title,NotBlank.title,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [createTodoRequest.title,title]; arguments []; default message [title]]; default message [Title cannot be blank]] ]
-2025-08-17 19:08:22 - Completed 400 BAD_REQUEST
-2025-08-17 19:08:22 - Response 400 BAD_REQUEST
-2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.ErrorResponse]
+    <system-out><![CDATA[2025-08-17 21:04:19 - HTTP POST http://localhost:55370/api/todos
+2025-08-17 21:04:19 - Accept=[application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [{}] as "application/json"
+2025-08-17 21:04:19 - POST "/api/todos", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 21:04:19 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=null]]
+2025-08-17 21:04:19 - Using @ExceptionHandler com.example.todobackend.exception.GlobalExceptionHandler#handleValidationErrors(MethodArgumentNotValidException, HttpServletRequest)
+2025-08-17 21:04:19 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [ErrorResponse[message=Validation failed, details=title: Title cannot be blank, status=400, timestamp (truncated)...]
+2025-08-17 21:04:19 - Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.example.todobackend.dto.TodoResponse> com.example.todobackend.controller.TodoController.createTodo(com.example.todobackend.dto.CreateTodoRequest): [Field error in object 'createTodoRequest' on field 'title': rejected value [null]; codes [NotBlank.createTodoRequest.title,NotBlank.title,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [createTodoRequest.title,title]; arguments []; default message [title]]; default message [Title cannot be blank]] ]
+2025-08-17 21:04:19 - Completed 400 BAD_REQUEST
+2025-08-17 21:04:19 - Response 400 BAD_REQUEST
+2025-08-17 21:04:19 - Reading to [com.example.todobackend.dto.ErrorResponse]
 ]]></system-out>
   </testcase>
   <testcase name="shouldReturnDebuggingHeadersOnGetAllTodos" classname="com.example.todobackend.integration.FrontendIntegrationTest" time="0.004">
-    <system-out><![CDATA[2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos
-2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
-2025-08-17 19:08:22 - GET "/api/todos", parameters={}
-2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
-2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
-2025-08-17 19:08:22 - Writing [[TodoResponse[id=12, title=Test todo, completed=false], TodoResponse[id=15, title=Test toggle, compl (truncated)...]
-2025-08-17 19:08:22 - Completed 200 OK
-2025-08-17 19:08:22 - Response 200 OK
-2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse[]]
+    <system-out><![CDATA[2025-08-17 21:04:19 - HTTP GET http://localhost:55370/api/todos
+2025-08-17 21:04:19 - Accept=[application/json, application/*+json]
+2025-08-17 21:04:19 - GET "/api/todos", parameters={}
+2025-08-17 21:04:19 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
+2025-08-17 21:04:19 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 21:04:19 - Writing [[TodoResponse[id=12, title=Test todo, completed=false], TodoResponse[id=15, title=Test toggle, compl (truncated)...]
+2025-08-17 21:04:19 - Completed 200 OK
+2025-08-17 21:04:19 - Response 200 OK
+2025-08-17 21:04:19 - Reading to [com.example.todobackend.dto.TodoResponse[]]
 ]]></system-out>
   </testcase>
 </testsuite>

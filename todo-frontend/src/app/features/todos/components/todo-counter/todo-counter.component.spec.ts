@@ -9,7 +9,7 @@ describe('TodoCounterComponent', () => {
   let mockTodoService: jasmine.SpyObj<TodoService>;
 
   beforeEach(async () => {
-    const spy = jasmine.createSpyObj('TodoService', ['getStats']);
+    const spy = jasmine.createSpyObj('TodoService', ['getActiveCount']);
 
     await TestBed.configureTestingModule({
       declarations: [TodoCounterComponent],
@@ -18,40 +18,57 @@ describe('TodoCounterComponent', () => {
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TodoCounterComponent);
-    component = fixture.componentInstance;
     mockTodoService = TestBed.inject(TodoService) as jasmine.SpyObj<TodoService>;
   });
 
+  beforeEach(() => {
+    // Set default return value before creating fixture
+    mockTodoService.getActiveCount.and.returnValue(of(0));
+    fixture = TestBed.createComponent(TodoCounterComponent);
+    component = fixture.componentInstance;
+  });
+
   it('should create', () => {
-    mockTodoService.getStats.and.returnValue(of({ total: 0, active: 0, completed: 0 }));
+    mockTodoService.getActiveCount.and.returnValue(of(0));
     expect(component).toBeTruthy();
   });
 
-  it('should display singular item for 1 active todo', () => {
-    mockTodoService.getStats.and.returnValue(of({ total: 1, active: 1, completed: 0 }));
-    component.stats$ = mockTodoService.getStats();
+  it('should display correct count and pluralization for 0 items', () => {
+    mockTodoService.getActiveCount.and.returnValue(of(0));
     fixture.detectChanges();
     
-    const compiled = fixture.nativeElement;
-    expect(compiled.textContent).toContain('1 item left');
+    const element = fixture.nativeElement.querySelector('.todo-count');
+    expect(element.textContent).toContain('0');
+    expect(element.textContent).toContain('items left');
   });
 
-  it('should display plural items for multiple active todos', () => {
-    mockTodoService.getStats.and.returnValue(of({ total: 3, active: 3, completed: 0 }));
-    component.stats$ = mockTodoService.getStats();
-    fixture.detectChanges();
+  it('should display correct count and pluralization for 1 item', () => {
+    // Create a new fixture with different mock value
+    mockTodoService.getActiveCount.and.returnValue(of(1));
+    const newFixture = TestBed.createComponent(TodoCounterComponent);
+    newFixture.detectChanges();
     
-    const compiled = fixture.nativeElement;
-    expect(compiled.textContent).toContain('3 items left');
+    const element = newFixture.nativeElement.querySelector('.todo-count');
+    expect(element.textContent).toContain('1');
+    expect(element.textContent).toContain('item left');
   });
 
-  it('should display plural items for 0 active todos', () => {
-    mockTodoService.getStats.and.returnValue(of({ total: 2, active: 0, completed: 2 }));
-    component.stats$ = mockTodoService.getStats();
-    fixture.detectChanges();
+  it('should display correct count and pluralization for multiple items', () => {
+    mockTodoService.getActiveCount.and.returnValue(of(5));
+    const newFixture = TestBed.createComponent(TodoCounterComponent);
+    newFixture.detectChanges();
     
-    const compiled = fixture.nativeElement;
-    expect(compiled.textContent).toContain('0 items left');
+    const element = newFixture.nativeElement.querySelector('.todo-count');
+    expect(element.textContent).toContain('5');
+    expect(element.textContent).toContain('items left');
+  });
+
+  it('should have proper aria-label for accessibility', () => {
+    mockTodoService.getActiveCount.and.returnValue(of(3));
+    const newFixture = TestBed.createComponent(TodoCounterComponent);
+    newFixture.detectChanges();
+    
+    const element = newFixture.nativeElement.querySelector('.todo-count');
+    expect(element.getAttribute('aria-label')).toContain('items left');
   });
 });

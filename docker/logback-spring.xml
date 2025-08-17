@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- ===================================== -->
+    <!-- TodoMVC Logging Configuration        -->
+    <!-- Optimized for Docker containers      -->
+    <!-- ===================================== -->
+
+    <!-- Define log patterns -->
+    <property name="CONSOLE_PATTERN" value="%d{HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"/>
+    <property name="FILE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] - %msg%n"/>
+    <property name="JSON_PATTERN" value='{"timestamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}","level":"%level","thread":"%thread","logger":"%logger{36}","message":"%msg","correlation_id":"%X{correlationId:-}","request_id":"%X{requestId:-}"}%n'/>
+
+    <!-- Console appender for container logs -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- JSON console appender for structured logging -->
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${JSON_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- File appender for persistent logs -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/app/logs/application.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/app/logs/application.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Async wrapper for better performance -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+    </appender>
+
+    <!-- Security events appender -->
+    <appender name="SECURITY" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/app/logs/security.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/app/logs/security.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Performance events appender -->
+    <appender name="PERFORMANCE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/app/logs/performance.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/app/logs/performance.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${JSON_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Error events appender -->
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/app/logs/errors.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/app/logs/errors.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${JSON_PATTERN}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+    <!-- ===================================== -->
+    <!-- Profile-specific configurations      -->
+    <!-- ===================================== -->
+
+    <!-- Production profile -->
+    <springProfile name="prod">
+        <!-- Application loggers -->
+        <logger name="com.example.todobackend" level="INFO" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="ERROR"/>
+        </logger>
+
+        <!-- Security logger -->
+        <logger name="SECURITY" level="WARN" additivity="false">
+            <appender-ref ref="SECURITY"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <!-- Performance logger -->
+        <logger name="PERFORMANCE" level="INFO" additivity="false">
+            <appender-ref ref="PERFORMANCE"/>
+        </logger>
+
+        <!-- Spring framework -->
+        <logger name="org.springframework" level="WARN"/>
+        <logger name="org.springframework.web" level="INFO"/>
+        <logger name="org.springframework.security" level="WARN"/>
+
+        <!-- Hibernate/JPA -->
+        <logger name="org.hibernate" level="WARN"/>
+        <logger name="org.hibernate.SQL" level="DEBUG"/>
+
+        <!-- Tomcat -->
+        <logger name="org.apache.catalina" level="WARN"/>
+        <logger name="org.apache.coyote" level="WARN"/>
+
+        <!-- Actuator -->
+        <logger name="org.springframework.boot.actuate" level="INFO"/>
+
+        <!-- Root logger -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="ERROR"/>
+        </root>
+    </springProfile>
+
+    <!-- Development profile -->
+    <springProfile name="dev">
+        <!-- More verbose logging for development -->
+        <logger name="com.example.todobackend" level="DEBUG" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </logger>
+
+        <!-- Spring framework -->
+        <logger name="org.springframework" level="INFO"/>
+        <logger name="org.springframework.web" level="DEBUG"/>
+
+        <!-- Root logger -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+
+    <!-- Test profile -->
+    <springProfile name="test">
+        <!-- Minimal logging for tests -->
+        <logger name="com.example.todobackend" level="WARN" additivity="false">
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+
+        <!-- Suppress framework noise -->
+        <logger name="org.springframework" level="WARN"/>
+        <logger name="org.hibernate" level="WARN"/>
+
+        <!-- Root logger -->
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- ===================================== -->
+    <!-- Conditional appenders based on env   -->
+    <!-- ===================================== -->
+
+    <!-- Use JSON logging if structured logging is enabled -->
+    <if condition='property("STRUCTURED_LOGGING").equals("true")'>
+        <then>
+            <appender-ref ref="JSON_CONSOLE"/>
+        </then>
+    </if>
+
+    <!-- ===================================== -->
+    <!-- Performance and memory settings      -->
+    <!-- ===================================== -->
+
+    <!-- Async appenders for high-throughput logging -->
+    <appender name="ASYNC_CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="CONSOLE"/>
+        <queueSize>256</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+    </appender>
+
+    <!-- ===================================== -->
+    <!-- Custom filter for sensitive data     -->
+    <!-- ===================================== -->
+
+    <turboFilter class="ch.qos.logback.classic.turbo.MDCFilter">
+        <MDCKey>HIDE_SENSITIVE</MDCKey>
+        <Value>true</Value>
+        <OnMatch>DENY</OnMatch>
+    </turboFilter>
+
+    <!-- ===================================== -->
+    <!-- JMX configuration for monitoring     -->
+    <!-- ===================================== -->
+
+    <jmxConfigurator/>
+
+    <!-- ===================================== -->
+    <!-- Shutdown hook for graceful cleanup   -->
+    <!-- ===================================== -->
+
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+    <!-- ===================================== -->
+    <!-- Configuration validation             -->
+    <!-- ===================================== -->
+
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+
+</configuration>

@@ -87,21 +87,41 @@ import java.util.concurrent.atomic.AtomicLong;
     }
 
     /**
+     * Toggles all todos to the specified completion status.
+     * Feature 11: Toggle-All Functionality
+     * 
+     * @param completed The target completion status for all todos
+     * @return The number of todos that were actually updated
+     */
+    public int toggleAllTodos(boolean completed) {
+<span class="fc" id="L97">        synchronized (todos) {</span>
+<span class="fc" id="L98">            int updatedCount = 0;</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            for (Todo todo : todos) {</span>
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">                if (todo.isCompleted() != completed) {</span>
+<span class="fc" id="L101">                    todo.setCompleted(completed); // This method updates the timestamp automatically</span>
+<span class="fc" id="L102">                    updatedCount++;</span>
+                }
+<span class="fc" id="L104">            }</span>
+<span class="fc" id="L105">            return updatedCount;</span>
+        }
+    }
+
+    /**
      * Gets the current number of todos.
      * @return The count of todos
      */
     public int count() {
-<span class="fc" id="L94">        return todos.size();</span>
+<span class="fc" id="L114">        return todos.size();</span>
     }
 
     /**
      * Clears all todos (useful for testing).
      */
     public void clear() {
-<span class="fc" id="L101">        synchronized (todos) {</span>
-<span class="fc" id="L102">            todos.clear();</span>
-<span class="fc" id="L103">            idCounter.set(1);</span>
-<span class="fc" id="L104">        }</span>
-<span class="fc" id="L105">    }</span>
+<span class="fc" id="L121">        synchronized (todos) {</span>
+<span class="fc" id="L122">            todos.clear();</span>
+<span class="fc" id="L123">            idCounter.set(1);</span>
+<span class="fc" id="L124">        }</span>
+<span class="fc" id="L125">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

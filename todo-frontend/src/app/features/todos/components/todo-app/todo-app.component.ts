@@ -1,10 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, forkJoin } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject, combineLatest } from 'rxjs';
+import { takeUntil, map } from 'rxjs/operators';
 import { TodoService } from '../../../../core/services/todo.service';
 import { ErrorService } from '../../../../core/services/error.service';
-import { Todo, TodoFilter } from '../../models/todo.interface';
+import { UIStateService } from '../../../../core/services/ui-state.service';
 import { TodoValidator } from '../../models/todo-validation';
 
 @Component({
@@ -18,16 +18,42 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
   
   private destroy$ = new Subject<void>();
   
+  // Enhanced reactive streams using the new TodoService features
   todos$ = this.todoService.todos$;
+  hasTodos$ = this.todoService.hasTodos$;
+  activeCount$ = this.todoService.getActiveCount();
   stats$ = this.todoService.getStats();
   loading$ = this.todoService.loading$;
   error$ = this.errorService.error$;
-  currentFilter: TodoFilter = { type: 'all', label: 'All' };
-  isCreating = false;
   
+  // UI state management
+  showMain$ = this.uiStateService.showMain$;
+  showFooter$ = this.uiStateService.showFooter$;
+  currentFilter$ = this.uiStateService.currentFilter$;
+  
+  // Filtered todos based on current route/filter
+  filteredTodos$ = combineLatest([
+    this.todos$,
+    this.currentFilter$
+  ]).pipe(
+    map(([todos, filter]) => {
+      switch (filter) {
+        case 'active':
+          return todos.filter(todo => !todo.completed);
+        case 'completed':
+          return todos.filter(todo => todo.completed);
+        default:
+          return todos;
+      }
+    })
+  );
+  
+  isCreating = false;
+
   constructor(
     private todoService: TodoService,
     private errorService: ErrorService,
+    private uiStateService: UIStateService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute
   ) {}
@@ -35,16 +61,26 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.loadTodos();
     this.initializeFilterFromRoute();
+    this.setupUIStateManagement();
   }
 
   ngAfterViewInit(): void {
-    // Ensure input is focused on page load per specification
-    this.focusNewTodoInput();
+    // Setup auto-focus and keyboard navigation per TodoMVC specification
+    this.uiStateService.setupKeyboardNavigation(this.newTodoInput);
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private setupUIStateManagement(): void {
+    // Automatically update UI visibility based on todos count
+    this.hasTodos$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(hasTodos => {
+        this.uiStateService.updateVisibility(hasTodos);
+      });
   }
 
   private initializeFilterFromRoute(): void {
@@ -54,13 +90,13 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
         const path = segments[0].path;
         switch (path) {
           case 'active':
-            this.currentFilter = { type: 'active', label: 'Active' };
+            this.uiStateService.setCurrentFilter('active');
             break;
           case 'completed':
-            this.currentFilter = { type: 'completed', label: 'Completed' };
+            this.uiStateService.setCurrentFilter('completed');
             break;
           default:
-            this.currentFilter = { type: 'all', label: 'All' };
+            this.uiStateService.setCurrentFilter('all');
         }
         this.cdr.markForCheck();
       }
@@ -81,106 +117,46 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
-  private focusNewTodoInput(): void {
-    // Enhanced focus management with better timing
-    setTimeout(() => {
-      if (this.newTodoInput?.nativeElement) {
-        this.newTodoInput.nativeElement.focus();
-      }
-    }, 0);
-  }
-
   onCreateTodo(title: string): void {
     const trimmedTitle = title.trim();
     
     // Client-side validation with user feedback
     if (!trimmedTitle) {
       this.errorService.handleError('Todo title cannot be empty');
-      this.focusNewTodoInput();
+      this.uiStateService.focusNewTodoInput(this.newTodoInput);
       return;
     }
 
     if (trimmedTitle.length > TodoValidator.MAX_TITLE_LENGTH) {
       this.errorService.handleError(`Todo title cannot exceed ${TodoValidator.MAX_TITLE_LENGTH} characters`);
-      this.focusNewTodoInput();
+      this.uiStateService.focusNewTodoInput(this.newTodoInput);
       return;
     }
 
     this.isCreating = true;
+    this.uiStateService.setLoading(true);
 
     this.todoService.createTodo(trimmedTitle)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.isCreating = false;
+          this.uiStateService.setLoading(false);
+          
           // Clear input and return focus per specification
           if (this.newTodoInput?.nativeElement) {
             this.newTodoInput.nativeElement.value = '';
           }
-          this.focusNewTodoInput();
+          this.uiStateService.focusNewTodoInput(this.newTodoInput);
           this.cdr.markForCheck();
         },
         error: (error) => {
           this.isCreating = false;
+          this.uiStateService.setLoading(false);
           console.error('Failed to create todo:', error);
           this.errorService.handleError(error.message || 'Failed to create todo');
-          this.focusNewTodoInput();
+          this.uiStateService.focusNewTodoInput(this.newTodoInput);
           this.cdr.markForCheck();
-        }
-      });
-  }
-
-  onFilterChange(filter: TodoFilter): void {
-    this.currentFilter = filter;
-    this.cdr.markForCheck();
-  }
-
-  onToggleAll(): void {
-    this.stats$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(stats => {
-        const shouldComplete = stats.active > 0;
-        
-        // Get current todos and filter those that need to be toggled
-        this.todos$
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(todos => {
-            const todosToToggle = todos.filter(todo => todo.completed !== shouldComplete);
-            
-            if (todosToToggle.length === 0) {
-              return;
-            }
-
-            // Execute individual toggle operations in parallel
-            const toggleOperations = todosToToggle.map(todo => 
-              this.todoService.toggleTodo(todo.id)
-            );
-
-            forkJoin(toggleOperations)
-              .pipe(takeUntil(this.destroy$))
-              .subscribe({
-                next: () => {
-                  this.cdr.markForCheck();
-                },
-                error: (error) => {
-                  console.error('Failed to toggle all todos:', error);
-                  this.errorService.handleError('Failed to toggle all todos');
-                }
-              });
-          });
-      });
-  }
-
-  onClearCompleted(): void {
-    this.todoService.clearCompleted()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.cdr.markForCheck();
-        },
-        error: (error) => {
-          console.error('Failed to clear completed todos:', error);
-          this.errorService.handleError(error.message || 'Failed to clear completed todos');
         }
       });
   }
@@ -205,7 +181,7 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: () => {
           // Return focus to main input after deletion
-          this.focusNewTodoInput();
+          this.uiStateService.focusNewTodoInput(this.newTodoInput);
           this.cdr.markForCheck();
         },
         error: (error) => {
@@ -234,7 +210,7 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: () => {
           // Return focus to main input after editing
-          this.focusNewTodoInput();
+          this.uiStateService.focusNewTodoInput(this.newTodoInput);
           this.cdr.markForCheck();
         },
         error: (error) => {

@@ -2,6 +2,7 @@ package com.example.todobackend.controller;
 
 import com.example.todobackend.dto.CreateTodoRequest;
 import com.example.todobackend.dto.TodoResponse;
+import com.example.todobackend.dto.ToggleAllRequest;
 import com.example.todobackend.dto.UpdateTodoRequest;
 import com.example.todobackend.service.TodoService;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ import java.util.UUID;
  * REST controller for Todo operations.
  * Provides endpoints for CRUD operations on todos.
  * Enhanced for Feature 04-08 combined specification with frontend debugging support.
+ * Enhanced for Feature 11: Toggle-All Functionality
  */
 @RestController
 @RequestMapping("/api/todos")
@@ -121,6 +123,27 @@ public class TodoController {
                 .header("X-Request-ID", UUID.randomUUID().toString())
                 .header("X-Debug-Info", "status=" + todo.completed())
                 .body(todo);
+    }
+
+    /**
+     * Toggles all todos to the specified completion status.
+     * Feature 11: Toggle-All Functionality
+     * 
+     * @param request The toggle all request containing the target completion status
+     * @return List of all todos after the toggle operation
+     */
+    @PutMapping("/toggle-all")
+    public ResponseEntity<List<TodoResponse>> toggleAllTodos(@Valid @RequestBody ToggleAllRequest request) {
+        String correlationId = UUID.randomUUID().toString();
+        List<TodoResponse> todos = todoService.toggleAllTodos(request.completed());
+        
+        return ResponseEntity.ok()
+                .header("X-Toggle-All-Status", request.completed().toString())
+                .header("X-Total-Count", String.valueOf(todos.size()))
+                .header("X-Correlation-ID", correlationId)
+                .header("X-Request-ID", UUID.randomUUID().toString())
+                .header("X-Debug-Info", "toggle-all-completed=" + request.completed())
+                .body(todos);
     }
 
     /**

@@ -1,0 +1,9 @@
+/* TodoMVC counter styling */
+.todo-count {
+  float: left;
+  text-align: left;
+}
+
+.todo-count strong {
+  font-weight: 300;
+}

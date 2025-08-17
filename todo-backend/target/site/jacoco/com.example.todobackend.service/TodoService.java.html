@@ -6,6 +6,7 @@ import com.example.todobackend.dto.UpdateTodoRequest;
 import com.example.todobackend.exception.TodoNotFoundException;
 import com.example.todobackend.mapper.TodoMapper;
 import com.example.todobackend.model.Todo;
+import com.example.todobackend.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,26 +19,31 @@ import java.util.List;
  * - Support for optional title updates in updateTodo method
  * - Empty title after trim deletes the todo (as per specification)
  * - Optimized for sub-50ms response times for optimistic updates
+ * 
+ * Enhanced for Feature 11: Toggle-All Functionality
+ * Enhanced for Feature 14: Enhanced Security with input sanitization
  */
 @Service
 public class TodoService {
     
     private final TodoStorageService storageService;
     private final TodoMapper mapper;
+    private final SecurityUtils securityUtils;
 
-<span class="fc" id="L28">    public TodoService(TodoStorageService storageService, TodoMapper mapper) {</span>
-<span class="fc" id="L29">        this.storageService = storageService;</span>
-<span class="fc" id="L30">        this.mapper = mapper;</span>
-<span class="fc" id="L31">    }</span>
+<span class="fc" id="L33">    public TodoService(TodoStorageService storageService, TodoMapper mapper, SecurityUtils securityUtils) {</span>
+<span class="fc" id="L34">        this.storageService = storageService;</span>
+<span class="fc" id="L35">        this.mapper = mapper;</span>
+<span class="fc" id="L36">        this.securityUtils = securityUtils;</span>
+<span class="fc" id="L37">    }</span>
 
     /**
      * Retrieves all todos.
      * @return List of todo responses
      */
     public List&lt;TodoResponse&gt; getAllTodos() {
-<span class="fc" id="L38">        return storageService.findAll().stream()</span>
-<span class="fc" id="L39">                .map(mapper::toResponse)</span>
-<span class="fc" id="L40">                .toList();</span>
+<span class="fc" id="L44">        return storageService.findAll().stream()</span>
+<span class="fc" id="L45">                .map(mapper::toResponse)</span>
+<span class="fc" id="L46">                .toList();</span>
     }
 
     /**
@@ -47,26 +53,31 @@ public class TodoService {
      * @throws TodoNotFoundException if todo not found
      */
     public TodoResponse getTodoById(Long id) {
-<span class="fc" id="L50">        Todo todo = storageService.findById(id)</span>
-<span class="pc" id="L51">                .orElseThrow(() -&gt; new TodoNotFoundException(&quot;Todo not found with id: &quot; + id));</span>
-<span class="nc" id="L52">        return mapper.toResponse(todo);</span>
+<span class="pc" id="L56">        Todo todo = storageService.findById(id)</span>
+<span class="pc" id="L57">                .orElseThrow(() -&gt; new TodoNotFoundException(&quot;Todo not found with id: &quot; + id));</span>
+<span class="nc" id="L58">        return mapper.toResponse(todo);</span>
     }
 
     /**
      * Creates a new todo.
+     * Enhanced for Feature 14: Input sanitization and security validation
+     * 
      * @param request The create request
      * @return The created todo response
-     * @throws IllegalArgumentException if title is empty after trimming
+     * @throws IllegalArgumentException if title is invalid after sanitization
      */
     public TodoResponse createTodo(CreateTodoRequest request) {
-<span class="fc" id="L62">        String trimmedTitle = request.title().trim();</span>
-<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (trimmedTitle.isEmpty()) {</span>
-<span class="fc" id="L64">            throw new IllegalArgumentException(&quot;Title cannot be empty&quot;);</span>
+        // Security check for potential threats
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (securityUtils.containsSecurityThreats(request.title())) {</span>
+<span class="nc" id="L72">            throw new IllegalArgumentException(&quot;Title contains potentially unsafe content&quot;);</span>
         }
+        
+        // Sanitize and validate the title
+<span class="fc" id="L76">        String sanitizedTitle = securityUtils.sanitizeAndValidateTodoTitle(request.title());</span>
 
-<span class="fc" id="L67">        Todo todo = new Todo(trimmedTitle);</span>
-<span class="fc" id="L68">        Todo savedTodo = storageService.save(todo);</span>
-<span class="fc" id="L69">        return mapper.toResponse(savedTodo);</span>
+<span class="fc" id="L78">        Todo todo = new Todo(sanitizedTitle);</span>
+<span class="fc" id="L79">        Todo savedTodo = storageService.save(todo);</span>
+<span class="fc" id="L80">        return mapper.toResponse(savedTodo);</span>
     }
 
     /**
@@ -77,34 +88,49 @@ public class TodoService {
      * - When title is provided but empty after trim, todo is deleted
      * - Supports both title-only and completed-only updates
      * 
+     * Enhanced for Feature 14: Input sanitization and security validation
+     * 
      * @param id The todo ID
      * @param request The update request
      * @return The updated todo response, or null if todo was deleted
      * @throws TodoNotFoundException if todo not found
-     * @throws IllegalArgumentException if title is empty after trimming
+     * @throws IllegalArgumentException if title contains security threats
      */
     public TodoResponse updateTodo(Long id, UpdateTodoRequest request) {
-<span class="fc" id="L87">        Todo todo = storageService.findById(id)</span>
-<span class="fc" id="L88">                .orElseThrow(() -&gt; new TodoNotFoundException(&quot;Todo not found with id: &quot; + id));</span>
+<span class="fc" id="L100">        Todo todo = storageService.findById(id)</span>
+<span class="fc" id="L101">                .orElseThrow(() -&gt; new TodoNotFoundException(&quot;Todo not found with id: &quot; + id));</span>
 
-        // Handle title update
-<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (request.title() != null) {</span>
-<span class="fc" id="L92">            String trimmedTitle = request.title().trim();</span>
-<span class="fc bfc" id="L93" title="All 2 branches covered.">            if (trimmedTitle.isEmpty()) {</span>
-                // As per Feature 04-08 specification: empty title deletes the todo
-<span class="fc" id="L95">                storageService.deleteById(id);</span>
-<span class="fc" id="L96">                return null; // Indicate deletion occurred</span>
+        // Handle title update with security validation
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        if (request.title() != null) {</span>
+            // Security check for potential threats
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">            if (securityUtils.containsSecurityThreats(request.title())) {</span>
+<span class="nc" id="L107">                throw new IllegalArgumentException(&quot;Title contains potentially unsafe content&quot;);</span>
             }
-<span class="fc" id="L98">            todo.updateTitle(trimmedTitle);</span>
+            
+            // Sanitize the title first
+<span class="fc" id="L111">            String sanitizedTitle = securityUtils.sanitizeInput(request.title());</span>
+            
+<span class="fc bfc" id="L113" title="All 2 branches covered.">            if (sanitizedTitle.trim().isEmpty()) {</span>
+                // As per Feature 04-08 specification: empty title deletes the todo
+<span class="fc" id="L115">                storageService.deleteById(id);</span>
+<span class="fc" id="L116">                return null; // Indicate deletion occurred</span>
+            }
+            
+            // Additional validation after sanitization
+<span class="pc bpc" id="L120" title="1 of 2 branches missed.">            if (!securityUtils.isValidTodoTitle(sanitizedTitle)) {</span>
+<span class="nc" id="L121">                throw new IllegalArgumentException(&quot;Title is invalid after sanitization&quot;);</span>
+            }
+            
+<span class="fc" id="L124">            todo.updateTitle(sanitizedTitle);</span>
         }
         
         // Handle completed status update
-<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (request.completed() != null) {</span>
-<span class="fc" id="L103">            todo.setCompleted(request.completed());</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (request.completed() != null) {</span>
+<span class="fc" id="L129">            todo.setCompleted(request.completed());</span>
         }
 
-<span class="fc" id="L106">        Todo updatedTodo = storageService.save(todo);</span>
-<span class="fc" id="L107">        return mapper.toResponse(updatedTodo);</span>
+<span class="fc" id="L132">        Todo updatedTodo = storageService.save(todo);</span>
+<span class="fc" id="L133">        return mapper.toResponse(updatedTodo);</span>
     }
 
     /**
@@ -114,12 +140,12 @@ public class TodoService {
      * @throws TodoNotFoundException if todo not found
      */
     public TodoResponse toggleTodo(Long id) {
-<span class="fc" id="L117">        Todo todo = storageService.findById(id)</span>
-<span class="fc" id="L118">                .orElseThrow(() -&gt; new TodoNotFoundException(&quot;Todo not found with id: &quot; + id));</span>
+<span class="fc" id="L143">        Todo todo = storageService.findById(id)</span>
+<span class="fc" id="L144">                .orElseThrow(() -&gt; new TodoNotFoundException(&quot;Todo not found with id: &quot; + id));</span>
 
-<span class="fc" id="L120">        todo.toggleCompleted();</span>
-<span class="fc" id="L121">        Todo updatedTodo = storageService.save(todo);</span>
-<span class="fc" id="L122">        return mapper.toResponse(updatedTodo);</span>
+<span class="fc" id="L146">        todo.toggleCompleted();</span>
+<span class="fc" id="L147">        Todo updatedTodo = storageService.save(todo);</span>
+<span class="fc" id="L148">        return mapper.toResponse(updatedTodo);</span>
     }
 
     /**
@@ -128,17 +154,30 @@ public class TodoService {
      * @throws TodoNotFoundException if todo not found
      */
     public void deleteTodo(Long id) {
-<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (!storageService.deleteById(id)) {</span>
-<span class="fc" id="L132">            throw new TodoNotFoundException(&quot;Todo not found with id: &quot; + id);</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">        if (!storageService.deleteById(id)) {</span>
+<span class="fc" id="L158">            throw new TodoNotFoundException(&quot;Todo not found with id: &quot; + id);</span>
         }
-<span class="fc" id="L134">    }</span>
+<span class="fc" id="L160">    }</span>
 
     /**
      * Deletes all completed todos.
      * @return The number of todos deleted
      */
     public int deleteCompletedTodos() {
-<span class="fc" id="L141">        return storageService.deleteCompleted();</span>
+<span class="fc" id="L167">        return storageService.deleteCompleted();</span>
+    }
+
+    /**
+     * Toggles all todos to the specified completion status.
+     * Feature 11: Toggle-All Functionality
+     * 
+     * @param completed The target completion status for all todos
+     * @return List of all todos after the operation
+     */
+    public List&lt;TodoResponse&gt; toggleAllTodos(boolean completed) {
+<span class="fc" id="L178">        storageService.toggleAllTodos(completed);</span>
+        // Return all todos after the operation
+<span class="fc" id="L180">        return getAllTodos();</span>
     }
 
     /**
@@ -146,9 +185,9 @@ public class TodoService {
      * @return The count of active todos
      */
     public long getActiveTodoCount() {
-<span class="fc" id="L149">        return storageService.findAll().stream()</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">                .filter(todo -&gt; !todo.isCompleted())</span>
-<span class="fc" id="L151">                .count();</span>
+<span class="fc" id="L188">        return storageService.findAll().stream()</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">                .filter(todo -&gt; !todo.isCompleted())</span>
+<span class="fc" id="L190">                .count();</span>
     }
 
     /**
@@ -156,7 +195,7 @@ public class TodoService {
      * @return The total count of todos
      */
     public int getTotalTodoCount() {
-<span class="fc" id="L159">        return storageService.count();</span>
+<span class="fc" id="L198">        return storageService.count();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,23 +1,43 @@
-/* Component-specific styles can be added here if needed */
+.filters {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  position: absolute;
+  right: 0;
+  left: 0;
+}
 
-/* Filter button styling to match TodoMVC design */
-.filters button {
+.filters li {
+  display: inline;
+}
+
+.filters li a {
   color: inherit;
   margin: 3px;
   padding: 3px 7px;
   text-decoration: none;
   border: 1px solid transparent;
   border-radius: 3px;
-  background: transparent;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: inherit;
 }
 
-.filters button:hover {
+.filters li a:hover {
   border-color: rgba(175, 47, 47, 0.1);
 }
 
-.filters button.selected {
+.filters li a.selected {
   border-color: rgba(175, 47, 47, 0.2);
+}
+
+/* Focus styles for accessibility */
+.filters li a:focus {
+  outline: 2px solid #007acc;
+  outline-offset: 2px;
+}
+
+/* High contrast for better accessibility */
+@media (prefers-contrast: high) {
+  .filters li a.selected {
+    border-color: #000;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 }

@@ -1,0 +1,278 @@
+# TodoMVC Docker Compose Configuration
+# Production-ready setup with monitoring and logging
+
+version: '3.8'
+
+# ===================================
+# Networks
+# ===================================
+networks:
+  todoapp-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# ===================================
+# Volumes
+# ===================================
+volumes:
+  todoapp-logs:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+# ===================================
+# Services
+# ===================================
+services:
+
+  # ===================================
+  # Main TodoMVC Application
+  # ===================================
+  todoapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: todoapp-main
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    environment:
+      # Spring configuration
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 8080
+      
+      # CORS configuration
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:8080}
+      
+      # JVM configuration
+      JAVA_OPTS: >-
+        -Xmx${MAX_HEAP:-1g}
+        -Xms${MIN_HEAP:-512m}
+        -XX:+UseContainerSupport
+        -XX:MaxRAMPercentage=75.0
+        -XX:+UseG1GC
+        -XX:+UseStringDeduplication
+        -Djava.security.egd=file:/dev/./urandom
+      
+      # Monitoring
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,metrics,info,prometheus
+      
+      # Feature flags
+      APP_FEATURES_TOGGLE_ALL_ENABLED: true
+      APP_FEATURES_CLEAR_COMPLETED_ENABLED: true
+      APP_FEATURES_COUNTER_ENABLED: true
+      APP_FEATURES_FILTERS_ENABLED: true
+      
+      # Rate limiting
+      APP_RATE_LIMIT_ENABLED: true
+      APP_RATE_LIMIT_REQUESTS_PER_MINUTE: 100
+      
+      # Logging
+      STRUCTURED_LOGGING: ${STRUCTURED_LOGGING:-false}
+      
+    volumes:
+      - todoapp-logs:/app/logs
+      - ./docker/application-prod.properties:/app/config/application-prod.properties:ro
+      - ./docker/logback-spring.xml:/app/config/logback-spring.xml:ro
+    networks:
+      - todoapp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.todoapp.rule=Host(`${DOMAIN:-localhost}`)"
+      - "traefik.http.services.todoapp.loadbalancer.server.port=8080"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+
+  # ===================================
+  # Nginx Reverse Proxy
+  # ===================================
+  nginx:
+    image: nginx:alpine
+    container_name: todoapp-nginx
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/ssl:/etc/nginx/ssl:ro
+      - ./docker/nginx/logs:/var/log/nginx
+    depends_on:
+      todoapp:
+        condition: service_healthy
+    networks:
+      - todoapp-network
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+
+  # ===================================
+  # Prometheus Monitoring
+  # ===================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: todoapp-prometheus
+    restart: unless-stopped
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=15d'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    depends_on:
+      - todoapp
+    networks:
+      - todoapp-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ===================================
+  # Grafana Dashboard
+  # ===================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: todoapp-grafana
+    restart: unless-stopped
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin123}
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    networks:
+      - todoapp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ===================================
+  # Log Aggregation (Optional)
+  # ===================================
+  fluentd:
+    image: fluent/fluentd:v1.16-debian-1
+    container_name: todoapp-fluentd
+    restart: unless-stopped
+    ports:
+      - "${FLUENTD_PORT:-24224}:24224"
+      - "24224:24224/udp"
+    volumes:
+      - ./docker/fluentd/fluent.conf:/fluentd/etc/fluent.conf:ro
+      - todoapp-logs:/fluentd/logs
+    networks:
+      - todoapp-network
+    profiles:
+      - logging
+
+  # ===================================
+  # Database (For future implementation)
+  # ===================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: todoapp-postgres
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-todoapp}
+      POSTGRES_USER: ${POSTGRES_USER:-todoapp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-todoapp123}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - todoapp-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-todoapp}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    profiles:
+      - database
+
+  # ===================================
+  # Redis Cache (For future implementation)
+  # ===================================
+  redis:
+    image: redis:7-alpine
+    container_name: todoapp-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis123}
+    volumes:
+      - redis-data:/data
+    networks:
+      - todoapp-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    profiles:
+      - cache
+
+  # ===================================
+  # Load Balancer (For scaling)
+  # ===================================
+  haproxy:
+    image: haproxy:2.8-alpine
+    container_name: todoapp-haproxy
+    restart: unless-stopped
+    ports:
+      - "${HAPROXY_HTTP_PORT:-8000}:80"
+      - "${HAPROXY_HTTPS_PORT:-8443}:443"
+      - "${HAPROXY_STATS_PORT:-8404}:8404"
+    volumes:
+      - ./docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - todoapp
+    networks:
+      - todoapp-network
+    profiles:
+      - loadbalancer
+
+# ===================================
+# Additional Volumes
+# ===================================
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local

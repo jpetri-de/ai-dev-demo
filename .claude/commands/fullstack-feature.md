@@ -6,14 +6,14 @@ allowed-tools: Read, Grep, Glob, Edit, Write, MultiEdit, Bash(ng:*), Bash(npm:*)
 ---
 
 ## Context (auto-included)
-- **Node.js**: !`node --version || echo "Node.js not found"`
-- **Angular CLI**: !`ng version --skip-git || echo "Angular CLI not found"`
-- **Java**: !`java --version || echo "Java not found"`
-- **Maven**: !`./mvnw --version || mvn --version || echo "Maven not found"`
-- **Gradle**: !`./gradlew --version || gradle --version || echo "Gradle not found"`
-- **Git Status**: !`git status -s || true`
-- **Frontend Dependencies**: !`npm list --depth=0 --silent || true`
-- **Backend Dependencies**: !`./mvnw dependency:tree -q || true`
+- **Node.js**: !`node --version`
+- **Angular CLI**: !`ng version --skip-git`
+- **Java**: !`java --version`
+- **Maven**: !`./mvnw --version`
+- **Gradle**: !`./gradlew --version`
+- **Git Status**: !`git status -s`
+- **Frontend Dependencies**: !`npm list --depth=0 --silent`
+- **Backend Dependencies**: !`./mvnw dependency:tree -q`
 
 ## Your task
 

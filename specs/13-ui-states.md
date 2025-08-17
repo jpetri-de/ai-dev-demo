@@ -1,0 +1,425 @@
+# Feature 13: UI States Management
+
+## Ziel
+Korrekte Verwaltung aller UI-Zustände: leere Liste, Auto-Focus, Sichtbarkeit von main/footer Bereichen.
+
+## Beschreibung
+Implementierung aller UI-State-Regeln aus der TodoMVC-Spezifikation: main und footer ausblenden bei leeren Listen, Auto-Focus auf Input-Feld, Sichtbarkeits-Management aller UI-Komponenten.
+
+## Akzeptanzkriterien
+
+### Empty State Management
+- [ ] Keine Todos → main und footer Bereiche versteckt
+- [ ] Erstes Todo erstellt → main und footer werden sichtbar  
+- [ ] Alle Todos gelöscht → main und footer werden wieder versteckt
+- [ ] Header bleibt immer sichtbar
+
+### Input Focus Management
+- [ ] Auto-Focus auf Input-Feld beim Laden der Seite
+- [ ] Focus bleibt im Input nach Todo-Erstellung
+- [ ] Focus zurück zu Input nach Edit-Modus beenden
+- [ ] Focus Management für Accessibility
+
+### Component Visibility Rules
+- [ ] Toggle-All nur bei vorhandenen Todos sichtbar
+- [ ] Todo-Liste nur bei vorhandenen Todos sichtbar
+- [ ] Counter nur bei vorhandenen Todos sichtbar
+- [ ] Filter nur bei vorhandenen Todos sichtbar
+- [ ] Clear-Completed nur bei completed Todos sichtbar
+
+### Loading States
+- [ ] Loading-Indikatoren während API-Calls
+- [ ] Disabled States für Buttons während Operations
+- [ ] Skeleton Loading für Todo-Liste (optional)
+
+## Technische Spezifikationen
+
+### UI State Service
+```typescript
+@Injectable()
+export class UIStateService {
+  private loadingState$ = new BehaviorSubject<boolean>(false);
+  private focusInputTrigger$ = new Subject<void>();
+  
+  constructor(private todoService: TodoService) {}
+  
+  isLoading(): Observable<boolean> {
+    return this.loadingState$.asObservable();
+  }
+  
+  setLoading(loading: boolean): void {
+    this.loadingState$.next(loading);
+  }
+  
+  focusInput(): void {
+    this.focusInputTrigger$.next();
+  }
+  
+  getFocusInputTrigger(): Observable<void> {
+    return this.focusInputTrigger$.asObservable();
+  }
+  
+  hasTodos(): Observable<boolean> {
+    return this.todoService.getTodos().pipe(
+      map(todos => todos.length > 0)
+    );
+  }
+  
+  hasActiveTodos(): Observable<boolean> {
+    return this.todoService.getTodos().pipe(
+      map(todos => todos.some(todo => !todo.completed))
+    );
+  }
+  
+  hasCompletedTodos(): Observable<boolean> {
+    return this.todoService.getTodos().pipe(
+      map(todos => todos.some(todo => todo.completed))
+    );
+  }
+}
+```
+
+### TodoAppComponent with UI States
+```typescript
+@Component({
+  selector: 'app-todo',
+  template: `
+    <section class="todoapp">
+      <header class="header">
+        <h1>todos</h1>
+        <input 
+          #newTodoInput
+          class="new-todo" 
+          placeholder="What needs to be done?" 
+          autofocus
+          [(ngModel)]="newTodoTitle"
+          (keyup.enter)="createTodo()"
+          [disabled]="isLoading$ | async"
+        >
+      </header>
+      
+      <!-- Main section only visible when todos exist -->
+      <section class="main" *ngIf="hasTodos$ | async">
+        <app-toggle-all></app-toggle-all>
+        <app-todo-list></app-todo-list>
+      </section>
+      
+      <!-- Footer only visible when todos exist -->
+      <footer class="footer" *ngIf="hasTodos$ | async">
+        <app-todo-counter></app-todo-counter>
+        <app-todo-filter></app-todo-filter>
+        <app-clear-completed></app-clear-completed>
+      </footer>
+    </section>
+  `
+})
+export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('newTodoInput', { static: true }) newTodoInput!: ElementRef<HTMLInputElement>;
+  
+  newTodoTitle = '';
+  isLoading$ = this.uiStateService.isLoading();
+  hasTodos$ = this.uiStateService.hasTodos();
+  
+  private subscription = new Subscription();
+  
+  constructor(
+    private todoService: TodoService,
+    private uiStateService: UIStateService
+  ) {}
+  
+  ngOnInit(): void {
+    this.subscription.add(
+      this.uiStateService.getFocusInputTrigger().subscribe(() => {
+        this.focusNewTodoInput();
+      })
+    );
+  }
+  
+  ngAfterViewInit(): void {
+    // Initial focus
+    this.focusNewTodoInput();
+  }
+  
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+  
+  createTodo(): void {
+    const title = this.newTodoTitle.trim();
+    if (!title) return;
+    
+    this.uiStateService.setLoading(true);
+    
+    this.todoService.createTodo(title).subscribe({
+      next: () => {
+        this.newTodoTitle = '';
+        this.uiStateService.setLoading(false);
+        this.focusNewTodoInput();
+      },
+      error: () => {
+        this.uiStateService.setLoading(false);
+        this.focusNewTodoInput();
+      }
+    });
+  }
+  
+  private focusNewTodoInput(): void {
+    // Use setTimeout to ensure DOM is updated
+    setTimeout(() => {
+      if (this.newTodoInput?.nativeElement) {
+        this.newTodoInput.nativeElement.focus();
+      }
+    });
+  }
+}
+```
+
+### Enhanced TodoItemComponent with UI States
+```typescript
+@Component({
+  selector: 'app-todo-item',
+  template: `
+    <li [class.completed]="todo.completed" 
+        [class.editing]="isEditing"
+        [class.loading]="isLoading">
+      
+      <!-- View Mode -->
+      <div class="view" *ngIf="!isEditing">
+        <input 
+          class="toggle" 
+          type="checkbox" 
+          [checked]="todo.completed"
+          [disabled]="isLoading"
+          (click)="toggleTodo()"
+        >
+        <label (dblclick)="startEditing()">{{ todo.title }}</label>
+        <button 
+          class="destroy"
+          [disabled]="isLoading"
+          (click)="deleteTodo()"
+        ></button>
+      </div>
+      
+      <!-- Edit Mode -->
+      <input 
+        *ngIf="isEditing"
+        #editInput
+        class="edit"
+        [value]="editText"
+        [disabled]="isLoading"
+        (input)="editText = $any($event.target).value"
+        (keyup.enter)="saveEdit()"
+        (keyup.escape)="cancelEdit()"
+        (blur)="saveEdit()"
+      >
+      
+      <!-- Loading Indicator -->
+      <div class="loading-indicator" *ngIf="isLoading">
+        <span class="spinner"></span>
+      </div>
+    </li>
+  `
+})
+export class TodoItemComponent {
+  @Input() todo!: Todo;
+  @Output() todoDeleted = new EventEmitter<number>();
+  @ViewChild('editInput', { static: false }) editInput?: ElementRef;
+  
+  isEditing = false;
+  isLoading = false;
+  editText = '';
+  
+  constructor(
+    private todoService: TodoService,
+    private uiStateService: UIStateService
+  ) {}
+  
+  // Enhanced methods with loading states
+  toggleTodo(): void {
+    if (this.isLoading) return;
+    
+    this.isLoading = true;
+    // ... existing toggle logic
+    // Set this.isLoading = false in success/error
+  }
+  
+  // Focus management after edit
+  saveEdit(): void {
+    // ... existing save logic
+    // After successful save:
+    this.uiStateService.focusInput();
+  }
+  
+  cancelEdit(): void {
+    this.isEditing = false;
+    this.uiStateService.focusInput();
+  }
+}
+```
+
+### Loading Interceptor (Global Loading State)
+```typescript
+@Injectable()
+export class LoadingInterceptor implements HttpInterceptor {
+  private requestCount = 0;
+  
+  constructor(private uiStateService: UIStateService) {}
+  
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    this.requestCount++;
+    this.uiStateService.setLoading(true);
+    
+    return next.handle(req).pipe(
+      finalize(() => {
+        this.requestCount--;
+        if (this.requestCount === 0) {
+          this.uiStateService.setLoading(false);
+        }
+      })
+    );
+  }
+}
+```
+
+## Testfälle
+
+### Empty State Behavior
+- [ ] App Start ohne Todos → main und footer versteckt
+- [ ] Erstes Todo erstellt → main und footer erscheinen
+- [ ] Alle Todos gelöscht → main und footer versteckt
+- [ ] Header immer sichtbar unabhängig von Todo-Anzahl
+
+### Focus Management
+- [ ] Page Load → Input-Feld automatisch fokussiert
+- [ ] Todo erstellt → Focus bleibt im Input
+- [ ] Edit beendet → Focus zurück zu Input
+- [ ] Tab-Navigation funktioniert korrekt
+
+### Component Visibility
+- [ ] Toggle-All nur bei vorhandenen Todos
+- [ ] Counter nur bei vorhandenen Todos
+- [ ] Filter nur bei vorhandenen Todos
+- [ ] Clear-Completed nur bei completed Todos
+
+### Loading States
+- [ ] API-Call → Loading-Indikator sichtbar
+- [ ] API Response → Loading-Indikator verschwindet
+- [ ] Multiple API-Calls → Loading bis alle beendet
+- [ ] Buttons disabled während Loading
+
+### Responsive Behavior
+- [ ] Mobile/Tablet → UI-Elemente richtig skaliert
+- [ ] Touch-Targets groß genug
+- [ ] Keyboard Navigation auf allen Geräten
+
+### Edge Cases
+- [ ] Sehr langsame API → Loading States korrekt
+- [ ] Network Timeout → UI bleibt responsiv
+- [ ] Concurrent Operations → UI bleibt konsistent
+
+## CSS-Enhancements
+
+### Loading States
+```css
+.loading-indicator {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #555;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.todo-list li.loading {
+  opacity: 0.7;
+}
+
+.todo-list li.loading .view {
+  pointer-events: none;
+}
+```
+
+### Smooth Transitions
+```css
+.main, .footer {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.todo-list {
+  transition: height 0.3s ease-in-out;
+}
+
+.todo-list li {
+  transition: all 0.3s ease-in-out;
+}
+
+.todo-list li.completed {
+  opacity: 0.6;
+}
+```
+
+## Accessibility Enhancements
+
+### ARIA Labels
+```typescript
+// Enhanced template with accessibility
+template: `
+  <section class="todoapp" [attr.aria-label]="'Todo application'">
+    <header class="header">
+      <h1>todos</h1>
+      <input 
+        class="new-todo"
+        [attr.aria-label]="'Create new todo'"
+        placeholder="What needs to be done?"
+        role="textbox"
+        [attr.aria-describedby]="'new-todo-help'"
+      >
+      <div id="new-todo-help" class="sr-only">
+        Enter a new todo item and press Enter to add it
+      </div>
+    </header>
+    
+    <section 
+      class="main" 
+      *ngIf="hasTodos$ | async"
+      [attr.aria-label]="'Todo list'"
+      role="main"
+    >
+      <!-- Todo list content -->
+    </section>
+  </section>
+`
+```
+
+## Definition of Done
+- [ ] main/footer versteckt bei leeren Listen
+- [ ] Auto-Focus auf Input-Feld funktioniert korrekt
+- [ ] Alle UI-Komponenten haben korrekte Sichtbarkeits-Regeln
+- [ ] Loading-States für alle API-Operationen
+- [ ] Focus-Management für Accessibility
+- [ ] Smooth CSS-Transitions zwischen States
+- [ ] Performance optimiert (keine unnötigen Checks)
+- [ ] Unit Tests für alle UI-State-Logik
+- [ ] E2E Tests für User-Workflows
+- [ ] Accessibility Testing mit Screen Reader
+- [ ] Mobile Responsive Testing
+
+## Abhängigkeiten
+- Alle bisherigen Features (01-12) für vollständige UI-State-Integration
+
+## Nachfolgende Features
+- 14-integration.md (Vollständige Frontend-Backend Integration)
+- 15-deployment.md (Production-Build und Deployment)

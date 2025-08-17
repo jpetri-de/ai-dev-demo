@@ -1,0 +1,286 @@
+# Feature 10: Filter Todos
+
+## Ziel
+Filter-Funktionalität für All/Active/Completed Todos mit visueller Hervorhebung des aktiven Filters.
+
+## Beschreibung
+Benutzer können zwischen drei Filter-Modi wechseln: "All" (alle Todos), "Active" (nur unvollständige), "Completed" (nur erledigte). Der aktive Filter wird visuell hervorgehoben.
+
+## Akzeptanzkriterien
+
+### Filter-Modi
+- [ ] "All" - Zeigt alle Todos (aktive + erledigte)
+- [ ] "Active" - Zeigt nur unvollständige Todos (`completed: false`)
+- [ ] "Completed" - Zeigt nur erledigte Todos (`completed: true`)
+
+### Visual Feedback
+- [ ] Aktiver Filter hat Border/Hintergrund-Hervorhebung
+- [ ] Inactive Filter sind klickbar und normal gestylt
+- [ ] Smooth transitions zwischen Filter-Modi
+
+### URL-basiert (Optional MVP)
+- [ ] Filter-Status als URL-Fragment (z.B. `#/active`)
+- [ ] Browser Back/Forward funktioniert
+- [ ] Direct Links zu gefilterten Ansichten
+
+### Counter Integration
+- [ ] Counter zeigt immer aktive Todos (unabhängig vom Filter)
+- [ ] Filter beeinflusst nur die Anzeige, nicht den Counter
+
+## Technische Spezifikationen
+
+### Filter Enum/Types
+```typescript
+export enum TodoFilter {
+  ALL = 'all',
+  ACTIVE = 'active', 
+  COMPLETED = 'completed'
+}
+
+export interface FilterOption {
+  key: TodoFilter;
+  label: string;
+  href: string;
+}
+```
+
+### TodoFilterComponent
+```typescript
+@Component({
+  selector: 'app-todo-filter',
+  template: `
+    <ul class="filters">
+      <li *ngFor="let filter of filterOptions">
+        <a 
+          [href]="filter.href"
+          [class.selected]="currentFilter === filter.key"
+          (click)="setFilter(filter.key, $event)"
+        >
+          {{ filter.label }}
+        </a>
+      </li>
+    </ul>
+  `
+})
+export class TodoFilterComponent implements OnInit {
+  currentFilter = TodoFilter.ALL;
+  
+  filterOptions: FilterOption[] = [
+    { key: TodoFilter.ALL, label: 'All', href: '#/' },
+    { key: TodoFilter.ACTIVE, label: 'Active', href: '#/active' },
+    { key: TodoFilter.COMPLETED, label: 'Completed', href: '#/completed' }
+  ];
+  
+  constructor(
+    private todoService: TodoService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+  
+  ngOnInit(): void {
+    // Listen to route changes for filter
+    this.route.fragment.subscribe(fragment => {
+      switch (fragment) {
+        case 'active':
+          this.currentFilter = TodoFilter.ACTIVE;
+          break;
+        case 'completed':
+          this.currentFilter = COMPLETED;
+          break;
+        default:
+          this.currentFilter = TodoFilter.ALL;
+      }
+      this.todoService.setFilter(this.currentFilter);
+    });
+  }
+  
+  setFilter(filter: TodoFilter, event: Event): void {
+    event.preventDefault();
+    this.currentFilter = filter;
+    
+    // Update URL fragment
+    const fragment = filter === TodoFilter.ALL ? null : filter;
+    this.router.navigate([], { fragment });
+  }
+}
+```
+
+### TodoService Filter Extension
+```typescript
+@Injectable()
+export class TodoService {
+  private todos$ = new BehaviorSubject<Todo[]>([]);
+  private filter$ = new BehaviorSubject<TodoFilter>(TodoFilter.ALL);
+  
+  getFilteredTodos(): Observable<Todo[]> {
+    return combineLatest([
+      this.todos$,
+      this.filter$
+    ]).pipe(
+      map(([todos, filter]) => this.applyFilter(todos, filter))
+    );
+  }
+  
+  setFilter(filter: TodoFilter): void {
+    this.filter$.next(filter);
+  }
+  
+  getCurrentFilter(): Observable<TodoFilter> {
+    return this.filter$.asObservable();
+  }
+  
+  private applyFilter(todos: Todo[], filter: TodoFilter): Todo[] {
+    switch (filter) {
+      case TodoFilter.ACTIVE:
+        return todos.filter(todo => !todo.completed);
+      case TodoFilter.COMPLETED:
+        return todos.filter(todo => todo.completed);
+      default:
+        return todos;
+    }
+  }
+  
+  // All existing methods remain, but display uses getFilteredTodos()
+}
+```
+
+### TodoListComponent Update
+```typescript
+@Component({
+  selector: 'app-todo-list',
+  template: `
+    <section class="main" *ngIf="(filteredTodos$ | async)?.length > 0">
+      <ul class="todo-list">
+        <app-todo-item 
+          *ngFor="let todo of filteredTodos$ | async; trackBy: trackByTodoId"
+          [todo]="todo"
+          (todoDeleted)="handleTodoDeleted($event)">
+        </app-todo-item>
+      </ul>
+    </section>
+  `
+})
+export class TodoListComponent {
+  filteredTodos$ = this.todoService.getFilteredTodos();
+  
+  constructor(private todoService: TodoService) {}
+}
+```
+
+## Testfälle
+
+### Filter-Funktionalität
+- [ ] "All" selected → Alle Todos sichtbar (active + completed)
+- [ ] "Active" selected → Nur unvollständige Todos sichtbar
+- [ ] "Completed" selected → Nur erledigte Todos sichtbar
+- [ ] Kein Filter-Match → Leere Liste angezeigt
+
+### Visual States
+- [ ] "All" aktiv → "All" Link hervorgehoben
+- [ ] "Active" aktiv → "Active" Link hervorgehoben  
+- [ ] "Completed" aktiv → "Completed" Link hervorgehoben
+- [ ] Hover über inaktive Filter → Hover-Stil
+
+### Filter-Transitions
+- [ ] All → Active → Erledigte Todos verschwinden smooth
+- [ ] Active → Completed → Aktive verschwinden, erledigte erscheinen
+- [ ] Completed → All → Alle Todos werden wieder sichtbar
+
+### URL Integration
+- [ ] Click "Active" → URL wird `#/active`
+- [ ] Direct Link `#/completed` → Zeigt nur completed Todos
+- [ ] Browser Back → Previous Filter wird aktiviert
+- [ ] Page Reload → Filter aus URL wird angewendet
+
+### Integration mit anderen Features
+- [ ] Counter zeigt immer aktive Todos (unabhängig vom Filter)
+- [ ] Neues Todo erstellen → Im "Active" Filter sichtbar
+- [ ] Todo toggle → Verschwindet/erscheint je nach Filter
+- [ ] Todo delete → Wird aus gefilterter Liste entfernt
+
+### Edge Cases
+- [ ] "Active" Filter aber alle Todos completed → Leere Liste
+- [ ] "Completed" Filter aber keine Todos completed → Leere Liste
+- [ ] Filter während Todo-Operations → Korrekte Updates
+
+### Performance
+- [ ] 1000+ Todos → Filter anwenden ist performant
+- [ ] Frequent filter switches → Smooth ohne Lag
+- [ ] Memory efficient → Keine Filter-Duplikate
+
+## CSS-Styling (aus main.css)
+```css
+.filters {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  position: absolute;
+  right: 0;
+  left: 0;
+}
+
+.filters li {
+  display: inline;
+}
+
+.filters li a {
+  color: inherit;
+  margin: 3px;
+  padding: 3px 7px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 3px;
+}
+
+.filters li a:hover {
+  border-color: rgba(175, 47, 47, 0.1);
+}
+
+.filters li a.selected {
+  border-color: rgba(175, 47, 47, 0.2);
+}
+```
+
+## Advanced Features (Optional)
+
+### Keyboard Navigation
+```typescript
+@HostListener('keydown', ['$event'])
+onKeyDown(event: KeyboardEvent): void {
+  if (event.key === 'ArrowRight') {
+    this.nextFilter();
+  } else if (event.key === 'ArrowLeft') {
+    this.previousFilter();
+  }
+}
+```
+
+### Filter Persistence
+```typescript
+// Save filter preference to localStorage
+setFilter(filter: TodoFilter): void {
+  this.filter$.next(filter);
+  localStorage.setItem('todoFilter', filter);
+}
+```
+
+## Definition of Done
+- [ ] Drei Filter-Modi funktionieren korrekt
+- [ ] Visueller Feedback für aktiven Filter
+- [ ] URL-basierte Filter (mit Routing)
+- [ ] Browser Back/Forward Support
+- [ ] Integration mit Counter (zeigt immer aktive Todos)
+- [ ] Smooth Transitions zwischen Filtern
+- [ ] Performance optimiert für große Todo-Listen
+- [ ] Unit Tests für Filter-Logik
+- [ ] E2E Tests für Filter-Navigation
+- [ ] Accessibility: Keyboard navigation
+
+## Abhängigkeiten
+- 09-counter.md (Counter bleibt unverändert bei Filtering)
+- 05-display-todos.md (TodoListComponent)
+- 06-toggle-todo.md (Filter reagiert auf Todo-Status Änderungen)
+
+## Nachfolgende Features
+- 11-toggle-all.md (Toggle All berücksichtigt Filter)
+- 12-clear-completed.md (Clear Completed berücksichtigt Filter)

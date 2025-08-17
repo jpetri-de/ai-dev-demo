@@ -1,0 +1,13 @@
+.error-banner {
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.error-banner button {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.error-banner button:hover {
+  opacity: 0.8;
+}

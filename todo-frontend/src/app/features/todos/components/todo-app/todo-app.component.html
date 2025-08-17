@@ -1,0 +1,58 @@
+<section class="todoapp">
+  <!-- Error display -->
+  <div *ngIf="error$ | async as error" class="error-banner" style="background: #f44336; color: white; padding: 10px; margin-bottom: 20px;">
+    {{ error }}
+    <button (click)="clearError()" style="float: right; background: none; border: none; color: white; cursor: pointer;">×</button>
+  </div>
+
+  <!-- Header with input -->
+  <header class="header">
+    <h1>todos</h1>
+    <input 
+      class="new-todo" 
+      placeholder="What needs to be done?" 
+      autofocus 
+      #newTodoInput
+      (keyup.enter)="onCreateTodo(newTodoInput.value); newTodoInput.value = ''"
+      maxlength="500">
+  </header>
+
+  <!-- Main section with toggle all and todo list -->
+  <section class="main" *ngIf="(stats$ | async)?.total! > 0">
+    <input 
+      id="toggle-all" 
+      class="toggle-all" 
+      type="checkbox"
+      [checked]="(stats$ | async)?.active === 0"
+      (change)="onToggleAll()">
+    <label for="toggle-all">Mark all as complete</label>
+    
+    <app-todo-list 
+      [todos]="todos$ | async" 
+      [filter]="currentFilter"
+      (toggleTodo)="onToggleTodo($event)"
+      (deleteTodo)="onDeleteTodo($event)"
+      (updateTodo)="onUpdateTodo($event)">
+    </app-todo-list>
+  </section>
+
+  <!-- Footer with counter, filters, and clear completed -->
+  <footer class="footer" *ngIf="(stats$ | async)?.total! > 0">
+    <span class="todo-count">
+      <strong>{{ (stats$ | async)?.active }}</strong>
+      {{ (stats$ | async)?.active === 1 ? 'item' : 'items' }} left
+    </span>
+    
+    <app-todo-filter 
+      [currentFilter]="currentFilter" 
+      (filterChange)="onFilterChange($event)">
+    </app-todo-filter>
+    
+    <button 
+      class="clear-completed" 
+      *ngIf="(stats$ | async)?.completed! > 0"
+      (click)="onClearCompleted()">
+      Clear completed
+    </button>
+  </footer>
+</section>

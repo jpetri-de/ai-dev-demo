@@ -1,0 +1,12 @@
+<ul class="filters">
+  <li *ngFor="let filter of filters">
+    <button 
+      type="button"
+      (click)="onFilterSelect(filter)"
+      [class.selected]="isFilterSelected(filter)"
+      [attr.aria-pressed]="isFilterSelected(filter)"
+      [attr.aria-label]="'Filter todos by ' + filter.label.toLowerCase()">
+      {{ filter.label }}
+    </button>
+  </li>
+</ul>

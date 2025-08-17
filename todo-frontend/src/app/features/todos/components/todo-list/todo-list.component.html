@@ -1,0 +1,9 @@
+<ul class="todo-list">
+  <app-todo-item
+    *ngFor="let todo of filteredTodos; trackBy: trackByTodo"
+    [todo]="todo"
+    (toggle)="onToggleTodo($event)"
+    (delete)="onDeleteTodo($event)"
+    (update)="onUpdateTodo($event)">
+  </app-todo-item>
+</ul>

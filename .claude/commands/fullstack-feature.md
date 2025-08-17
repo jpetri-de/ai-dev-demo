@@ -2,7 +2,7 @@
 
 ---
 description: Plan, implement, and test a complete full-stack feature end-to-end using Angular frontend and Spring Boot backend.
-allowed-tools: Read, Grep, Glob, Edit, Write, MultiEdit, Bash(ng:*), Bash(npm:*), Bash(mvn:*), Bash(gradle:*), Bash(git:*)
+allowed-tools: Read, Grep, Glob, Edit, Write, MultiEdit, Bash(ng:*), Bash(npm:*), Bash(mvn:*), Bash(gradle:*), Bash(git:*), Bash(node:*), Bash(java:*)
 ---
 
 ## Context (auto-included)

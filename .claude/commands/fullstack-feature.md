@@ -6,14 +6,14 @@ allowed-tools: Read, Grep, Glob, Edit, Write, MultiEdit, Bash(ng:*), Bash(npm:*)
 ---
 
 ## Context (auto-included)
-- **Node.js**: !`node --version`
-- **Angular CLI**: !`ng version --skip-git`
-- **Java**: !`java --version`
-- **Maven**: !`./mvnw --version`
-- **Gradle**: !`./gradlew --version`
-- **Git Status**: !`git status -s`
-- **Frontend Dependencies**: !`npm list --depth=0 --silent`
-- **Backend Dependencies**: !`./mvnw dependency:tree -q`
+- **Node.js**: Available (check with `node --version`)
+- **Angular CLI**: Available (check with `ng version --skip-git`)
+- **Java**: Available (check with `java --version`)
+- **Maven**: Available (check with `./mvnw --version`)
+- **Gradle**: Available (check with `./gradlew --version`)
+- **Git Status**: Check with `git status -s`
+- **Frontend Dependencies**: Check with `npm list --depth=0 --silent`
+- **Backend Dependencies**: Check with `./mvnw dependency:tree -q`
 
 ## Your task
 

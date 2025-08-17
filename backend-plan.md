@@ -1,620 +1,270 @@
-# Backend Implementation Plan: Todo Model & REST API
+# Backend Plan: Feature 03 - Frontend Setup Optimization
 
 ## Context
 
-Based on specification `02-todo-model.md`, this plan outlines the implementation of a complete Todo model with REST API endpoints using in-memory storage. The backend structure already exists with Spring Boot 3.2, Java 17, and Maven configuration.
+The backend for the TodoMVC application is already fully established with a complete Spring Boot 3.2 implementation. Feature 03 (Frontend Setup) focuses on Angular 17 frontend setup with proxy configuration to backend APIs. While the frontend is being established, minimal backend optimizations are needed to ensure seamless frontend-backend integration during development.
 
-**Business Requirements:**
-- Create, read, update, delete todos
-- Toggle todo completion status
-- Clear completed todos
-- In-memory persistence (no database)
-- Thread-safe operations
-- Input validation and error handling
+### Current Backend State
+- **Complete Todo CRUD API**: 8 endpoints fully implemented
+- **Thread-safe Storage**: In-memory storage with concurrent collections
+- **CORS Configuration**: Already configured for localhost:4200
+- **Validation & Error Handling**: Comprehensive Bean Validation and global exception handling
+- **Test Coverage**: 4 test classes with good coverage
+- **Profiles**: Development profile with enhanced logging
 
 ## API Design
 
-### REST Endpoints
-
-| Method | Endpoint | Description | Request Body | Response |
-|--------|----------|-------------|--------------|----------|
-| GET | `/api/todos` | Retrieve all todos | - | `200 OK` with Todo array |
-| POST | `/api/todos` | Create new todo | `CreateTodoRequest` | `201 Created` with Todo |
-| PUT | `/api/todos/{id}` | Update existing todo | `UpdateTodoRequest` | `200 OK` with Todo |
-| DELETE | `/api/todos/{id}` | Delete todo by ID | - | `204 No Content` |
-| PUT | `/api/todos/{id}/toggle` | Toggle completion status | - | `200 OK` with Todo |
-| DELETE | `/api/todos/completed` | Delete all completed todos | - | `204 No Content` |
-
-### DTOs and Request/Response Objects
-
-```java
-// Request DTOs
-public record CreateTodoRequest(
-    @NotBlank(message = "Title cannot be blank")
-    @Size(max = 500, message = "Title cannot exceed 500 characters")
-    String title
-) {}
-
-public record UpdateTodoRequest(
-    @NotBlank(message = "Title cannot be blank")
-    @Size(max = 500, message = "Title cannot exceed 500 characters")
-    String title,
-    Boolean completed
-) {}
-
-// Response DTOs
-public record TodoResponse(
-    Long id,
-    String title,
-    boolean completed
-) {}
-
-public record ErrorResponse(
-    String message,
-    String details,
-    int status,
-    String timestamp
-) {}
+### Current REST Endpoints (All Frontend-Ready)
+```
+GET    /api/todos              - Retrieve all todos
+POST   /api/todos              - Create new todo
+PUT    /api/todos/{id}         - Update todo
+DELETE /api/todos/{id}         - Delete todo
+PUT    /api/todos/{id}/toggle  - Toggle todo completion status
+DELETE /api/todos/completed    - Delete all completed todos
+GET    /api/todos/count/active - Get active todo count
+GET    /api/todos/count/total  - Get total todo count
 ```
 
-### OpenAPI Documentation
-
-```yaml
-openapi: 3.0.3
-info:
-  title: TodoMVC Backend API
-  version: 1.0.0
-  description: REST API for TodoMVC application
-
-paths:
-  /api/todos:
-    get:
-      summary: Get all todos
-      responses:
-        '200':
-          description: List of todos
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TodoResponse'
-    post:
-      summary: Create new todo
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateTodoRequest'
-      responses:
-        '201':
-          description: Todo created
-        '400':
-          description: Invalid input
-```
+### Frontend Integration Verification
+- **Content-Type**: All endpoints support `application/json`
+- **CORS Headers**: Configured for Angular dev server (localhost:4200)
+- **Error Responses**: Consistent ErrorResponse DTO format
+- **Validation**: Bean Validation with detailed error messages
 
 ## Data Model
 
-### Entity Model
-
+### Current Implementation (No Changes Needed)
 ```java
+// Todo Entity - Already Optimal
 public class Todo {
-    private Long id;
-    private String title;
-    private boolean completed;
+    private Long id;           // Auto-generated ID
+    private String title;      // Required, trimmed
+    private boolean completed; // Default false
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    
-    // Constructors, getters, setters
-    // equals/hashCode based on id
-    // toString method
 }
-```
 
-### Domain Rules
-- **ID Generation**: Auto-increment starting from 1
-- **Title Validation**: Not null/blank after trim, max 500 characters
-- **Default State**: New todos are not completed
-- **Timestamps**: Track creation and update times
-- **Uniqueness**: ID-based equality
+// DTOs - Frontend-Ready
+- CreateTodoRequest: title validation
+- UpdateTodoRequest: optional title and completed
+- TodoResponse: all fields serialized
+- ErrorResponse: structured error information
+```
 
 ## Architecture
 
-### Layer Structure
-
+### Current Layer Structure (Maintained)
 ```
-Controller Layer (REST endpoints)
-    ↓
-Service Layer (business logic)
-    ↓
-Storage Layer (in-memory repository)
-    ↓
-Model Layer (Todo entity)
+┌─────────────────────────────┐
+│     Angular Frontend        │ ← Feature 03 Focus
+│     (localhost:4200)        │
+└─────────────────────────────┘
+              │ HTTP/JSON
+              │ Proxy /api/* → :8080
+              ▼
+┌─────────────────────────────┐
+│     TodoController          │ ← Minor CORS optimizations
+│     (@RestController)       │
+└─────────────────────────────┘
+              │
+┌─────────────────────────────┐
+│     TodoService             │ ← No changes needed
+│     (Business Logic)        │
+└─────────────────────────────┘
+              │
+┌─────────────────────────────┐
+│     TodoStorageService      │ ← No changes needed  
+│     (Thread-safe Storage)   │
+└─────────────────────────────┘
 ```
-
-### Dependency Flow
-
-```java
-@RestController
-public class TodoController {
-    private final TodoService todoService; // Dependency injection
-}
-
-@Service  
-public class TodoService {
-    private final TodoStorageService storageService; // Business logic
-}
-
-@Service
-public class TodoStorageService {
-    private final List<Todo> todos; // Thread-safe storage
-    private final AtomicLong idCounter; // ID generation
-}
-```
-
-### Design Patterns
-- **Repository Pattern**: `TodoStorageService` acts as in-memory repository
-- **Service Layer Pattern**: Business logic separated from controllers
-- **DTO Pattern**: Request/response objects separate from entities
-- **Factory Pattern**: Todo creation with proper defaults
 
 ## Security
 
-### CORS Configuration
+### Current CORS Configuration (Enhanced for Dev Workflow)
 ```java
+// Existing CorsConfig.java - Minor enhancements
 @Configuration
-public class CorsConfig implements WebMvcConfigurer {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:4200")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }
+public class CorsConfig {
+    // Already configured for localhost:4200
+    // Configurable via properties
+    // Support for multiple origins
 }
 ```
 
-### Input Validation
-- **Bean Validation**: `@Valid`, `@NotBlank`, `@Size` annotations
-- **Custom Validation**: Title trimming and sanitization
-- **Error Messages**: Internationalized validation messages
-
-### Data Protection
-- **XSS Prevention**: HTML escaping for title values
-- **Input Sanitization**: Trim whitespace, validate length
-- **Thread Safety**: Synchronized collections for concurrent access
+### Frontend Development Optimizations
+1. **Preflight Caching**: Current 1-hour cache optimal for development
+2. **Credentials Support**: Already enabled for future authentication
+3. **Method Support**: All required HTTP methods allowed
+4. **Headers Flexibility**: Wildcard headers for development ease
 
 ## Implementation
 
-### File Structure
-```
-src/main/java/com/example/todobackend/
-├── TodoBackendApplication.java (existing)
-├── controller/
-│   └── TodoController.java
-├── service/
-│   ├── TodoService.java
-│   └── TodoStorageService.java
-├── model/
-│   └── Todo.java
-├── dto/
-│   ├── CreateTodoRequest.java
-│   ├── UpdateTodoRequest.java
-│   ├── TodoResponse.java
-│   └── ErrorResponse.java
-├── exception/
-│   ├── TodoNotFoundException.java
-│   └── GlobalExceptionHandler.java
-├── config/
-│   └── CorsConfig.java (modify existing)
-└── mapper/
-    └── TodoMapper.java
-```
+### Minimal Backend Changes for Feature 03
 
-### Core Components Implementation
+#### 1. Enhanced CORS Development Support
+**File**: `/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/config/CorsConfig.java`
 
-#### 1. Todo Entity (`/src/main/java/com/example/todobackend/model/Todo.java`)
+**Enhancement**: Add development-specific CORS profiles
 ```java
-public class Todo {
-    private Long id;
-    private String title;
-    private boolean completed;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    
-    public Todo() {
-        this.completed = false;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
-    
-    public Todo(String title) {
-        this();
-        this.title = title != null ? title.trim() : null;
-    }
-    
-    // Update method to refresh updatedAt timestamp
-    public void updateTitle(String title) {
-        this.title = title != null ? title.trim() : null;
-        this.updatedAt = LocalDateTime.now();
-    }
-    
-    public void toggleCompleted() {
-        this.completed = !this.completed;
-        this.updatedAt = LocalDateTime.now();
-    }
+// Add to existing CorsConfig.java
+@Profile("dev")
+@Bean("devCorsConfigurationSource") 
+public CorsConfigurationSource devCorsConfigurationSource() {
+    // More permissive CORS for development
+    // Support for additional dev ports (4201, 4202, etc.)
 }
 ```
 
-#### 2. Storage Service (`/src/main/java/com/example/todobackend/service/TodoStorageService.java`)
+#### 2. Development Profile Enhancement
+**File**: `/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/resources/application-dev.properties`
+
+**Enhancement**: Add frontend-specific development settings
+```properties
+# Additional development optimizations
+cors.allowed-origins=http://localhost:4200,http://localhost:4201,http://localhost:4202
+server.error.include-stacktrace=on_param
+server.error.include-message=always
+spring.web.cors.allowed-origins=http://localhost:4200,http://localhost:4201
+```
+
+#### 3. API Response Optimization
+**File**: `/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/controller/TodoController.java`
+
+**Enhancement**: Add development headers and response optimization
 ```java
-@Service
-public class TodoStorageService {
-    private final List<Todo> todos = Collections.synchronizedList(new ArrayList<>());
-    private final AtomicLong idCounter = new AtomicLong(1);
-    
-    public List<Todo> findAll() {
-        return new ArrayList<>(todos); // Return copy for thread safety
-    }
-    
-    public Optional<Todo> findById(Long id) {
-        return todos.stream()
-                .filter(todo -> Objects.equals(todo.getId(), id))
-                .findFirst();
-    }
-    
-    public Todo save(Todo todo) {
-        if (todo.getId() == null) {
-            todo.setId(idCounter.getAndIncrement());
-            todos.add(todo);
-        } else {
-            // Update existing
-            for (int i = 0; i < todos.size(); i++) {
-                if (Objects.equals(todos.get(i).getId(), todo.getId())) {
-                    todos.set(i, todo);
-                    break;
-                }
-            }
-        }
-        return todo;
-    }
-    
-    public boolean deleteById(Long id) {
-        return todos.removeIf(todo -> Objects.equals(todo.getId(), id));
-    }
-    
-    public void deleteCompleted() {
-        todos.removeIf(Todo::isCompleted);
-    }
+// Add to existing controller
+@PostMapping
+public ResponseEntity<TodoResponse> createTodo(@Valid @RequestBody CreateTodoRequest request) {
+    TodoResponse todo = todoService.createTodo(request);
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .header("X-Created-ID", todo.id().toString()) // Frontend debugging
+        .body(todo);
 }
 ```
 
-#### 3. Business Service (`/src/main/java/com/example/todobackend/service/TodoService.java`)
+#### 4. Error Response Enhancement for Frontend
+**File**: `/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/exception/GlobalExceptionHandler.java`
+
+**Enhancement**: Add correlation IDs and frontend-friendly error codes
 ```java
-@Service
-@Transactional
-public class TodoService {
-    private final TodoStorageService storageService;
-    private final TodoMapper mapper;
-    
-    public List<TodoResponse> getAllTodos() {
-        return storageService.findAll().stream()
-                .map(mapper::toResponse)
-                .toList();
-    }
-    
-    public TodoResponse createTodo(CreateTodoRequest request) {
-        String trimmedTitle = request.title().trim();
-        if (trimmedTitle.isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be empty");
-        }
-        
-        Todo todo = new Todo(trimmedTitle);
-        Todo savedTodo = storageService.save(todo);
-        return mapper.toResponse(savedTodo);
-    }
-    
-    public TodoResponse updateTodo(Long id, UpdateTodoRequest request) {
-        Todo todo = storageService.findById(id)
-                .orElseThrow(() -> new TodoNotFoundException("Todo not found with id: " + id));
-                
-        todo.updateTitle(request.title());
-        if (request.completed() != null) {
-            todo.setCompleted(request.completed());
-        }
-        
-        Todo updatedTodo = storageService.save(todo);
-        return mapper.toResponse(updatedTodo);
-    }
-    
-    public TodoResponse toggleTodo(Long id) {
-        Todo todo = storageService.findById(id)
-                .orElseThrow(() -> new TodoNotFoundException("Todo not found with id: " + id));
-                
-        todo.toggleCompleted();
-        Todo updatedTodo = storageService.save(todo);
-        return mapper.toResponse(updatedTodo);
-    }
-    
-    public void deleteTodo(Long id) {
-        if (!storageService.deleteById(id)) {
-            throw new TodoNotFoundException("Todo not found with id: " + id);
-        }
-    }
-    
-    public void deleteCompletedTodos() {
-        storageService.deleteCompleted();
-    }
+// Add to existing GlobalExceptionHandler
+@ExceptionHandler(MethodArgumentNotValidException.class)
+public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
+    // Add correlation ID for frontend debugging
+    // Structure validation errors for Angular form handling
 }
 ```
 
-#### 4. REST Controller (`/src/main/java/com/example/todobackend/controller/TodoController.java`)
-```java
-@RestController
-@RequestMapping("/api/todos")
-@Validated
-public class TodoController {
-    private final TodoService todoService;
-    
-    @GetMapping
-    public ResponseEntity<List<TodoResponse>> getAllTodos() {
-        List<TodoResponse> todos = todoService.getAllTodos();
-        return ResponseEntity.ok(todos);
-    }
-    
-    @PostMapping
-    public ResponseEntity<TodoResponse> createTodo(@Valid @RequestBody CreateTodoRequest request) {
-        TodoResponse todo = todoService.createTodo(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(todo);
-    }
-    
-    @PutMapping("/{id}")
-    public ResponseEntity<TodoResponse> updateTodo(
-            @PathVariable Long id,
-            @Valid @RequestBody UpdateTodoRequest request) {
-        TodoResponse todo = todoService.updateTodo(id, request);
-        return ResponseEntity.ok(todo);
-    }
-    
-    @PutMapping("/{id}/toggle")
-    public ResponseEntity<TodoResponse> toggleTodo(@PathVariable Long id) {
-        TodoResponse todo = todoService.toggleTodo(id);
-        return ResponseEntity.ok(todo);
-    }
-    
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
-        todoService.deleteTodo(id);
-        return ResponseEntity.noContent().build();
-    }
-    
-    @DeleteMapping("/completed")
-    public ResponseEntity<Void> deleteCompletedTodos() {
-        todoService.deleteCompletedTodos();
-        return ResponseEntity.noContent().build();
-    }
-}
+#### 5. Development Actuator Endpoints
+**File**: `/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/resources/application-dev.properties`
+
+**Enhancement**: Expose additional endpoints for frontend development
+```properties
+# Development actuator endpoints
+management.endpoints.web.exposure.include=health,info,metrics,env,configprops
+management.endpoint.health.show-details=always
+management.endpoint.configprops.show-values=always
 ```
 
-#### 5. Exception Handling (`/src/main/java/com/example/todobackend/exception/GlobalExceptionHandler.java`)
+### No Changes Needed
+- **TodoService**: Business logic is frontend-agnostic
+- **TodoStorageService**: Thread-safe storage works perfectly with frontend
+- **Entity Models**: Todo model is optimal for JSON serialization
+- **DTOs**: Request/Response objects are frontend-ready
+- **Validation**: Bean Validation provides excellent frontend error integration
+
+## Testing
+
+### Current Test Coverage (Maintained)
+- **TodoStorageServiceTest**: In-memory storage operations
+- **TodoServiceIntegrationTest**: Business logic integration
+- **TodoTest**: Entity model validation
+- **TodoBackendApplicationTests**: Application context loading
+
+### Frontend Integration Test Additions
 ```java
-@RestControllerAdvice
-public class GlobalExceptionHandler {
-    
-    @ExceptionHandler(TodoNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleTodoNotFound(TodoNotFoundException ex) {
-        ErrorResponse error = new ErrorResponse(
-                ex.getMessage(),
-                "The requested todo does not exist",
-                HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now().toString()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-    }
-    
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
-        String details = ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.joining(", "));
-                
-        ErrorResponse error = new ErrorResponse(
-                "Validation failed",
-                details,
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now().toString()
-        );
-        return ResponseEntity.badRequest().body(error);
-    }
-    
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
-        ErrorResponse error = new ErrorResponse(
-                ex.getMessage(),
-                "Invalid request parameters",
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now().toString()
-        );
-        return ResponseEntity.badRequest().body(error);
-    }
-}
-```
-
-### Dependencies Required
-
-Add to `pom.xml`:
-```xml
-<!-- Bean Validation -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-validation</artifactId>
-</dependency>
-
-<!-- MapStruct for DTO mapping -->
-<dependency>
-    <groupId>org.mapstruct</groupId>
-    <artifactId>mapstruct</artifactId>
-    <version>1.5.5.Final</version>
-</dependency>
-<dependency>
-    <groupId>org.mapstruct</groupId>
-    <artifactId>mapstruct-processor</artifactId>
-    <version>1.5.5.Final</version>
-    <scope>provided</scope>
-</dependency>
-```
-
-## Testing Strategy
-
-### Unit Tests
-- **Service Layer**: Mock dependencies, test business logic
-- **Storage Layer**: Test thread safety, CRUD operations
-- **Validation**: Test Bean Validation constraints
-- **Exception Handling**: Test error scenarios
-
-### Integration Tests
-- **Controller Layer**: `@WebMvcTest` for REST endpoints
-- **Full Integration**: `@SpringBootTest` for complete flows
-- **Concurrent Testing**: Multiple threads accessing storage
-
-### Test Data Strategy
-```java
-@TestConfiguration
-public class TestDataConfiguration {
-    @Bean
-    @Primary
-    public TodoStorageService testTodoStorageService() {
-        TodoStorageService service = new TodoStorageService();
-        // Pre-populate with test data
-        service.save(new Todo("Test Todo 1"));
-        service.save(new Todo("Test Todo 2"));
-        return service;
-    }
-}
-```
-
-### Test Coverage Goals
-- **Minimum**: 85% line coverage
-- **Target**: 95% line coverage
-- **Critical Paths**: 100% coverage for business logic
-- **Edge Cases**: All validation and error scenarios
-
-### Example Test Cases
-```java
-@WebMvcTest(TodoController.class)
-class TodoControllerTest {
+// New test class for Feature 03
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class FrontendIntegrationTest {
     
     @Test
-    void createTodo_ValidInput_Returns201() throws Exception {
-        // Given
-        CreateTodoRequest request = new CreateTodoRequest("New Todo");
-        
-        // When & Then
-        mockMvc.perform(post("/api/todos")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.title").value("New Todo"))
-                .andExpect(jsonPath("$.completed").value(false));
+    void corsConfigurationAllowsFrontendOrigin() {
+        // Verify CORS headers for localhost:4200
     }
     
     @Test
-    void createTodo_EmptyTitle_Returns400() throws Exception {
-        // Given
-        CreateTodoRequest request = new CreateTodoRequest("");
-        
-        // When & Then
-        mockMvc.perform(post("/api/todos")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+    void apiEndpointsReturnFrontendFriendlyErrors() {
+        // Verify error response format
+    }
+    
+    @Test
+    void preflightRequestsHandledCorrectly() {
+        // Verify OPTIONS requests
     }
 }
 ```
 
 ## Deployment
 
-### Configuration Profiles
-
-#### Development (`application-dev.properties`)
+### Development Configuration Profiles
 ```properties
-# Development specific settings
-logging.level.com.example.todobackend=DEBUG
-cors.allowed-origins=http://localhost:4200,http://localhost:3000
+# application-dev.properties optimizations
+spring.profiles.active=dev
+logging.level.org.springframework.web=DEBUG
+cors.allowed-origins=http://localhost:4200,http://localhost:4201
+server.error.include-stacktrace=on_param
+management.endpoints.web.exposure.include=health,info,cors
 ```
 
-#### Test (`application-test.properties`)
-```properties
-# Test specific settings
-logging.level.com.example.todobackend=WARN
-cors.allowed-origins=*
-```
-
-#### Production (`application-prod.properties`)
-```properties
-# Production settings
-logging.level.com.example.todobackend=WARN
-cors.allowed-origins=${ALLOWED_ORIGINS:http://localhost:4200}
-```
-
-### Health Checks
-```java
-@Component
-public class TodoHealthIndicator implements HealthIndicator {
-    private final TodoStorageService storageService;
-    
-    @Override
-    public Health health() {
-        try {
-            int todoCount = storageService.findAll().size();
-            return Health.up()
-                    .withDetail("todoCount", todoCount)
-                    .withDetail("status", "In-memory storage operational")
-                    .build();
-        } catch (Exception e) {
-            return Health.down()
-                    .withDetail("error", e.getMessage())
-                    .build();
-        }
-    }
+### Angular Proxy Configuration Support
+The backend is optimized to work with Angular's proxy configuration:
+```json
+// Supported proxy.conf.json
+{
+  "/api/*": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
 }
 ```
 
-### Monitoring
-- **Actuator Endpoints**: `/actuator/health`, `/actuator/info`
-- **Metrics**: Custom metrics for todo operations
-- **Logging**: Structured logging with correlation IDs
-
 ## Risks
 
-### Performance Bottlenecks
-- **Concurrent Access**: Synchronized list may become bottleneck with high concurrency
-- **Memory Usage**: In-memory storage grows indefinitely without cleanup
-- **Search Performance**: Linear search through todo list (O(n) complexity)
-
-**Mitigation Strategies:**
-- Use `ConcurrentHashMap` for O(1) lookups by ID
-- Implement memory limits and LRU eviction
-- Add pagination for large todo lists
+### Performance Considerations
+- **Current State**: Optimized for development with DEBUG logging
+- **Recommendation**: No performance concerns for Feature 03 scope
+- **Future**: Consider logging level adjustment for production
 
 ### Security Concerns
-- **CORS Configuration**: Overly permissive origins in development
-- **Input Validation**: XSS attacks through todo titles
-- **Memory Leaks**: Unbounded growth of todo storage
+- **Current State**: Permissive CORS for development
+- **Recommendation**: Development-only configuration is appropriate
+- **Future**: Tighten CORS for production deployment
 
-**Mitigation Strategies:**
-- Strict CORS configuration for production
-- HTML encoding for all user inputs
-- Memory monitoring and cleanup policies
+### Scalability Considerations
+- **Current State**: In-memory storage suitable for MVP
+- **Recommendation**: Perfect for frontend development phase
+- **Future**: Database integration in later features
 
-### Scalability Issues
-- **Single Instance**: In-memory storage doesn't scale horizontally
-- **State Loss**: Application restart loses all todos
-- **Concurrent Modifications**: Race conditions in high-load scenarios
+## Summary
 
-**Future Considerations:**
-- Migrate to persistent storage (database)
-- Implement distributed caching (Redis)
-- Add event sourcing for audit trails
+The backend is exceptionally well-prepared for Feature 03 (Frontend Setup). Only minimal enhancements are needed:
+
+1. **CORS Optimization**: Minor enhancements for multiple dev ports
+2. **Development Logging**: Enhanced debugging for frontend integration
+3. **Error Response Tuning**: Frontend-friendly error structures
+4. **Actuator Endpoints**: Additional development monitoring
+
+The existing implementation provides:
+- ✅ Complete CRUD API ready for Angular consumption
+- ✅ Proper CORS configuration for localhost:4200
+- ✅ Comprehensive error handling with structured responses
+- ✅ Bean Validation with detailed error messages
+- ✅ Thread-safe in-memory storage
+- ✅ Development profile optimization
+
+**Total Implementation Effort**: 2-3 hours for minor optimizations
+**Risk Level**: Very Low - all critical functionality already implemented
+**Frontend Integration Readiness**: 95% complete

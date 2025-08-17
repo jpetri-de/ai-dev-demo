@@ -14,7 +14,8 @@
       autofocus 
       #newTodoInput
       (keyup.enter)="onCreateTodo(newTodoInput.value); newTodoInput.value = ''"
-      maxlength="500">
+      maxlength="500"
+      [attr.aria-label]="'Create new todo. Press Enter to add.'">
   </header>
 
   <!-- Main section with toggle all and todo list -->
@@ -23,8 +24,9 @@
       id="toggle-all" 
       class="toggle-all" 
       type="checkbox"
-      [checked]="(stats$ | async)?.active === 0"
-      (change)="onToggleAll()">
+      [checked]="(stats$ | async)?.active === 0 && (stats$ | async)?.total! > 0"
+      (change)="onToggleAll()"
+      [attr.aria-label]="'Toggle all todos ' + ((stats$ | async)?.active === 0 ? 'incomplete' : 'complete')">
     <label for="toggle-all">Mark all as complete</label>
     
     <app-todo-list 
@@ -38,21 +40,15 @@
 
   <!-- Footer with counter, filters, and clear completed -->
   <footer class="footer" *ngIf="(stats$ | async)?.total! > 0">
-    <span class="todo-count">
-      <strong>{{ (stats$ | async)?.active }}</strong>
-      {{ (stats$ | async)?.active === 1 ? 'item' : 'items' }} left
-    </span>
+    <app-todo-counter></app-todo-counter>
     
     <app-todo-filter 
       [currentFilter]="currentFilter" 
       (filterChange)="onFilterChange($event)">
     </app-todo-filter>
     
-    <button 
-      class="clear-completed" 
-      *ngIf="(stats$ | async)?.completed! > 0"
-      (click)="onClearCompleted()">
-      Clear completed
-    </button>
+    <app-clear-completed 
+      (clearCompleted)="onClearCompleted()">
+    </app-clear-completed>
   </footer>
 </section>

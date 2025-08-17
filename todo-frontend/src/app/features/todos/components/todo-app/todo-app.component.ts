@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TodoService } from '../../../../core/services/todo.service';
@@ -24,16 +25,38 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   constructor(
     private todoService: TodoService,
     private errorService: ErrorService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.loadTodos();
+    this.initializeFilterFromRoute();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private initializeFilterFromRoute(): void {
+    // Get initial filter from route
+    this.route.url.pipe(takeUntil(this.destroy$)).subscribe(segments => {
+      if (segments.length > 0) {
+        const path = segments[0].path;
+        switch (path) {
+          case 'active':
+            this.currentFilter = { type: 'active', label: 'Active' };
+            break;
+          case 'completed':
+            this.currentFilter = { type: 'completed', label: 'Completed' };
+            break;
+          default:
+            this.currentFilter = { type: 'all', label: 'All' };
+        }
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   private loadTodos(): void {

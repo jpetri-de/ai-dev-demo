@@ -4,6 +4,7 @@
 /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/mapper/TodoMapper.java
 /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/config/CorsConfig.java
 /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/service/TodoStorageService.java
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/mapper/TodoMapperManualImpl.java
 /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/controller/TodoController.java
 /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/TodoBackendApplication.java
 /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/main/java/com/example/todobackend/service/TodoService.java

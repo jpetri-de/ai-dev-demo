@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TodoFilterComponent } from './todo-filter.component';
 import { TodoFilter } from '../../models/todo.interface';
 
@@ -8,7 +10,8 @@ describe('TodoFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TodoFilterComponent]
+      declarations: [TodoFilterComponent],
+      imports: [RouterTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(TodoFilterComponent);
@@ -32,10 +35,14 @@ describe('TodoFilterComponent', () => {
 
   it('should emit filter change event', () => {
     spyOn(component.filterChange, 'emit');
+    spyOn(component['router'], 'navigate');
     const activeFilter: TodoFilter = { type: 'active', label: 'Active' };
+    const mockEvent = { preventDefault: jasmine.createSpy('preventDefault') } as any;
     
-    component.onFilterSelect(activeFilter);
+    component.onFilterSelect(activeFilter, mockEvent);
     
+    expect(mockEvent.preventDefault).toHaveBeenCalled();
+    expect(component['router'].navigate).toHaveBeenCalledWith(['/active']);
     expect(component.filterChange.emit).toHaveBeenCalledWith(activeFilter);
   });
 

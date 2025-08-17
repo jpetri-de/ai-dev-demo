@@ -1,4 +1,5 @@
 /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/test/java/com/example/todobackend/TodoBackendApplicationTests.java
 /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/test/java/com/example/todobackend/model/TodoTest.java
+/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/test/java/com/example/todobackend/integration/FrontendIntegrationTest.java
 /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/test/java/com/example/todobackend/service/TodoServiceIntegrationTest.java
 /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/src/test/java/com/example/todobackend/service/TodoStorageServiceTest.java

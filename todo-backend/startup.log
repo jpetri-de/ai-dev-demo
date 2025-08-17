@@ -1,0 +1,85 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/opt/homebrew/Cellar/maven/3.9.11/libexec/lib/guice-5.1.0-classes.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.example:todo-backend >----------------------
+[INFO] Building todo-backend 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.2.0:run (default-cli) > test-compile @ todo-backend >>>
+[INFO] 
+[INFO] --- jacoco:0.8.11:prepare-agent (default) @ todo-backend ---
+[INFO] argLine set to -javaagent:/Users/jurgenpetri/.m2/repository/org/jacoco/org.jacoco.agent/0.8.11/org.jacoco.agent-0.8.11-runtime.jar=destfile=/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/jacoco.exec,excludes=jdk/**:sun/**:com/sun/**
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ todo-backend ---
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ todo-backend ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ todo-backend ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ todo-backend ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] <<< spring-boot:3.2.0:run (default-cli) < test-compile @ todo-backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.2.0:run (default-cli) @ todo-backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+[32m :: Spring Boot :: [39m              [2m (v3.2.0)[0;39m
+
+2025-08-17 17:23:17 - Starting TodoBackendApplication using Java 24.0.2 with PID 82515 (/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/classes started by jurgenpetri in /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend)
+2025-08-17 17:23:17 - Running with Spring Boot v3.2.0, Spring v6.1.1
+2025-08-17 17:23:17 - The following 1 profile is active: "dev"
+2025-08-17 17:23:17 - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-08-17 17:23:17 - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.apache.tomcat.jni.Library in an unnamed module (file:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.16/tomcat-embed-core-10.1.16.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2025-08-17 17:23:17 - Tomcat initialized with port 8080 (http)
+2025-08-17 17:23:17 - Starting service [Tomcat]
+2025-08-17 17:23:17 - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2025-08-17 17:23:17 - Initializing Spring embedded WebApplicationContext
+2025-08-17 17:23:17 - Root WebApplicationContext: initialization completed in 485 ms
+2025-08-17 17:23:17 - Filter 'webMvcObservationFilter' configured for use
+2025-08-17 17:23:17 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'todoController' defined in file [/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/classes/com/example/todobackend/controller/TodoController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'todoService' defined in file [/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/classes/com/example/todobackend/service/TodoService.class]: Unsatisfied dependency expressed through constructor parameter 1: No qualifying bean of type 'com.example.todobackend.mapper.TodoMapper' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+2025-08-17 17:23:17 - Stopping service [Tomcat]
+2025-08-17 17:23:17 - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-08-17 17:23:17 - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 1 of constructor in com.example.todobackend.service.TodoService required a bean of type 'com.example.todobackend.mapper.TodoMapper' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.example.todobackend.mapper.TodoMapper' in your configuration.
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.442 s
+[INFO] Finished at: 2025-08-17T17:23:17+02:00
+[INFO] ------------------------------------------------------------------------

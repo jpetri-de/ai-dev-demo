@@ -2,12 +2,13 @@ com/example/todobackend/TodoBackendApplication.class
 com/example/todobackend/dto/ErrorResponse.class
 com/example/todobackend/dto/UpdateTodoRequest.class
 com/example/todobackend/controller/TodoController.class
+com/example/todobackend/dto/ErrorResponse$ValidationError.class
 com/example/todobackend/service/TodoService.class
 com/example/todobackend/service/TodoStorageService.class
 com/example/todobackend/exception/GlobalExceptionHandler.class
 com/example/todobackend/config/CorsConfig.class
 com/example/todobackend/dto/CreateTodoRequest.class
-com/example/todobackend/mapper/TodoMapperImpl.class
+com/example/todobackend/mapper/TodoMapperManualImpl.class
 com/example/todobackend/model/Todo.class
 com/example/todobackend/exception/TodoNotFoundException.class
 com/example/todobackend/dto/TodoResponse.class

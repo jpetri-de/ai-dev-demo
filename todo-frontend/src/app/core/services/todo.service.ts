@@ -16,7 +16,7 @@ import { TodoValidator } from '../../features/todos/models/todo-validation';
   providedIn: 'root'
 })
 export class TodoService {
-  private readonly apiUrl = '/api/todos';
+  private readonly apiUrl = 'http://localhost:8080/api/todos';
   private todosSubject = new BehaviorSubject<Todo[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
   
@@ -99,8 +99,11 @@ export class TodoService {
         delay: (error, retryCount) => timer(retryCount * 500)
       }),
       tap(createdTodo => {
-        // Replace temp todo with real todo from server
-        const updatedTodos = currentTodos.concat(createdTodo);
+        // Replace temp todo with real todo from server using current state
+        const latestTodos = this.todosSubject.value;
+        const updatedTodos = latestTodos.map(todo => 
+          todo.id === tempTodo.id ? createdTodo : todo
+        );
         this.updateTodos(updatedTodos);
       }),
       catchError(error => {
@@ -139,8 +142,9 @@ export class TodoService {
         delay: (error, retryCount) => timer(retryCount * 500)
       }),
       tap(updatedTodo => {
-        // Update with server response
-        const serverUpdatedTodos = currentTodos.map(todo => 
+        // Update with server response using current state (not old state)
+        const latestTodos = this.todosSubject.value;
+        const serverUpdatedTodos = latestTodos.map(todo => 
           todo.id === id ? updatedTodo : todo
         );
         this.updateTodos(serverUpdatedTodos);
@@ -183,13 +187,10 @@ export class TodoService {
     this.updateTodos(optimisticTodos);
 
     return this.http.put<Todo>(`${this.apiUrl}/${id}/toggle`, {}).pipe(
-      retry({
-        count: 2,
-        delay: (error, retryCount) => timer(retryCount * 500)
-      }),
       tap(updatedTodo => {
-        // Update with server response
-        const serverUpdatedTodos = currentTodos.map(todo => 
+        // Update with server response using current state (not old state)
+        const latestTodos = this.todosSubject.value;
+        const serverUpdatedTodos = latestTodos.map(todo => 
           todo.id === id ? updatedTodo : todo
         );
         this.updateTodos(serverUpdatedTodos);
@@ -251,12 +252,21 @@ export class TodoService {
     );
 
     return forkJoin(toggleOperations).pipe(
-      map(updatedTodos => {
-        // Update with server responses
+      map(toggledTodos => {
+        // Create a map of toggled todos for quick lookup
+        const toggledMap = new Map(toggledTodos.map(t => [t.id, t]));
+        
+        // Update with server responses, keeping the completed state from server
         const finalTodos = currentTodos.map(todo => {
-          const updatedTodo = updatedTodos.find(updated => updated.id === todo.id);
-          return updatedTodo || todo;
+          if (toggledMap.has(todo.id)) {
+            // Use the server response for toggled todos
+            return toggledMap.get(todo.id)!;
+          } else {
+            // Keep todos that weren't toggled as-is (they already had the right state)
+            return { ...todo, completed };
+          }
         });
+        
         this.updateTodos(finalTodos);
         return finalTodos;
       }),

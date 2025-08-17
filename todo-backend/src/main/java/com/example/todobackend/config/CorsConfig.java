@@ -33,6 +33,7 @@ public class CorsConfig {
      * @return CorsConfigurationSource with configured settings
      */
     @Bean
+    @Profile("!dev")
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         

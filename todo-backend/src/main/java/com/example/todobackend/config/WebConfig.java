@@ -1,6 +1,7 @@
 package com.example.todobackend.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -12,8 +13,10 @@ import java.io.IOException;
 /**
  * Web configuration for serving Angular SPA and static resources.
  * Feature 15: Production Configuration
+ * Only active in production profile to avoid conflicts in development.
  */
 @Configuration
+@Profile("prod")
 public class WebConfig implements WebMvcConfigurer {
 
     /**

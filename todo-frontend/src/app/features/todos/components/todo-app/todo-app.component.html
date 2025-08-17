@@ -13,7 +13,8 @@
       placeholder="What needs to be done?" 
       autofocus 
       #newTodoInput
-      (keyup.enter)="onCreateTodo(newTodoInput.value); newTodoInput.value = ''"
+      [disabled]="isCreating"
+      (keyup.enter)="onCreateTodo(newTodoInput.value)"
       maxlength="500"
       [attr.aria-label]="'Create new todo. Press Enter to add.'">
   </header>

@@ -1,1 +1,35 @@
-/* Component-specific styles can be added here if needed */
+/* Component-specific styles for todo item loading states */
+
+li.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+li.deleting {
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+li.editing .view {
+  display: none;
+}
+
+/* Ensure disabled buttons and inputs have visual feedback */
+input:disabled,
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Focus styles for better accessibility */
+.edit:focus {
+  outline: 2px solid #4f88ff;
+  outline-offset: 1px;
+}
+
+/* Better visual feedback for touch devices */
+@media (hover: none) {
+  .destroy {
+    display: block !important;
+  }
+}

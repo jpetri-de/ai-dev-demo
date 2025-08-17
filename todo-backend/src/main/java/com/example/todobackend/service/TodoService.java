@@ -13,6 +13,11 @@ import java.util.List;
 /**
  * Business service for Todo operations.
  * Contains validation logic and coordinates between controller and storage layers.
+ * 
+ * Enhanced for Feature 04-08 combined specification:
+ * - Support for optional title updates in updateTodo method
+ * - Empty title after trim deletes the todo (as per specification)
+ * - Optimized for sub-50ms response times for optimistic updates
  */
 @Service
 public class TodoService {
@@ -36,6 +41,18 @@ public class TodoService {
     }
 
     /**
+     * Retrieves a single todo by ID.
+     * @param id The todo ID
+     * @return The todo response
+     * @throws TodoNotFoundException if todo not found
+     */
+    public TodoResponse getTodoById(Long id) {
+        Todo todo = storageService.findById(id)
+                .orElseThrow(() -> new TodoNotFoundException("Todo not found with id: " + id));
+        return mapper.toResponse(todo);
+    }
+
+    /**
      * Creates a new todo.
      * @param request The create request
      * @return The created todo response
@@ -54,9 +71,15 @@ public class TodoService {
 
     /**
      * Updates an existing todo.
+     * 
+     * Enhanced for Feature 04-08:
+     * - Title is optional - when null, only completed status is updated
+     * - When title is provided but empty after trim, todo is deleted
+     * - Supports both title-only and completed-only updates
+     * 
      * @param id The todo ID
      * @param request The update request
-     * @return The updated todo response
+     * @return The updated todo response, or null if todo was deleted
      * @throws TodoNotFoundException if todo not found
      * @throws IllegalArgumentException if title is empty after trimming
      */
@@ -64,12 +87,18 @@ public class TodoService {
         Todo todo = storageService.findById(id)
                 .orElseThrow(() -> new TodoNotFoundException("Todo not found with id: " + id));
 
-        String trimmedTitle = request.title().trim();
-        if (trimmedTitle.isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be empty");
+        // Handle title update
+        if (request.title() != null) {
+            String trimmedTitle = request.title().trim();
+            if (trimmedTitle.isEmpty()) {
+                // As per Feature 04-08 specification: empty title deletes the todo
+                storageService.deleteById(id);
+                return null; // Indicate deletion occurred
+            }
+            todo.updateTitle(trimmedTitle);
         }
-
-        todo.updateTitle(trimmedTitle);
+        
+        // Handle completed status update
         if (request.completed() != null) {
             todo.setCompleted(request.completed());
         }

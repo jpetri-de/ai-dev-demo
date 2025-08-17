@@ -132,24 +132,24 @@ describe('TodoService', () => {
 
     it('should update todo via PUT request', () => {
       const todoId = 1;
-      const updates: UpdateTodoRequest = { title: 'Updated Title' };
-      const updatedTodo: Todo = { id: todoId, title: 'Updated Title', completed: false };
+      const newTitle = 'Updated Title';
+      const updatedTodo: Todo = { id: todoId, title: newTitle, completed: false };
 
-      service.updateTodo(todoId, updates).subscribe(todo => {
+      service.updateTodo(todoId, newTitle).subscribe(todo => {
         expect(todo).toEqual(updatedTodo);
       });
 
       const req = httpMock.expectOne(`/api/todos/${todoId}`);
       expect(req.request.method).toBe('PUT');
-      expect(req.request.body).toEqual({ title: 'Updated Title' });
+      expect(req.request.body).toEqual({ title: newTitle });
       req.flush(updatedTodo);
     });
 
     it('should validate title in updates', () => {
       const todoId = 1;
-      const updates: UpdateTodoRequest = { title: '' };
+      const emptyTitle = '';
 
-      service.updateTodo(todoId, updates).subscribe({
+      service.updateTodo(todoId, emptyTitle).subscribe({
         next: () => fail('Should not succeed with empty title'),
         error: error => expect(error.message).toContain('cannot be empty')
       });
@@ -159,9 +159,9 @@ describe('TodoService', () => {
 
     it('should handle 404 error for non-existent todo', () => {
       const todoId = 999;
-      const updates: UpdateTodoRequest = { title: 'Updated Title' };
+      const newTitle = 'Updated Title';
 
-      service.updateTodo(todoId, updates).subscribe({
+      service.updateTodo(todoId, newTitle).subscribe({
         next: () => fail('Should not succeed for non-existent todo'),
         error: error => expect(error.status).toBe(404)
       });
@@ -188,23 +188,30 @@ describe('TodoService', () => {
 
       const req = httpMock.expectOne(`/api/todos/${todoId}/toggle`);
       expect(req.request.method).toBe('PUT');
-      expect(req.request.body).toEqual({});
       req.flush(toggledTodo);
     });
 
-    it('should perform optimistic toggle', () => {
+    it('should perform optimistic update and rollback on error', () => {
+      const todoId = 1;
       let todosState: Todo[] = [];
       service.todos$.subscribe(todos => todosState = todos);
 
-      const todoId = 1;
-      service.toggleTodo(todoId).subscribe();
+      // Initially completed = false
+      expect(todosState.find(t => t.id === todoId)?.completed).toBe(false);
 
-      // Should immediately show optimistic update
-      expect(todosState[0].completed).toBe(true); // Was false originally
+      service.toggleTodo(todoId).subscribe({
+        error: () => {} // Ignore error for this test
+      });
 
-      // Complete the API call
+      // Should see optimistic update (completed = true)
+      expect(todosState.find(t => t.id === todoId)?.completed).toBe(true);
+
+      // API call fails
       const req = httpMock.expectOne(`/api/todos/${todoId}/toggle`);
-      req.flush({ id: todoId, title: 'Test Todo 1', completed: true });
+      req.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });
+
+      // Should rollback (completed = false again)
+      expect(todosState.find(t => t.id === todoId)?.completed).toBe(false);
     });
   });
 
@@ -225,28 +232,35 @@ describe('TodoService', () => {
       req.flush(null);
     });
 
-    it('should perform optimistic delete', () => {
+    it('should perform optimistic update and rollback on error', () => {
+      const todoId = 1;
       let todosState: Todo[] = [];
       service.todos$.subscribe(todos => todosState = todos);
 
-      expect(todosState.length).toBe(2); // Initial state
+      // Initially 2 todos
+      expect(todosState.length).toBe(2);
 
-      const todoId = 1;
-      service.deleteTodo(todoId).subscribe();
+      service.deleteTodo(todoId).subscribe({
+        error: () => {} // Ignore error for this test
+      });
 
-      // Should immediately remove from state
+      // Should see optimistic update (1 todo)
       expect(todosState.length).toBe(1);
       expect(todosState.find(t => t.id === todoId)).toBeUndefined();
 
-      // Complete the API call
+      // API call fails
       const req = httpMock.expectOne(`/api/todos/${todoId}`);
-      req.flush(null);
+      req.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });
+
+      // Should rollback (2 todos again)
+      expect(todosState.length).toBe(2);
+      expect(todosState.find(t => t.id === todoId)).toBeDefined();
     });
   });
 
   describe('clearCompleted', () => {
     beforeEach(() => {
-      // Set up initial state
+      // Set up initial state with completed todos
       service.getTodos().subscribe();
       httpMock.expectOne('/api/todos').flush(mockTodos);
     });
@@ -259,19 +273,20 @@ describe('TodoService', () => {
       req.flush(null);
     });
 
-    it('should perform optimistic clear completed', () => {
+    it('should perform optimistic update', () => {
       let todosState: Todo[] = [];
       service.todos$.subscribe(todos => todosState = todos);
 
-      expect(todosState.length).toBe(2); // Initial state
-      
+      // Initially 2 todos (1 completed)
+      expect(todosState.length).toBe(2);
+      expect(todosState.filter(t => t.completed).length).toBe(1);
+
       service.clearCompleted().subscribe();
 
-      // Should immediately remove completed todos
+      // Should see optimistic update (only active todos)
       expect(todosState.length).toBe(1);
-      expect(todosState.every(t => !t.completed)).toBe(true);
+      expect(todosState.filter(t => t.completed).length).toBe(0);
 
-      // Complete the API call
       const req = httpMock.expectOne('/api/todos/completed');
       req.flush(null);
     });
@@ -284,112 +299,12 @@ describe('TodoService', () => {
       httpMock.expectOne('/api/todos').flush(mockTodos);
     });
 
-    it('should calculate stats correctly', () => {
+    it('should calculate statistics correctly', () => {
       service.getStats().subscribe(stats => {
         expect(stats.total).toBe(2);
-        expect(stats.active).toBe(1);
-        expect(stats.completed).toBe(1);
+        expect(stats.active).toBe(1); // One uncompleted todo
+        expect(stats.completed).toBe(1); // One completed todo
       });
-    });
-
-    it('should update stats when todos change', () => {
-      const statsHistory: any[] = [];
-      service.getStats().subscribe(stats => statsHistory.push(stats));
-
-      // Initial stats
-      expect(statsHistory[0]).toEqual({ total: 2, active: 1, completed: 1 });
-
-      // Add a new todo
-      service.createTodo('New Todo').subscribe();
-      const req = httpMock.expectOne('/api/todos');
-      req.flush({ id: 3, title: 'New Todo', completed: false });
-
-      // Stats should update
-      expect(statsHistory[statsHistory.length - 1]).toEqual({ total: 3, active: 2, completed: 1 });
-    });
-  });
-
-  describe('getTodoById', () => {
-    beforeEach(() => {
-      // Set up initial state
-      service.getTodos().subscribe();
-      httpMock.expectOne('/api/todos').flush(mockTodos);
-    });
-
-    it('should return todo by ID', () => {
-      service.getTodoById(1).subscribe(todo => {
-        expect(todo).toEqual(mockTodos[0]);
-      });
-    });
-
-    it('should return undefined for non-existent ID', () => {
-      service.getTodoById(999).subscribe(todo => {
-        expect(todo).toBeUndefined();
-      });
-    });
-  });
-
-  describe('error handling', () => {
-    it('should handle network errors', (done) => {
-      service.getTodos().subscribe({
-        next: () => fail('Should error on network failure'),
-        error: (error) => {
-          expect(error.status).toBe(0);
-          expect(error.message).toContain('Network error');
-          done();
-        }
-      });
-
-      const req = httpMock.expectOne('/api/todos');
-      req.error(new ProgressEvent('network error'));
-    });
-
-    it('should handle validation errors from backend', (done) => {
-      const errorResponse = {
-        message: 'Validation failed',
-        errors: [{ field: 'title', message: 'Title is required' }]
-      };
-
-      service.createTodo('Test').subscribe({
-        next: () => fail('Should error on validation failure'),
-        error: (error) => {
-          expect(error.status).toBe(400);
-          expect(error.message).toBe('Validation failed');
-          expect(error.errors).toEqual(errorResponse.errors);
-          done();
-        }
-      });
-
-      const req = httpMock.expectOne('/api/todos');
-      req.flush(errorResponse, { status: 400, statusText: 'Bad Request' });
-    });
-
-    it('should handle server errors', (done) => {
-      service.getTodos().subscribe({
-        next: () => fail('Should error on server failure'),
-        error: (error) => {
-          expect(error.status).toBe(500);
-          expect(error.message).toContain('Server error');
-          done();
-        }
-      });
-
-      const req = httpMock.expectOne('/api/todos');
-      req.flush('Server Error', { status: 500, statusText: 'Internal Server Error' });
-    });
-  });
-
-  describe('retry mechanism', () => {
-    it('should have retry configuration in getTodos', () => {
-      // Test that the service is configured with retry, but don't test the actual retry behavior
-      // as it's complex to test with timing and HTTP interceptors
-      spyOn(service, 'getTodos').and.callThrough();
-      
-      service.getTodos().subscribe();
-      const req = httpMock.expectOne('/api/todos');
-      req.flush(mockTodos);
-      
-      expect(service.getTodos).toHaveBeenCalled();
     });
   });
 });

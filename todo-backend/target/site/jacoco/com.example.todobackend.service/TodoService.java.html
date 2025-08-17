@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TodoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">todo-backend</a> &gt; <a href="index.source.html" class="el_package">com.example.todobackend.service</a> &gt; <span class="el_source">TodoService.java</span></div><h1>TodoService.java</h1><pre class="source lang-java linenums">package com.example.todobackend.service;
+
+import com.example.todobackend.dto.CreateTodoRequest;
+import com.example.todobackend.dto.TodoResponse;
+import com.example.todobackend.dto.UpdateTodoRequest;
+import com.example.todobackend.exception.TodoNotFoundException;
+import com.example.todobackend.mapper.TodoMapper;
+import com.example.todobackend.model.Todo;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * Business service for Todo operations.
+ * Contains validation logic and coordinates between controller and storage layers.
+ * 
+ * Enhanced for Feature 04-08 combined specification:
+ * - Support for optional title updates in updateTodo method
+ * - Empty title after trim deletes the todo (as per specification)
+ * - Optimized for sub-50ms response times for optimistic updates
+ */
+@Service
+public class TodoService {
+    
+    private final TodoStorageService storageService;
+    private final TodoMapper mapper;
+
+<span class="fc" id="L28">    public TodoService(TodoStorageService storageService, TodoMapper mapper) {</span>
+<span class="fc" id="L29">        this.storageService = storageService;</span>
+<span class="fc" id="L30">        this.mapper = mapper;</span>
+<span class="fc" id="L31">    }</span>
+
+    /**
+     * Retrieves all todos.
+     * @return List of todo responses
+     */
+    public List&lt;TodoResponse&gt; getAllTodos() {
+<span class="fc" id="L38">        return storageService.findAll().stream()</span>
+<span class="fc" id="L39">                .map(mapper::toResponse)</span>
+<span class="fc" id="L40">                .toList();</span>
+    }
+
+    /**
+     * Retrieves a single todo by ID.
+     * @param id The todo ID
+     * @return The todo response
+     * @throws TodoNotFoundException if todo not found
+     */
+    public TodoResponse getTodoById(Long id) {
+<span class="fc" id="L50">        Todo todo = storageService.findById(id)</span>
+<span class="pc" id="L51">                .orElseThrow(() -&gt; new TodoNotFoundException(&quot;Todo not found with id: &quot; + id));</span>
+<span class="nc" id="L52">        return mapper.toResponse(todo);</span>
+    }
+
+    /**
+     * Creates a new todo.
+     * @param request The create request
+     * @return The created todo response
+     * @throws IllegalArgumentException if title is empty after trimming
+     */
+    public TodoResponse createTodo(CreateTodoRequest request) {
+<span class="fc" id="L62">        String trimmedTitle = request.title().trim();</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (trimmedTitle.isEmpty()) {</span>
+<span class="fc" id="L64">            throw new IllegalArgumentException(&quot;Title cannot be empty&quot;);</span>
+        }
+
+<span class="fc" id="L67">        Todo todo = new Todo(trimmedTitle);</span>
+<span class="fc" id="L68">        Todo savedTodo = storageService.save(todo);</span>
+<span class="fc" id="L69">        return mapper.toResponse(savedTodo);</span>
+    }
+
+    /**
+     * Updates an existing todo.
+     * 
+     * Enhanced for Feature 04-08:
+     * - Title is optional - when null, only completed status is updated
+     * - When title is provided but empty after trim, todo is deleted
+     * - Supports both title-only and completed-only updates
+     * 
+     * @param id The todo ID
+     * @param request The update request
+     * @return The updated todo response, or null if todo was deleted
+     * @throws TodoNotFoundException if todo not found
+     * @throws IllegalArgumentException if title is empty after trimming
+     */
+    public TodoResponse updateTodo(Long id, UpdateTodoRequest request) {
+<span class="fc" id="L87">        Todo todo = storageService.findById(id)</span>
+<span class="fc" id="L88">                .orElseThrow(() -&gt; new TodoNotFoundException(&quot;Todo not found with id: &quot; + id));</span>
+
+        // Handle title update
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (request.title() != null) {</span>
+<span class="fc" id="L92">            String trimmedTitle = request.title().trim();</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">            if (trimmedTitle.isEmpty()) {</span>
+                // As per Feature 04-08 specification: empty title deletes the todo
+<span class="fc" id="L95">                storageService.deleteById(id);</span>
+<span class="fc" id="L96">                return null; // Indicate deletion occurred</span>
+            }
+<span class="fc" id="L98">            todo.updateTitle(trimmedTitle);</span>
+        }
+        
+        // Handle completed status update
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (request.completed() != null) {</span>
+<span class="fc" id="L103">            todo.setCompleted(request.completed());</span>
+        }
+
+<span class="fc" id="L106">        Todo updatedTodo = storageService.save(todo);</span>
+<span class="fc" id="L107">        return mapper.toResponse(updatedTodo);</span>
+    }
+
+    /**
+     * Toggles the completion status of a todo.
+     * @param id The todo ID
+     * @return The updated todo response
+     * @throws TodoNotFoundException if todo not found
+     */
+    public TodoResponse toggleTodo(Long id) {
+<span class="fc" id="L117">        Todo todo = storageService.findById(id)</span>
+<span class="fc" id="L118">                .orElseThrow(() -&gt; new TodoNotFoundException(&quot;Todo not found with id: &quot; + id));</span>
+
+<span class="fc" id="L120">        todo.toggleCompleted();</span>
+<span class="fc" id="L121">        Todo updatedTodo = storageService.save(todo);</span>
+<span class="fc" id="L122">        return mapper.toResponse(updatedTodo);</span>
+    }
+
+    /**
+     * Deletes a todo by ID.
+     * @param id The todo ID
+     * @throws TodoNotFoundException if todo not found
+     */
+    public void deleteTodo(Long id) {
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (!storageService.deleteById(id)) {</span>
+<span class="fc" id="L132">            throw new TodoNotFoundException(&quot;Todo not found with id: &quot; + id);</span>
+        }
+<span class="fc" id="L134">    }</span>
+
+    /**
+     * Deletes all completed todos.
+     * @return The number of todos deleted
+     */
+    public int deleteCompletedTodos() {
+<span class="fc" id="L141">        return storageService.deleteCompleted();</span>
+    }
+
+    /**
+     * Gets the count of active (non-completed) todos.
+     * @return The count of active todos
+     */
+    public long getActiveTodoCount() {
+<span class="fc" id="L149">        return storageService.findAll().stream()</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">                .filter(todo -&gt; !todo.isCompleted())</span>
+<span class="fc" id="L151">                .count();</span>
+    }
+
+    /**
+     * Gets the total count of todos.
+     * @return The total count of todos
+     */
+    public int getTotalTodoCount() {
+<span class="fc" id="L159">        return storageService.count();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

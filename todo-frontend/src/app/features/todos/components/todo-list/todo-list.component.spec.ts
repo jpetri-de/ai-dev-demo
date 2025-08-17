@@ -1,12 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TodoListComponent } from './todo-list.component';
 import { TodoItemComponent } from '../todo-item/todo-item.component';
+import { TodoService } from '../../../../core/services/todo.service';
 import { SharedModule } from '../../../../shared/shared.module';
 import { Todo } from '../../models/todo.interface';
 
 describe('TodoListComponent', () => {
   let component: TodoListComponent;
   let fixture: ComponentFixture<TodoListComponent>;
+  let mockTodoService: jasmine.SpyObj<TodoService>;
 
   const mockTodos: Todo[] = [
     { id: 1, title: 'Test Todo 1', completed: false },
@@ -15,10 +18,17 @@ describe('TodoListComponent', () => {
   ];
 
   beforeEach(async () => {
+    const spy = jasmine.createSpyObj('TodoService', ['getTodos', 'getStats']);
+
     await TestBed.configureTestingModule({
       declarations: [TodoListComponent, TodoItemComponent],
-      imports: [SharedModule]
+      imports: [SharedModule, HttpClientTestingModule],
+      providers: [
+        { provide: TodoService, useValue: spy }
+      ]
     }).compileComponents();
+
+    mockTodoService = TestBed.inject(TodoService) as jasmine.SpyObj<TodoService>;
 
     fixture = TestBed.createComponent(TodoListComponent);
     component = fixture.componentInstance;

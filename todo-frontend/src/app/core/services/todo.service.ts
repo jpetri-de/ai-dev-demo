@@ -47,29 +47,34 @@ export class TodoService {
 
   // POST /api/todos - Create new todo
   createTodo(title: string): Observable<Todo> {
-    // Client-side validation
-    const validationErrors = TodoValidator.validateTitle(title);
-    if (validationErrors.length > 0) {
-      return throwError(() => new Error(validationErrors[0].message));
+    // Exact specification validation
+    const trimmedTitle = title.trim();
+    
+    if (!trimmedTitle) {
+      return throwError(() => new Error('Todo title cannot be empty'));
+    }
+    
+    if (trimmedTitle.length > TodoValidator.MAX_TITLE_LENGTH) {
+      return throwError(() => new Error(`Todo title cannot exceed ${TodoValidator.MAX_TITLE_LENGTH} characters`));
     }
 
     const request: CreateTodoRequest = { 
-      title: title.trim() 
+      title: trimmedTitle 
     };
 
-    // Optimistic update
-    const optimisticTodo: Todo = {
-      id: Date.now(), // Temporary ID for optimistic update
-      title: request.title,
+    // Optimistic update with negative ID for temporary todos
+    const tempTodo: Todo = {
+      id: -(Date.now()), // Negative ID for temp todos
+      title: trimmedTitle,
       completed: false
     };
 
     const currentTodos = this.todosSubject.value;
-    this.updateTodos([...currentTodos, optimisticTodo]);
+    this.updateTodos([...currentTodos, tempTodo]);
 
     return this.http.post<Todo>(this.apiUrl, request).pipe(
       tap(createdTodo => {
-        // Replace optimistic todo with real todo from server
+        // Replace temp todo with real todo from server
         const updatedTodos = currentTodos.concat(createdTodo);
         this.updateTodos(updatedTodos);
       }),
@@ -81,25 +86,29 @@ export class TodoService {
     );
   }
 
-  // PUT /api/todos/{id} - Update todo
-  updateTodo(id: TodoId, updates: UpdateTodoRequest): Observable<Todo> {
-    // Client-side validation if title is being updated
-    if (updates.title !== undefined) {
-      const validationErrors = TodoValidator.validateTitle(updates.title);
-      if (validationErrors.length > 0) {
-        return throwError(() => new Error(validationErrors[0].message));
-      }
-      updates.title = updates.title.trim();
+  // PUT /api/todos/{id} - Update todo (standardized to match specification)
+  updateTodo(id: TodoId, title: string): Observable<Todo> {
+    // Exact specification validation
+    const trimmedTitle = title.trim();
+    
+    if (!trimmedTitle) {
+      return throwError(() => new Error('Todo title cannot be empty'));
     }
+    
+    if (trimmedTitle.length > TodoValidator.MAX_TITLE_LENGTH) {
+      return throwError(() => new Error(`Todo title cannot exceed ${TodoValidator.MAX_TITLE_LENGTH} characters`));
+    }
+
+    const request: UpdateTodoRequest = { title: trimmedTitle };
 
     // Optimistic update
     const currentTodos = this.todosSubject.value;
     const optimisticTodos = currentTodos.map(todo => 
-      todo.id === id ? { ...todo, ...updates } : todo
+      todo.id === id ? { ...todo, title: trimmedTitle } : todo
     );
     this.updateTodos(optimisticTodos);
 
-    return this.http.put<Todo>(`${this.apiUrl}/${id}`, updates).pipe(
+    return this.http.put<Todo>(`${this.apiUrl}/${id}`, request).pipe(
       tap(updatedTodo => {
         // Update with server response
         const serverUpdatedTodos = currentTodos.map(todo => 

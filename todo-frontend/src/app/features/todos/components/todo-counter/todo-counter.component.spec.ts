@@ -30,6 +30,7 @@ describe('TodoCounterComponent', () => {
 
   it('should display singular item for 1 active todo', () => {
     mockTodoService.getStats.and.returnValue(of({ total: 1, active: 1, completed: 0 }));
+    component.stats$ = mockTodoService.getStats();
     fixture.detectChanges();
     
     const compiled = fixture.nativeElement;
@@ -38,6 +39,7 @@ describe('TodoCounterComponent', () => {
 
   it('should display plural items for multiple active todos', () => {
     mockTodoService.getStats.and.returnValue(of({ total: 3, active: 3, completed: 0 }));
+    component.stats$ = mockTodoService.getStats();
     fixture.detectChanges();
     
     const compiled = fixture.nativeElement;
@@ -46,6 +48,7 @@ describe('TodoCounterComponent', () => {
 
   it('should display plural items for 0 active todos', () => {
     mockTodoService.getStats.and.returnValue(of({ total: 2, active: 0, completed: 2 }));
+    component.stats$ = mockTodoService.getStats();
     fixture.detectChanges();
     
     const compiled = fixture.nativeElement;

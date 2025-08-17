@@ -67,13 +67,13 @@ public class FrontendIntegrationTest {
         // Then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getHeaders().getFirst("X-Correlation-ID")).isNotNull();
-        assertThat(response.getHeaders().getFirst("X-Error-Type")).isEqualTo("INVALID_ARGUMENT");
+        assertThat(response.getHeaders().getFirst("X-Error-Type")).isEqualTo("VALIDATION_ERROR");
         
         ErrorResponse errorResponse = response.getBody();
         assertThat(errorResponse).isNotNull();
         assertThat(errorResponse.correlationId()).isNotNull();
         assertThat(errorResponse.path()).isEqualTo("/api/todos");
-        assertThat(errorResponse.message()).contains("Title cannot be empty");
+        assertThat(errorResponse.message()).contains("Validation failed");
     }
 
     @Test

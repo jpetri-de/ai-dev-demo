@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="de"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TodoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">todo-backend</a> &gt; <a href="index.source.html" class="el_package">com.example.todobackend.controller</a> &gt; <span class="el_source">TodoController.java</span></div><h1>TodoController.java</h1><pre class="source lang-java linenums">package com.example.todobackend.controller;
+
+import com.example.todobackend.dto.CreateTodoRequest;
+import com.example.todobackend.dto.TodoResponse;
+import com.example.todobackend.dto.UpdateTodoRequest;
+import com.example.todobackend.service.TodoService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * REST controller for Todo operations.
+ * Provides endpoints for CRUD operations on todos.
+ * Enhanced for Feature 04-08 combined specification with frontend debugging support.
+ */
+@RestController
+@RequestMapping(&quot;/api/todos&quot;)
+@Validated
+@CrossOrigin(origins = &quot;http://localhost:4200&quot;, allowCredentials = &quot;true&quot;)
+public class TodoController {
+
+    private final TodoService todoService;
+
+<span class="fc" id="L29">    public TodoController(TodoService todoService) {</span>
+<span class="fc" id="L30">        this.todoService = todoService;</span>
+<span class="fc" id="L31">    }</span>
+
+    /**
+     * Retrieves all todos.
+     * @return List of all todos
+     */
+    @GetMapping
+    public ResponseEntity&lt;List&lt;TodoResponse&gt;&gt; getAllTodos() {
+<span class="fc" id="L39">        List&lt;TodoResponse&gt; todos = todoService.getAllTodos();</span>
+<span class="fc" id="L40">        return ResponseEntity.ok()</span>
+<span class="fc" id="L41">                .header(&quot;X-Total-Count&quot;, String.valueOf(todos.size()))</span>
+<span class="fc" id="L42">                .header(&quot;X-Request-ID&quot;, UUID.randomUUID().toString())</span>
+<span class="fc" id="L43">                .body(todos);</span>
+    }
+
+    /**
+     * Retrieves a single todo by ID.
+     * @param id The todo ID
+     * @return The todo if found
+     */
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;TodoResponse&gt; getTodoById(@PathVariable Long id) {
+<span class="nc" id="L53">        TodoResponse todo = todoService.getTodoById(id);</span>
+<span class="nc" id="L54">        return ResponseEntity.ok()</span>
+<span class="nc" id="L55">                .header(&quot;X-Todo-ID&quot;, id.toString())</span>
+<span class="nc" id="L56">                .header(&quot;X-Request-ID&quot;, UUID.randomUUID().toString())</span>
+<span class="nc" id="L57">                .body(todo);</span>
+    }
+
+    /**
+     * Creates a new todo.
+     * @param request The create request
+     * @return The created todo
+     */
+    @PostMapping
+    public ResponseEntity&lt;TodoResponse&gt; createTodo(@Valid @RequestBody CreateTodoRequest request) {
+<span class="fc" id="L67">        String correlationId = UUID.randomUUID().toString();</span>
+<span class="fc" id="L68">        TodoResponse todo = todoService.createTodo(request);</span>
+        
+<span class="fc" id="L70">        return ResponseEntity.status(HttpStatus.CREATED)</span>
+<span class="fc" id="L71">                .header(&quot;X-Created-ID&quot;, todo.id().toString())</span>
+<span class="fc" id="L72">                .header(&quot;X-Correlation-ID&quot;, correlationId)</span>
+<span class="fc" id="L73">                .header(&quot;X-Request-ID&quot;, UUID.randomUUID().toString())</span>
+<span class="fc" id="L74">                .header(&quot;Location&quot;, &quot;/api/todos/&quot; + todo.id())</span>
+<span class="fc" id="L75">                .body(todo);</span>
+    }
+
+    /**
+     * Updates an existing todo.
+     * 
+     * Enhanced for Feature 04-08:
+     * - Supports optional title updates (null title means no change)
+     * - Empty title after trim deletes the todo (returns 204 No Content)
+     * - Supports both title-only and completed-only updates
+     * 
+     * @param id The todo ID
+     * @param request The update request
+     * @return The updated todo or 204 if deleted due to empty title
+     */
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;TodoResponse&gt; updateTodo(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateTodoRequest request) {
+<span class="fc" id="L94">        TodoResponse todo = todoService.updateTodo(id, request);</span>
+        
+        // If todo was deleted due to empty title, return 204 No Content
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if (todo == null) {</span>
+<span class="fc" id="L98">            return ResponseEntity.noContent()</span>
+<span class="fc" id="L99">                    .header(&quot;X-Deleted-ID&quot;, id.toString())</span>
+<span class="fc" id="L100">                    .header(&quot;X-Request-ID&quot;, UUID.randomUUID().toString())</span>
+<span class="fc" id="L101">                    .header(&quot;X-Debug-Info&quot;, &quot;deleted-via-empty-title&quot;)</span>
+<span class="fc" id="L102">                    .build();</span>
+        }
+        
+<span class="fc" id="L105">        return ResponseEntity.ok()</span>
+<span class="fc" id="L106">                .header(&quot;X-Updated-ID&quot;, id.toString())</span>
+<span class="fc" id="L107">                .header(&quot;X-Request-ID&quot;, UUID.randomUUID().toString())</span>
+<span class="fc" id="L108">                .body(todo);</span>
+    }
+
+    /**
+     * Toggles the completion status of a todo.
+     * @param id The todo ID
+     * @return The updated todo
+     */
+    @PutMapping(&quot;/{id}/toggle&quot;)
+    public ResponseEntity&lt;TodoResponse&gt; toggleTodo(@PathVariable Long id) {
+<span class="fc" id="L118">        TodoResponse todo = todoService.toggleTodo(id);</span>
+<span class="fc" id="L119">        return ResponseEntity.ok()</span>
+<span class="fc" id="L120">                .header(&quot;X-Toggled-ID&quot;, id.toString())</span>
+<span class="fc" id="L121">                .header(&quot;X-Request-ID&quot;, UUID.randomUUID().toString())</span>
+<span class="fc" id="L122">                .header(&quot;X-Debug-Info&quot;, &quot;status=&quot; + todo.completed())</span>
+<span class="fc" id="L123">                .body(todo);</span>
+    }
+
+    /**
+     * Deletes a todo by ID.
+     * @param id The todo ID
+     * @return No content response
+     */
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteTodo(@PathVariable Long id) {
+<span class="fc" id="L133">        todoService.deleteTodo(id);</span>
+<span class="fc" id="L134">        return ResponseEntity.noContent()</span>
+<span class="fc" id="L135">                .header(&quot;X-Deleted-ID&quot;, id.toString())</span>
+<span class="fc" id="L136">                .header(&quot;X-Request-ID&quot;, UUID.randomUUID().toString())</span>
+<span class="fc" id="L137">                .build();</span>
+    }
+
+    /**
+     * Deletes all completed todos.
+     * @return No content response
+     */
+    @DeleteMapping(&quot;/completed&quot;)
+    public ResponseEntity&lt;Void&gt; deleteCompletedTodos() {
+<span class="fc" id="L146">        int deletedCount = todoService.deleteCompletedTodos();</span>
+<span class="fc" id="L147">        return ResponseEntity.noContent()</span>
+<span class="fc" id="L148">                .header(&quot;X-Deleted-Count&quot;, String.valueOf(deletedCount))</span>
+<span class="fc" id="L149">                .header(&quot;X-Request-ID&quot;, UUID.randomUUID().toString())</span>
+<span class="fc" id="L150">                .build();</span>
+    }
+
+    /**
+     * Gets the count of active todos.
+     * @return The count of active todos
+     */
+    @GetMapping(&quot;/count/active&quot;)
+    public ResponseEntity&lt;Long&gt; getActiveTodoCount() {
+<span class="fc" id="L159">        long count = todoService.getActiveTodoCount();</span>
+<span class="fc" id="L160">        return ResponseEntity.ok()</span>
+<span class="fc" id="L161">                .header(&quot;X-Count-Type&quot;, &quot;active&quot;)</span>
+<span class="fc" id="L162">                .header(&quot;X-Request-ID&quot;, UUID.randomUUID().toString())</span>
+<span class="fc" id="L163">                .body(count);</span>
+    }
+
+    /**
+     * Gets the total count of todos.
+     * @return The total count of todos
+     */
+    @GetMapping(&quot;/count/total&quot;)
+    public ResponseEntity&lt;Integer&gt; getTotalTodoCount() {
+<span class="fc" id="L172">        int count = todoService.getTotalTodoCount();</span>
+<span class="fc" id="L173">        return ResponseEntity.ok()</span>
+<span class="fc" id="L174">                .header(&quot;X-Count-Type&quot;, &quot;total&quot;)</span>
+<span class="fc" id="L175">                .header(&quot;X-Request-ID&quot;, UUID.randomUUID().toString())</span>
+<span class="fc" id="L176">                .body(count);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

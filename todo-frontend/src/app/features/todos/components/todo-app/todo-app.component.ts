@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -13,7 +13,9 @@ import { TodoValidator } from '../../models/todo-validation';
   styleUrls: ['./todo-app.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TodoAppComponent implements OnInit, OnDestroy {
+export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('newTodoInput', { static: true }) newTodoInput!: ElementRef<HTMLInputElement>;
+  
   private destroy$ = new Subject<void>();
   
   todos$ = this.todoService.todos$;
@@ -21,6 +23,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   loading$ = this.todoService.loading$;
   error$ = this.errorService.error$;
   currentFilter: TodoFilter = { type: 'all', label: 'All' };
+  isCreating = false;
   
   constructor(
     private todoService: TodoService,
@@ -32,6 +35,11 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadTodos();
     this.initializeFilterFromRoute();
+  }
+
+  ngAfterViewInit(): void {
+    // Ensure input is focused on page load per specification
+    this.focusNewTodoInput();
   }
 
   ngOnDestroy(): void {
@@ -73,29 +81,51 @@ export class TodoAppComponent implements OnInit, OnDestroy {
       });
   }
 
+  private focusNewTodoInput(): void {
+    // Enhanced focus management with better timing
+    setTimeout(() => {
+      if (this.newTodoInput?.nativeElement) {
+        this.newTodoInput.nativeElement.focus();
+      }
+    }, 0);
+  }
+
   onCreateTodo(title: string): void {
     const trimmedTitle = title.trim();
     
     // Client-side validation with user feedback
     if (!trimmedTitle) {
       this.errorService.handleError('Todo title cannot be empty');
+      this.focusNewTodoInput();
       return;
     }
 
     if (trimmedTitle.length > TodoValidator.MAX_TITLE_LENGTH) {
       this.errorService.handleError(`Todo title cannot exceed ${TodoValidator.MAX_TITLE_LENGTH} characters`);
+      this.focusNewTodoInput();
       return;
     }
+
+    this.isCreating = true;
 
     this.todoService.createTodo(trimmedTitle)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
+          this.isCreating = false;
+          // Clear input and return focus per specification
+          if (this.newTodoInput?.nativeElement) {
+            this.newTodoInput.nativeElement.value = '';
+          }
+          this.focusNewTodoInput();
           this.cdr.markForCheck();
         },
         error: (error) => {
+          this.isCreating = false;
           console.error('Failed to create todo:', error);
           this.errorService.handleError(error.message || 'Failed to create todo');
+          this.focusNewTodoInput();
+          this.cdr.markForCheck();
         }
       });
   }
@@ -174,6 +204,8 @@ export class TodoAppComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
+          // Return focus to main input after deletion
+          this.focusNewTodoInput();
           this.cdr.markForCheck();
         },
         error: (error) => {
@@ -186,9 +218,9 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   onUpdateTodo(data: { id: number; title: string }): void {
     const trimmedTitle = data.title.trim();
     
-    // Client-side validation
+    // Handle empty title deletion workflow per specification
     if (!trimmedTitle) {
-      this.errorService.handleError('Todo title cannot be empty');
+      this.onDeleteTodo(data.id);
       return;
     }
 
@@ -197,10 +229,12 @@ export class TodoAppComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.todoService.updateTodo(data.id, { title: trimmedTitle })
+    this.todoService.updateTodo(data.id, trimmedTitle)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
+          // Return focus to main input after editing
+          this.focusNewTodoInput();
           this.cdr.markForCheck();
         },
         error: (error) => {

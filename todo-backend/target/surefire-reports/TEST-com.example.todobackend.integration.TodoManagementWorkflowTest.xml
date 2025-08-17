@@ -1,0 +1,1492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.example.todobackend.integration.TodoManagementWorkflowTest" time="2.689" tests="7" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="24"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.class.path" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/test-classes:/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/classes:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-web/3.2.0/spring-boot-starter-web-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter/3.2.0/spring-boot-starter-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-logging/3.2.0/spring-boot-starter-logging-3.2.0.jar:/Users/jurgenpetri/.m2/repository/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar:/Users/jurgenpetri/.m2/repository/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11.jar:/Users/jurgenpetri/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.21.1/log4j-to-slf4j-2.21.1.jar:/Users/jurgenpetri/.m2/repository/org/apache/logging/log4j/log4j-api/2.21.1/log4j-api-2.21.1.jar:/Users/jurgenpetri/.m2/repository/org/slf4j/jul-to-slf4j/2.0.9/jul-to-slf4j-2.0.9.jar:/Users/jurgenpetri/.m2/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/Users/jurgenpetri/.m2/repository/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-json/3.2.0/spring-boot-starter-json-3.2.0.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.3/jackson-databind-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.3/jackson-annotations-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.3/jackson-core-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.15.3/jackson-datatype-jdk8-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.15.3/jackson-datatype-jsr310-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.15.3/jackson-module-parameter-names-2.15.3.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat/3.2.0/spring-boot-starter-tomcat-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.16/tomcat-embed-core-10.1.16.jar:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.16/tomcat-embed-websocket-10.1.16.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-web/6.1.1/spring-web-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-beans/6.1.1/spring-beans-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-webmvc/6.1.1/spring-webmvc-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-aop/6.1.1/spring-aop-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-context/6.1.1/spring-context-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-expression/6.1.1/spring-expression-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-validation/3.2.0/spring-boot-starter-validation-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-el/10.1.16/tomcat-embed-el-10.1.16.jar:/Users/jurgenpetri/.m2/repository/org/hibernate/validator/hibernate-validator/8.0.1.Final/hibernate-validator-8.0.1.Final.jar:/Users/jurgenpetri/.m2/repository/jakarta/validation/jakarta.validation-api/3.0.2/jakarta.validation-api-3.0.2.jar:/Users/jurgenpetri/.m2/repository/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/classmate/1.6.0/classmate-1.6.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-actuator/3.2.0/spring-boot-starter-actuator-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-actuator-autoconfigure/3.2.0/spring-boot-actuator-autoconfigure-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-actuator/3.2.0/spring-boot-actuator-3.2.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-observation/1.12.0/micrometer-observation-1.12.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-commons/1.12.0/micrometer-commons-1.12.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-jakarta9/1.12.0/micrometer-jakarta9-1.12.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-core/1.12.0/micrometer-core-1.12.0.jar:/Users/jurgenpetri/.m2/repository/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12.jar:/Users/jurgenpetri/.m2/repository/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3.jar:/Users/jurgenpetri/.m2/repository/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar:/Users/jurgenpetri/.m2/repository/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-devtools/3.2.0/spring-boot-devtools-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot/3.2.0/spring-boot-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/3.2.0/spring-boot-autoconfigure-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-test/3.2.0/spring-boot-starter-test-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-test/3.2.0/spring-boot-test-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-test-autoconfigure/3.2.0/spring-boot-test-autoconfigure-3.2.0.jar:/Users/jurgenpetri/.m2/repository/com/jayway/jsonpath/json-path/2.8.0/json-path-2.8.0.jar:/Users/jurgenpetri/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/Users/jurgenpetri/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.1/jakarta.xml.bind-api-4.0.1.jar:/Users/jurgenpetri/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.2/jakarta.activation-api-2.1.2.jar:/Users/jurgenpetri/.m2/repository/net/minidev/json-smart/2.5.0/json-smart-2.5.0.jar:/Users/jurgenpetri/.m2/repository/net/minidev/accessors-smart/2.5.0/accessors-smart-2.5.0.jar:/Users/jurgenpetri/.m2/repository/org/ow2/asm/asm/9.3/asm-9.3.jar:/Users/jurgenpetri/.m2/repository/org/assertj/assertj-core/3.24.2/assertj-core-3.24.2.jar:/Users/jurgenpetri/.m2/repository/net/bytebuddy/byte-buddy/1.14.10/byte-buddy-1.14.10.jar:/Users/jurgenpetri/.m2/repository/org/awaitility/awaitility/4.2.0/awaitility-4.2.0.jar:/Users/jurgenpetri/.m2/repository/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/jurgenpetri/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/jurgenpetri/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/jurgenpetri/.m2/repository/org/mockito/mockito-core/5.7.0/mockito-core-5.7.0.jar:/Users/jurgenpetri/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.10/byte-buddy-agent-1.14.10.jar:/Users/jurgenpetri/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/Users/jurgenpetri/.m2/repository/org/mockito/mockito-junit-jupiter/5.7.0/mockito-junit-jupiter-5.7.0.jar:/Users/jurgenpetri/.m2/repository/org/skyscreamer/jsonassert/1.5.1/jsonassert-1.5.1.jar:/Users/jurgenpetri/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-core/6.1.1/spring-core-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-jcl/6.1.1/spring-jcl-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-test/6.1.1/spring-test-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1.jar:"/>
+    <property name="java.vm.vendor" value="Homebrew"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="catalina.useNaming" value="false"/>
+    <property name="java.vendor.url" value="https://github.com/Homebrew/homebrew-core/issues"/>
+    <property name="user.timezone" value="Europe/Berlin"/>
+    <property name="org.jboss.logging.provider" value="slf4j"/>
+    <property name="os.name" value="Mac OS X"/>
+    <property name="java.vm.specification.version" value="24"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="DE"/>
+    <property name="sun.boot.library.path" value="/opt/homebrew/Cellar/openjdk/24.0.2/libexec/openjdk.jdk/Contents/Home/lib"/>
+    <property name="sun.java.command" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/surefire/surefirebooter-20250817190818935_3.jar /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/surefire 2025-08-17T19-08-18_896-jvmRun1 surefire-20250817190818935_1tmp surefire_0-20250817190818935_2tmp"/>
+    <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/test-classes:/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/classes:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-web/3.2.0/spring-boot-starter-web-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter/3.2.0/spring-boot-starter-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-logging/3.2.0/spring-boot-starter-logging-3.2.0.jar:/Users/jurgenpetri/.m2/repository/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar:/Users/jurgenpetri/.m2/repository/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11.jar:/Users/jurgenpetri/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.21.1/log4j-to-slf4j-2.21.1.jar:/Users/jurgenpetri/.m2/repository/org/apache/logging/log4j/log4j-api/2.21.1/log4j-api-2.21.1.jar:/Users/jurgenpetri/.m2/repository/org/slf4j/jul-to-slf4j/2.0.9/jul-to-slf4j-2.0.9.jar:/Users/jurgenpetri/.m2/repository/jakarta/annotation/jakarta.annotation-api/2.1.1/jakarta.annotation-api-2.1.1.jar:/Users/jurgenpetri/.m2/repository/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-json/3.2.0/spring-boot-starter-json-3.2.0.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.15.3/jackson-databind-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.15.3/jackson-annotations-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.15.3/jackson-core-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.15.3/jackson-datatype-jdk8-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.15.3/jackson-datatype-jsr310-2.15.3.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/jackson/module/jackson-module-parameter-names/2.15.3/jackson-module-parameter-names-2.15.3.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-tomcat/3.2.0/spring-boot-starter-tomcat-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/10.1.16/tomcat-embed-core-10.1.16.jar:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-websocket/10.1.16/tomcat-embed-websocket-10.1.16.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-web/6.1.1/spring-web-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-beans/6.1.1/spring-beans-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-webmvc/6.1.1/spring-webmvc-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-aop/6.1.1/spring-aop-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-context/6.1.1/spring-context-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-expression/6.1.1/spring-expression-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-validation/3.2.0/spring-boot-starter-validation-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/apache/tomcat/embed/tomcat-embed-el/10.1.16/tomcat-embed-el-10.1.16.jar:/Users/jurgenpetri/.m2/repository/org/hibernate/validator/hibernate-validator/8.0.1.Final/hibernate-validator-8.0.1.Final.jar:/Users/jurgenpetri/.m2/repository/jakarta/validation/jakarta.validation-api/3.0.2/jakarta.validation-api-3.0.2.jar:/Users/jurgenpetri/.m2/repository/org/jboss/logging/jboss-logging/3.5.3.Final/jboss-logging-3.5.3.Final.jar:/Users/jurgenpetri/.m2/repository/com/fasterxml/classmate/1.6.0/classmate-1.6.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-actuator/3.2.0/spring-boot-starter-actuator-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-actuator-autoconfigure/3.2.0/spring-boot-actuator-autoconfigure-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-actuator/3.2.0/spring-boot-actuator-3.2.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-observation/1.12.0/micrometer-observation-1.12.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-commons/1.12.0/micrometer-commons-1.12.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-jakarta9/1.12.0/micrometer-jakarta9-1.12.0.jar:/Users/jurgenpetri/.m2/repository/io/micrometer/micrometer-core/1.12.0/micrometer-core-1.12.0.jar:/Users/jurgenpetri/.m2/repository/org/hdrhistogram/HdrHistogram/2.1.12/HdrHistogram-2.1.12.jar:/Users/jurgenpetri/.m2/repository/org/latencyutils/LatencyUtils/2.0.3/LatencyUtils-2.0.3.jar:/Users/jurgenpetri/.m2/repository/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar:/Users/jurgenpetri/.m2/repository/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-devtools/3.2.0/spring-boot-devtools-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot/3.2.0/spring-boot-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/3.2.0/spring-boot-autoconfigure-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-starter-test/3.2.0/spring-boot-starter-test-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-test/3.2.0/spring-boot-test-3.2.0.jar:/Users/jurgenpetri/.m2/repository/org/springframework/boot/spring-boot-test-autoconfigure/3.2.0/spring-boot-test-autoconfigure-3.2.0.jar:/Users/jurgenpetri/.m2/repository/com/jayway/jsonpath/json-path/2.8.0/json-path-2.8.0.jar:/Users/jurgenpetri/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:/Users/jurgenpetri/.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/4.0.1/jakarta.xml.bind-api-4.0.1.jar:/Users/jurgenpetri/.m2/repository/jakarta/activation/jakarta.activation-api/2.1.2/jakarta.activation-api-2.1.2.jar:/Users/jurgenpetri/.m2/repository/net/minidev/json-smart/2.5.0/json-smart-2.5.0.jar:/Users/jurgenpetri/.m2/repository/net/minidev/accessors-smart/2.5.0/accessors-smart-2.5.0.jar:/Users/jurgenpetri/.m2/repository/org/ow2/asm/asm/9.3/asm-9.3.jar:/Users/jurgenpetri/.m2/repository/org/assertj/assertj-core/3.24.2/assertj-core-3.24.2.jar:/Users/jurgenpetri/.m2/repository/net/bytebuddy/byte-buddy/1.14.10/byte-buddy-1.14.10.jar:/Users/jurgenpetri/.m2/repository/org/awaitility/awaitility/4.2.0/awaitility-4.2.0.jar:/Users/jurgenpetri/.m2/repository/org/hamcrest/hamcrest/2.2/hamcrest-2.2.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.1/junit-jupiter-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.1/junit-jupiter-api-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/jurgenpetri/.m2/repository/org/junit/platform/junit-platform-commons/1.10.1/junit-platform-commons-1.10.1.jar:/Users/jurgenpetri/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.1/junit-jupiter-params-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.1/junit-jupiter-engine-5.10.1.jar:/Users/jurgenpetri/.m2/repository/org/junit/platform/junit-platform-engine/1.10.1/junit-platform-engine-1.10.1.jar:/Users/jurgenpetri/.m2/repository/org/mockito/mockito-core/5.7.0/mockito-core-5.7.0.jar:/Users/jurgenpetri/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.10/byte-buddy-agent-1.14.10.jar:/Users/jurgenpetri/.m2/repository/org/objenesis/objenesis/3.3/objenesis-3.3.jar:/Users/jurgenpetri/.m2/repository/org/mockito/mockito-junit-jupiter/5.7.0/mockito-junit-jupiter-5.7.0.jar:/Users/jurgenpetri/.m2/repository/org/skyscreamer/jsonassert/1.5.1/jsonassert-1.5.1.jar:/Users/jurgenpetri/.m2/repository/com/vaadin/external/google/android-json/0.0.20131108.vaadin1/android-json-0.0.20131108.vaadin1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-core/6.1.1/spring-core-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-jcl/6.1.1/spring-jcl-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/springframework/spring-test/6.1.1/spring-test-6.1.1.jar:/Users/jurgenpetri/.m2/repository/org/xmlunit/xmlunit-core/2.9.1/xmlunit-core-2.9.1.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="/Users/jurgenpetri"/>
+    <property name="user.language" value="de"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2025-07-15"/>
+    <property name="java.home" value="/opt/homebrew/Cellar/openjdk/24.0.2/libexec/openjdk.jdk/Contents/Home"/>
+    <property name="spring.profiles.active" value="dev"/>
+    <property name="file.separator" value="/"/>
+    <property name="basedir" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
+    <property name="java.awt.headless" value="true"/>
+    <property name="apple.awt.application.name" value="ForkedBooter"/>
+    <property name="surefire.real.class.path" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend/target/surefire/surefirebooter-20250817190818935_3.jar"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="java.runtime.version" value="24.0.2"/>
+    <property name="user.name" value="jurgenpetri"/>
+    <property name="stdout.encoding" value="UTF-8"/>
+    <property name="path.separator" value=":"/>
+    <property name="os.version" value="15.6"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="Homebrew"/>
+    <property name="localRepository" value="/Users/jurgenpetri/.m2/repository"/>
+    <property name="java.vendor.url.bug" value="https://github.com/Homebrew/homebrew-core/issues"/>
+    <property name="java.io.tmpdir" value="/var/folders/xb/0n3fbrkx319d9s68nhd8gb980000gn/T/"/>
+    <property name="catalina.home" value="/private/var/folders/xb/0n3fbrkx319d9s68nhd8gb980000gn/T/tomcat.0.5000742790988222299"/>
+    <property name="java.version" value="24.0.2"/>
+    <property name="user.dir" value="/Users/jurgenpetri/git/github/ai-dev-demo/todo-backend"/>
+    <property name="os.arch" value="aarch64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="PID" value="5196"/>
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
+    <property name="catalina.base" value="/private/var/folders/xb/0n3fbrkx319d9s68nhd8gb980000gn/T/tomcat.0.5000742790988222299"/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/Users/jurgenpetri/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="UTF-8"/>
+    <property name="java.vendor" value="Homebrew"/>
+    <property name="java.vm.version" value="24.0.2"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+    <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
+    <property name="java.class.version" value="68.0"/>
+    <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} - %msg%n"/>
+    <property name="LOGGED_APPLICATION_NAME" value="[todo-backend] "/>
+  </properties>
+  <testcase name="editWorkflow_EmptyTitleDeletesTodo_ShouldWork" classname="com.example.todobackend.integration.TodoManagementWorkflowTest" time="0.692">
+    <system-out><![CDATA[19:08:19.626 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.todobackend.integration.TodoManagementWorkflowTest]: TodoManagementWorkflowTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+19:08:19.705 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.todobackend.TodoBackendApplication for test class com.example.todobackend.integration.TodoManagementWorkflowTest
+19:08:19.812 [main] INFO org.springframework.boot.devtools.restart.RestartApplicationListener -- Restart disabled due to context in which it is running
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+&amp#27;[32m :: Spring Boot :: &amp#27;[39m              &amp#27;[2m (v3.2.0)&amp#27;[0;39m
+
+2025-08-17 19:08:19 - Starting TodoManagementWorkflowTest using Java 24.0.2 with PID 5196 (started by jurgenpetri in /Users/jurgenpetri/git/github/ai-dev-demo/todo-backend)
+2025-08-17 19:08:19 - Running with Spring Boot v3.2.0, Spring v6.1.1
+2025-08-17 19:08:19 - The following 1 profile is active: "dev"
+2025-08-17 19:08:20 - Tomcat initialized with port 0 (http)
+2025-08-17 19:08:20 - Starting service [Tomcat]
+2025-08-17 19:08:20 - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2025-08-17 19:08:20 - Initializing Spring embedded WebApplicationContext
+2025-08-17 19:08:20 - Root WebApplicationContext: initialization completed in 777 ms
+2025-08-17 19:08:20 - Filter 'webMvcObservationFilter' configured for use
+2025-08-17 19:08:20 - 11 mappings in 'requestMappingHandlerMapping'
+2025-08-17 19:08:21 - Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-08-17 19:08:21 - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-08-17 19:08:21 - ControllerAdvice beans: 1 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-08-17 19:08:21 - Exposing 5 endpoint(s) beneath base path '/actuator'
+2025-08-17 19:08:21 - Tomcat started on port 63894 (http) with context path ''
+2025-08-17 19:08:21 - Started TodoManagementWorkflowTest in 1.432 seconds (process running for 2.261)
+2025-08-17 19:08:21 - HTTP DELETE http://localhost:63894/api/todos/completed
+2025-08-17 19:08:21 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:21 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-08-17 19:08:21 - Initializing Servlet 'dispatcherServlet'
+2025-08-17 19:08:21 - Detected StandardServletMultipartResolver
+2025-08-17 19:08:21 - Detected AcceptHeaderLocaleResolver
+2025-08-17 19:08:21 - Detected FixedThemeResolver
+2025-08-17 19:08:21 - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@34fcbc36
+2025-08-17 19:08:21 - Detected org.springframework.web.servlet.support.SessionFlashMapManager@15f12e7b
+2025-08-17 19:08:21 - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-08-17 19:08:21 - Completed initialization in 1 ms
+2025-08-17 19:08:21 - DELETE "/api/todos/completed", parameters={masked}
+2025-08-17 19:08:21 - Mapped to com.example.todobackend.controller.TodoController#deleteCompletedTodos()
+2025-08-17 19:08:21 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:21 - Nothing to write: null body
+2025-08-17 19:08:21 - Completed 204 NO_CONTENT
+2025-08-17 19:08:21 - Response 204 NO_CONTENT
+2025-08-17 19:08:21 - HTTP GET http://localhost:63894/api/todos
+2025-08-17 19:08:21 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:21 - GET "/api/todos", parameters={}
+2025-08-17 19:08:21 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
+2025-08-17 19:08:21 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:21 - Writing [[]]
+2025-08-17 19:08:21 - Completed 200 OK
+2025-08-17 19:08:21 - Response 200 OK
+2025-08-17 19:08:21 - Reading to [com.example.todobackend.dto.TodoResponse[]]
+2025-08-17 19:08:21 - HTTP POST http://localhost:63894/api/todos
+2025-08-17 19:08:21 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:21 - Writing [CreateTodoRequest[title=Temporary Todo]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:21 - POST "/api/todos", parameters={}
+2025-08-17 19:08:21 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 19:08:21 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Temporary Todo]]
+2025-08-17 19:08:21 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:21 - Writing [TodoResponse[id=1, title=Temporary Todo, completed=false]]
+2025-08-17 19:08:21 - Completed 201 CREATED
+2025-08-17 19:08:21 - Response 201 CREATED
+2025-08-17 19:08:21 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:21 - HTTP PUT http://localhost:63894/api/todos/1
+2025-08-17 19:08:21 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:21 - Writing [UpdateTodoRequest[title=   , completed=null]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:21 - PUT "/api/todos/1", parameters={}
+2025-08-17 19:08:21 - Mapped to com.example.todobackend.controller.TodoController#updateTodo(Long, UpdateTodoRequest)
+2025-08-17 19:08:21 - Read "application/json;charset=UTF-8" to [UpdateTodoRequest[title=   , completed=null]]
+2025-08-17 19:08:21 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:21 - Nothing to write: null body
+2025-08-17 19:08:21 - Completed 204 NO_CONTENT
+2025-08-17 19:08:21 - Response 204 NO_CONTENT
+2025-08-17 19:08:21 - HTTP GET http://localhost:63894/api/todos
+2025-08-17 19:08:21 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:21 - GET "/api/todos", parameters={}
+2025-08-17 19:08:21 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
+2025-08-17 19:08:21 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:21 - Writing [[]]
+2025-08-17 19:08:21 - Completed 200 OK
+2025-08-17 19:08:21 - Response 200 OK
+2025-08-17 19:08:21 - Reading to [com.example.todobackend.dto.TodoResponse[]]
+]]></system-out>
+    <system-err><![CDATA[java.lang.instrument.IllegalClassFormatException: Error while instrumenting javax/sql/DataSource with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:94)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1052)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:164)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:678)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:604)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:639)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:608)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:578)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:543)
+	at org.springframework.boot.autoconfigure.condition.FilteringSpringBootCondition.resolve(FilteringSpringBootCondition.java:108)
+	at org.springframework.boot.autoconfigure.condition.FilteringSpringBootCondition$ClassNameFilter.isPresent(FilteringSpringBootCondition.java:140)
+	at org.springframework.boot.autoconfigure.condition.FilteringSpringBootCondition$ClassNameFilter$2.matches(FilteringSpringBootCondition.java:128)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition$StandardOutcomesResolver.getOutcome(OnClassCondition.java:223)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition$StandardOutcomesResolver.getOutcome(OnClassCondition.java:210)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition$StandardOutcomesResolver.getOutcomes(OnClassCondition.java:197)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition$StandardOutcomesResolver.resolveOutcomes(OnClassCondition.java:186)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition.resolveOutcomesThreaded(OnClassCondition.java:68)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition.getOutcomes(OnClassCondition.java:52)
+	at org.springframework.boot.autoconfigure.condition.FilteringSpringBootCondition.match(FilteringSpringBootCondition.java:49)
+	at org.springframework.boot.autoconfigure.AutoConfigurationImportSelector$ConfigurationClassFilter.filter(AutoConfigurationImportSelector.java:366)
+	at org.springframework.boot.autoconfigure.AutoConfigurationImportSelector.getAutoConfigurationEntry(AutoConfigurationImportSelector.java:131)
+	at org.springframework.boot.autoconfigure.AutoConfigurationImportSelector$AutoConfigurationGroup.process(AutoConfigurationImportSelector.java:430)
+	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGrouping.getImports(ConfigurationClassParser.java:803)
+	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGroupingHandler.processGroupImports(ConfigurationClassParser.java:733)
+	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorHandler.process(ConfigurationClassParser.java:704)
+	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:182)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:416)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:289)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:349)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:118)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:775)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:597)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:455)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:323)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:137)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1442)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:552)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:137)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:108)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at org.springframework.test.context.support.DependencyInjectionTestExecutionListener.injectDependencies(DependencyInjectionTestExecutionListener.java:141)
+	at org.springframework.test.context.support.DependencyInjectionTestExecutionListener.prepareTestInstance(DependencyInjectionTestExecutionListener.java:97)
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:247)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:163)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$10(ClassBasedTestDescriptor.java:378)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:215)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1716)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:570)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:560)
+	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:315)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:735)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734)
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:807)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$6(ClassBasedTestDescriptor.java:290)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$4(ClassBasedTestDescriptor.java:279)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:278)
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$0(TestMethodTestDescriptor.java:106)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:105)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:90)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+Caused by: java.io.IOException: Error while instrumenting javax/sql/DataSource with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrumentError(Instrumenter.java:161)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:111)
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:92)
+	... 124 more
+Caused by: java.lang.IllegalArgumentException: Unsupported class file major version 68
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:200)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:180)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:166)
+	at org.jacoco.agent.rt.internal_4742761.core.internal.instr.InstrSupport.classReaderFor(InstrSupport.java:280)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:77)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:109)
+	... 125 more
+java.lang.instrument.IllegalClassFormatException: Error while instrumenting javax/sql/CommonDataSource with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:94)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1052)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:164)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:678)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:604)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:578)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1052)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:164)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:678)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:604)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:639)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:608)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:578)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:543)
+	at org.springframework.boot.autoconfigure.condition.FilteringSpringBootCondition.resolve(FilteringSpringBootCondition.java:108)
+	at org.springframework.boot.autoconfigure.condition.FilteringSpringBootCondition$ClassNameFilter.isPresent(FilteringSpringBootCondition.java:140)
+	at org.springframework.boot.autoconfigure.condition.FilteringSpringBootCondition$ClassNameFilter$2.matches(FilteringSpringBootCondition.java:128)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition$StandardOutcomesResolver.getOutcome(OnClassCondition.java:223)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition$StandardOutcomesResolver.getOutcome(OnClassCondition.java:210)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition$StandardOutcomesResolver.getOutcomes(OnClassCondition.java:197)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition$StandardOutcomesResolver.resolveOutcomes(OnClassCondition.java:186)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition.resolveOutcomesThreaded(OnClassCondition.java:68)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition.getOutcomes(OnClassCondition.java:52)
+	at org.springframework.boot.autoconfigure.condition.FilteringSpringBootCondition.match(FilteringSpringBootCondition.java:49)
+	at org.springframework.boot.autoconfigure.AutoConfigurationImportSelector$ConfigurationClassFilter.filter(AutoConfigurationImportSelector.java:366)
+	at org.springframework.boot.autoconfigure.AutoConfigurationImportSelector.getAutoConfigurationEntry(AutoConfigurationImportSelector.java:131)
+	at org.springframework.boot.autoconfigure.AutoConfigurationImportSelector$AutoConfigurationGroup.process(AutoConfigurationImportSelector.java:430)
+	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGrouping.getImports(ConfigurationClassParser.java:803)
+	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGroupingHandler.processGroupImports(ConfigurationClassParser.java:733)
+	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorHandler.process(ConfigurationClassParser.java:704)
+	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:182)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:416)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:289)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:349)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:118)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:775)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:597)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:455)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:323)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:137)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1442)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:552)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:137)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:108)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at org.springframework.test.context.support.DependencyInjectionTestExecutionListener.injectDependencies(DependencyInjectionTestExecutionListener.java:141)
+	at org.springframework.test.context.support.DependencyInjectionTestExecutionListener.prepareTestInstance(DependencyInjectionTestExecutionListener.java:97)
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:247)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:163)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$10(ClassBasedTestDescriptor.java:378)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:215)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1716)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:570)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:560)
+	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:315)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:735)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734)
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:807)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$6(ClassBasedTestDescriptor.java:290)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$4(ClassBasedTestDescriptor.java:279)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:278)
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$0(TestMethodTestDescriptor.java:106)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:105)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:90)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+Caused by: java.io.IOException: Error while instrumenting javax/sql/CommonDataSource with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrumentError(Instrumenter.java:161)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:111)
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:92)
+	... 132 more
+Caused by: java.lang.IllegalArgumentException: Unsupported class file major version 68
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:200)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:180)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:166)
+	at org.jacoco.agent.rt.internal_4742761.core.internal.instr.InstrSupport.classReaderFor(InstrSupport.java:280)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:77)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:109)
+	... 133 more
+java.lang.instrument.IllegalClassFormatException: Error while instrumenting java/sql/Wrapper with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:94)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1052)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:164)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:678)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:604)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:578)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1052)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:164)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:678)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:604)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:639)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:608)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:578)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:543)
+	at org.springframework.boot.autoconfigure.condition.FilteringSpringBootCondition.resolve(FilteringSpringBootCondition.java:108)
+	at org.springframework.boot.autoconfigure.condition.FilteringSpringBootCondition$ClassNameFilter.isPresent(FilteringSpringBootCondition.java:140)
+	at org.springframework.boot.autoconfigure.condition.FilteringSpringBootCondition$ClassNameFilter$2.matches(FilteringSpringBootCondition.java:128)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition$StandardOutcomesResolver.getOutcome(OnClassCondition.java:223)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition$StandardOutcomesResolver.getOutcome(OnClassCondition.java:210)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition$StandardOutcomesResolver.getOutcomes(OnClassCondition.java:197)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition$StandardOutcomesResolver.resolveOutcomes(OnClassCondition.java:186)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition.resolveOutcomesThreaded(OnClassCondition.java:68)
+	at org.springframework.boot.autoconfigure.condition.OnClassCondition.getOutcomes(OnClassCondition.java:52)
+	at org.springframework.boot.autoconfigure.condition.FilteringSpringBootCondition.match(FilteringSpringBootCondition.java:49)
+	at org.springframework.boot.autoconfigure.AutoConfigurationImportSelector$ConfigurationClassFilter.filter(AutoConfigurationImportSelector.java:366)
+	at org.springframework.boot.autoconfigure.AutoConfigurationImportSelector.getAutoConfigurationEntry(AutoConfigurationImportSelector.java:131)
+	at org.springframework.boot.autoconfigure.AutoConfigurationImportSelector$AutoConfigurationGroup.process(AutoConfigurationImportSelector.java:430)
+	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGrouping.getImports(ConfigurationClassParser.java:803)
+	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorGroupingHandler.processGroupImports(ConfigurationClassParser.java:733)
+	at org.springframework.context.annotation.ConfigurationClassParser$DeferredImportSelectorHandler.process(ConfigurationClassParser.java:704)
+	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:182)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:416)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:289)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:349)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:118)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:775)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:597)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:455)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:323)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:137)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1442)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:552)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:137)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:108)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at org.springframework.test.context.support.DependencyInjectionTestExecutionListener.injectDependencies(DependencyInjectionTestExecutionListener.java:141)
+	at org.springframework.test.context.support.DependencyInjectionTestExecutionListener.prepareTestInstance(DependencyInjectionTestExecutionListener.java:97)
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:247)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:163)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$10(ClassBasedTestDescriptor.java:378)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:215)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1716)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:570)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:560)
+	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:315)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:735)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734)
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:807)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$6(ClassBasedTestDescriptor.java:290)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$4(ClassBasedTestDescriptor.java:279)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:278)
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$0(TestMethodTestDescriptor.java:106)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:105)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:90)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+Caused by: java.io.IOException: Error while instrumenting java/sql/Wrapper with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrumentError(Instrumenter.java:161)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:111)
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:92)
+	... 132 more
+Caused by: java.lang.IllegalArgumentException: Unsupported class file major version 68
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:200)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:180)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:166)
+	at org.jacoco.agent.rt.internal_4742761.core.internal.instr.InstrSupport.classReaderFor(InstrSupport.java:280)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:77)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:109)
+	... 133 more
+java.lang.instrument.IllegalClassFormatException: Error while instrumenting org/jcp/xml/dsig/internal/dom/XMLDSigRI with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:94)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1052)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:164)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:678)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClass(BuiltinClassLoader.java:560)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:602)
+	at java.base/java.lang.Class.forName(Class.java:595)
+	at java.base/java.util.ServiceLoader.loadProvider(ServiceLoader.java:755)
+	at java.base/java.util.ServiceLoader$ModuleServicesLookupIterator.hasNext(ServiceLoader.java:955)
+	at java.base/java.util.ServiceLoader$1.hasNext(ServiceLoader.java:1164)
+	at java.base/java.util.ServiceLoader$2.hasNext(ServiceLoader.java:1246)
+	at java.base/sun.security.jca.ProviderConfig$ProviderLoader.load(ProviderConfig.java:317)
+	at java.base/sun.security.jca.ProviderConfig.doLoadProvider(ProviderConfig.java:235)
+	at java.base/sun.security.jca.ProviderConfig.getProvider(ProviderConfig.java:211)
+	at java.base/sun.security.jca.ProviderList.loadAll(ProviderList.java:311)
+	at java.base/sun.security.jca.ProviderList.removeInvalid(ProviderList.java:328)
+	at java.base/sun.security.jca.Providers.getFullProviderList(Providers.java:186)
+	at java.base/java.security.Security.getProviders(Security.java:533)
+	at java.base/java.security.Security.getAlgorithms(Security.java:1011)
+	at org.apache.catalina.util.SessionIdGeneratorBase.<clinit>(SessionIdGeneratorBase.java:49)
+	at org.apache.catalina.authenticator.AuthenticatorBase.<init>(AuthenticatorBase.java:189)
+	at org.apache.catalina.authenticator.NonLoginAuthenticator.<init>(NonLoginAuthenticator.java:31)
+	at org.springframework.boot.autoconfigure.BackgroundPreinitializer$TomcatInitializer.run(BackgroundPreinitializer.java:202)
+	at org.springframework.boot.autoconfigure.BackgroundPreinitializer$1.runSafely(BackgroundPreinitializer.java:120)
+	at org.springframework.boot.autoconfigure.BackgroundPreinitializer$1.run(BackgroundPreinitializer.java:113)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: java.io.IOException: Error while instrumenting org/jcp/xml/dsig/internal/dom/XMLDSigRI with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrumentError(Instrumenter.java:161)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:111)
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:92)
+	... 30 more
+Caused by: java.lang.IllegalArgumentException: Unsupported class file major version 68
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:200)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:180)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:166)
+	at org.jacoco.agent.rt.internal_4742761.core.internal.instr.InstrSupport.classReaderFor(InstrSupport.java:280)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:77)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:109)
+	... 31 more
+java.lang.instrument.IllegalClassFormatException: Error while instrumenting org/jcp/xml/dsig/internal/dom/XMLDSigRI$1 with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:94)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1052)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:164)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:678)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:604)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:578)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	at java.xml.crypto/org.jcp.xml.dsig.internal.dom.XMLDSigRI.<clinit>(XMLDSigRI.java:67)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized0(Native Method)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized(Unsafe.java:1166)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.ensureClassInitialized(MethodHandleAccessorFactory.java:341)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.newConstructorAccessor(MethodHandleAccessorFactory.java:104)
+	at java.base/jdk.internal.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:143)
+	at java.base/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:546)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:496)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at java.base/java.util.ServiceLoader$ProviderImpl.newInstance(ServiceLoader.java:707)
+	at java.base/java.util.ServiceLoader$ProviderImpl.get(ServiceLoader.java:672)
+	at java.base/java.util.ServiceLoader$2.next(ServiceLoader.java:1256)
+	at java.base/sun.security.jca.ProviderConfig$ProviderLoader.load(ProviderConfig.java:319)
+	at java.base/sun.security.jca.ProviderConfig.doLoadProvider(ProviderConfig.java:235)
+	at java.base/sun.security.jca.ProviderConfig.getProvider(ProviderConfig.java:211)
+	at java.base/sun.security.jca.ProviderList.loadAll(ProviderList.java:311)
+	at java.base/sun.security.jca.ProviderList.removeInvalid(ProviderList.java:328)
+	at java.base/sun.security.jca.Providers.getFullProviderList(Providers.java:186)
+	at java.base/java.security.Security.getProviders(Security.java:533)
+	at java.base/java.security.Security.getAlgorithms(Security.java:1011)
+	at org.apache.catalina.util.SessionIdGeneratorBase.<clinit>(SessionIdGeneratorBase.java:49)
+	at org.apache.catalina.authenticator.AuthenticatorBase.<init>(AuthenticatorBase.java:189)
+	at org.apache.catalina.authenticator.NonLoginAuthenticator.<init>(NonLoginAuthenticator.java:31)
+	at org.springframework.boot.autoconfigure.BackgroundPreinitializer$TomcatInitializer.run(BackgroundPreinitializer.java:202)
+	at org.springframework.boot.autoconfigure.BackgroundPreinitializer$1.runSafely(BackgroundPreinitializer.java:120)
+	at org.springframework.boot.autoconfigure.BackgroundPreinitializer$1.run(BackgroundPreinitializer.java:113)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: java.io.IOException: Error while instrumenting org/jcp/xml/dsig/internal/dom/XMLDSigRI$1 with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrumentError(Instrumenter.java:161)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:111)
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:92)
+	... 38 more
+Caused by: java.lang.IllegalArgumentException: Unsupported class file major version 68
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:200)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:180)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:166)
+	at org.jacoco.agent.rt.internal_4742761.core.internal.instr.InstrSupport.classReaderFor(InstrSupport.java:280)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:77)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:109)
+	... 39 more
+java.lang.instrument.IllegalClassFormatException: Error while instrumenting org/jcp/xml/dsig/internal/dom/XMLDSigRI$2 with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:94)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1052)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:164)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:678)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:604)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:578)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	at java.xml.crypto/org.jcp.xml.dsig.internal.dom.XMLDSigRI.<init>(XMLDSigRI.java:149)
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at java.base/java.util.ServiceLoader$ProviderImpl.newInstance(ServiceLoader.java:707)
+	at java.base/java.util.ServiceLoader$ProviderImpl.get(ServiceLoader.java:672)
+	at java.base/java.util.ServiceLoader$2.next(ServiceLoader.java:1256)
+	at java.base/sun.security.jca.ProviderConfig$ProviderLoader.load(ProviderConfig.java:319)
+	at java.base/sun.security.jca.ProviderConfig.doLoadProvider(ProviderConfig.java:235)
+	at java.base/sun.security.jca.ProviderConfig.getProvider(ProviderConfig.java:211)
+	at java.base/sun.security.jca.ProviderList.loadAll(ProviderList.java:311)
+	at java.base/sun.security.jca.ProviderList.removeInvalid(ProviderList.java:328)
+	at java.base/sun.security.jca.Providers.getFullProviderList(Providers.java:186)
+	at java.base/java.security.Security.getProviders(Security.java:533)
+	at java.base/java.security.Security.getAlgorithms(Security.java:1011)
+	at org.apache.catalina.util.SessionIdGeneratorBase.<clinit>(SessionIdGeneratorBase.java:49)
+	at org.apache.catalina.authenticator.AuthenticatorBase.<init>(AuthenticatorBase.java:189)
+	at org.apache.catalina.authenticator.NonLoginAuthenticator.<init>(NonLoginAuthenticator.java:31)
+	at org.springframework.boot.autoconfigure.BackgroundPreinitializer$TomcatInitializer.run(BackgroundPreinitializer.java:202)
+	at org.springframework.boot.autoconfigure.BackgroundPreinitializer$1.runSafely(BackgroundPreinitializer.java:120)
+	at org.springframework.boot.autoconfigure.BackgroundPreinitializer$1.run(BackgroundPreinitializer.java:113)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: java.io.IOException: Error while instrumenting org/jcp/xml/dsig/internal/dom/XMLDSigRI$2 with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrumentError(Instrumenter.java:161)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:111)
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:92)
+	... 33 more
+Caused by: java.lang.IllegalArgumentException: Unsupported class file major version 68
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:200)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:180)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:166)
+	at org.jacoco.agent.rt.internal_4742761.core.internal.instr.InstrSupport.classReaderFor(InstrSupport.java:280)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:77)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:109)
+	... 34 more
+java.lang.instrument.IllegalClassFormatException: Error while instrumenting org/jcp/xml/dsig/internal/dom/XMLDSigRI$ProviderService with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:94)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1052)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:164)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:678)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:604)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:578)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	at java.xml.crypto/org.jcp.xml.dsig.internal.dom.XMLDSigRI.<init>(XMLDSigRI.java:149)
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at java.base/java.util.ServiceLoader$ProviderImpl.newInstance(ServiceLoader.java:707)
+	at java.base/java.util.ServiceLoader$ProviderImpl.get(ServiceLoader.java:672)
+	at java.base/java.util.ServiceLoader$2.next(ServiceLoader.java:1256)
+	at java.base/sun.security.jca.ProviderConfig$ProviderLoader.load(ProviderConfig.java:319)
+	at java.base/sun.security.jca.ProviderConfig.doLoadProvider(ProviderConfig.java:235)
+	at java.base/sun.security.jca.ProviderConfig.getProvider(ProviderConfig.java:211)
+	at java.base/sun.security.jca.ProviderList.loadAll(ProviderList.java:311)
+	at java.base/sun.security.jca.ProviderList.removeInvalid(ProviderList.java:328)
+	at java.base/sun.security.jca.Providers.getFullProviderList(Providers.java:186)
+	at java.base/java.security.Security.getProviders(Security.java:533)
+	at java.base/java.security.Security.getAlgorithms(Security.java:1011)
+	at org.apache.catalina.util.SessionIdGeneratorBase.<clinit>(SessionIdGeneratorBase.java:49)
+	at org.apache.catalina.authenticator.AuthenticatorBase.<init>(AuthenticatorBase.java:189)
+	at org.apache.catalina.authenticator.NonLoginAuthenticator.<init>(NonLoginAuthenticator.java:31)
+	at org.springframework.boot.autoconfigure.BackgroundPreinitializer$TomcatInitializer.run(BackgroundPreinitializer.java:202)
+	at org.springframework.boot.autoconfigure.BackgroundPreinitializer$1.runSafely(BackgroundPreinitializer.java:120)
+	at org.springframework.boot.autoconfigure.BackgroundPreinitializer$1.run(BackgroundPreinitializer.java:113)
+	at java.base/java.lang.Thread.run(Thread.java:1447)
+Caused by: java.io.IOException: Error while instrumenting org/jcp/xml/dsig/internal/dom/XMLDSigRI$ProviderService with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrumentError(Instrumenter.java:161)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:111)
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:92)
+	... 33 more
+Caused by: java.lang.IllegalArgumentException: Unsupported class file major version 68
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:200)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:180)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:166)
+	at org.jacoco.agent.rt.internal_4742761.core.internal.instr.InstrSupport.classReaderFor(InstrSupport.java:280)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:77)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:109)
+	... 34 more
+java.lang.instrument.IllegalClassFormatException: Error while instrumenting org/ietf/jgss/GSSException with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:94)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1052)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:164)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:678)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:604)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:639)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:608)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:578)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	at org.apache.catalina.startup.Tomcat.createDefaultRealm(Tomcat.java:820)
+	at org.apache.catalina.startup.Tomcat.getEngine(Tomcat.java:632)
+	at org.apache.catalina.startup.Tomcat.getHost(Tomcat.java:609)
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:212)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:188)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:610)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:753)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:455)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:323)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:137)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1442)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:552)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:137)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:108)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at org.springframework.test.context.support.DependencyInjectionTestExecutionListener.injectDependencies(DependencyInjectionTestExecutionListener.java:141)
+	at org.springframework.test.context.support.DependencyInjectionTestExecutionListener.prepareTestInstance(DependencyInjectionTestExecutionListener.java:97)
+	at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:247)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.postProcessTestInstance(SpringExtension.java:163)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$10(ClassBasedTestDescriptor.java:378)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.executeAndMaskThrowable(ClassBasedTestDescriptor.java:383)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeTestInstancePostProcessors$11(ClassBasedTestDescriptor.java:378)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:215)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1716)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:570)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:560)
+	at java.base/java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:315)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:735)
+	at java.base/java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:734)
+	at java.base/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:807)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeTestInstancePostProcessors(ClassBasedTestDescriptor.java:377)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$instantiateAndPostProcessTestInstance$6(ClassBasedTestDescriptor.java:290)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.instantiateAndPostProcessTestInstance(ClassBasedTestDescriptor.java:289)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$4(ClassBasedTestDescriptor.java:279)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$testInstancesProvider$5(ClassBasedTestDescriptor.java:278)
+	at org.junit.jupiter.engine.execution.TestInstancesProvider.getTestInstances(TestInstancesProvider.java:31)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$prepare$0(TestMethodTestDescriptor.java:106)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:105)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.prepare(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$prepare$2(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.prepare(NodeTestTask.java:123)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:90)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+Caused by: java.io.IOException: Error while instrumenting org/ietf/jgss/GSSException with JaCoCo 0.8.11.202310140853/f33756c.
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrumentError(Instrumenter.java:161)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:111)
+	at org.jacoco.agent.rt.internal_4742761.CoverageTransformer.transform(CoverageTransformer.java:92)
+	... 106 more
+Caused by: java.lang.IllegalArgumentException: Unsupported class file major version 68
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:200)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:180)
+	at org.jacoco.agent.rt.internal_4742761.asm.ClassReader.<init>(ClassReader.java:166)
+	at org.jacoco.agent.rt.internal_4742761.core.internal.instr.InstrSupport.classReaderFor(InstrSupport.java:280)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:77)
+	at org.jacoco.agent.rt.internal_4742761.core.instr.Instrumenter.instrument(Instrumenter.java:109)
+	... 107 more
+WARNING: A Java agent has been loaded dynamically (/Users/jurgenpetri/.m2/repository/net/bytebuddy/byte-buddy-agent/1.14.10/byte-buddy-agent-1.14.10.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+  </testcase>
+  <testcase name="concurrentOperations_ShouldBeThreadSafe" classname="com.example.todobackend.integration.TodoManagementWorkflowTest" time="0.054">
+    <system-out><![CDATA[2025-08-17 19:08:21 - HTTP DELETE http://localhost:63894/api/todos/completed
+2025-08-17 19:08:21 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:21 - DELETE "/api/todos/completed", parameters={masked}
+2025-08-17 19:08:21 - Mapped to com.example.todobackend.controller.TodoController#deleteCompletedTodos()
+2025-08-17 19:08:21 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:21 - Nothing to write: null body
+2025-08-17 19:08:21 - Completed 204 NO_CONTENT
+2025-08-17 19:08:21 - Response 204 NO_CONTENT
+2025-08-17 19:08:21 - HTTP GET http://localhost:63894/api/todos
+2025-08-17 19:08:21 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:21 - GET "/api/todos", parameters={}
+2025-08-17 19:08:21 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
+2025-08-17 19:08:21 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:21 - Writing [[]]
+2025-08-17 19:08:21 - Completed 200 OK
+2025-08-17 19:08:21 - Response 200 OK
+2025-08-17 19:08:21 - Reading to [com.example.todobackend.dto.TodoResponse[]]
+2025-08-17 19:08:21 - HTTP POST http://localhost:63894/api/todos
+2025-08-17 19:08:21 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:21 - Writing [CreateTodoRequest[title=Todo 1]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:21 - POST "/api/todos", parameters={}
+2025-08-17 19:08:21 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 19:08:21 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Todo 1]]
+2025-08-17 19:08:21 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:21 - Writing [TodoResponse[id=2, title=Todo 1, completed=false]]
+2025-08-17 19:08:21 - Completed 201 CREATED
+2025-08-17 19:08:21 - Response 201 CREATED
+2025-08-17 19:08:21 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:21 - HTTP POST http://localhost:63894/api/todos
+2025-08-17 19:08:21 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:21 - Writing [CreateTodoRequest[title=Todo 2]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:21 - POST "/api/todos", parameters={}
+2025-08-17 19:08:21 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 19:08:21 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Todo 2]]
+2025-08-17 19:08:21 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:21 - Writing [TodoResponse[id=3, title=Todo 2, completed=false]]
+2025-08-17 19:08:21 - Completed 201 CREATED
+2025-08-17 19:08:21 - Response 201 CREATED
+2025-08-17 19:08:21 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:21 - HTTP POST http://localhost:63894/api/todos
+2025-08-17 19:08:21 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:21 - Writing [CreateTodoRequest[title=Todo 3]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:21 - POST "/api/todos", parameters={}
+2025-08-17 19:08:21 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 19:08:21 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Todo 3]]
+2025-08-17 19:08:21 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:21 - Writing [TodoResponse[id=4, title=Todo 3, completed=false]]
+2025-08-17 19:08:22 - Completed 201 CREATED
+2025-08-17 19:08:22 - Response 201 CREATED
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [CreateTodoRequest[title=Todo 4]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - POST "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Todo 4]]
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=5, title=Todo 4, completed=false]]
+2025-08-17 19:08:22 - Completed 201 CREATED
+2025-08-17 19:08:22 - Response 201 CREATED
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [CreateTodoRequest[title=Todo 5]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - POST "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Todo 5]]
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=6, title=Todo 5, completed=false]]
+2025-08-17 19:08:22 - Completed 201 CREATED
+2025-08-17 19:08:22 - Response 201 CREATED
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/2/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/2/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=2, title=Todo 1, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/3/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/3/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=3, title=Todo 2, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/4/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/4/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=4, title=Todo 3, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/5/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/5/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=5, title=Todo 4, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/6/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/6/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=6, title=Todo 5, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - GET "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [[TodoResponse[id=2, title=Todo 1, completed=true], TodoResponse[id=3, title=Todo 2, completed=true], (truncated)...]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse[]]
+2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos/count/active
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - GET "/api/todos/count/active", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getActiveTodoCount()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [0]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [java.lang.Long]
+]]></system-out>
+  </testcase>
+  <testcase name="apiEndpointCompliance_ShouldMatchSpecification" classname="com.example.todobackend.integration.TodoManagementWorkflowTest" time="0.027">
+    <system-out><![CDATA[2025-08-17 19:08:22 - HTTP DELETE http://localhost:63894/api/todos/completed
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - DELETE "/api/todos/completed", parameters={masked}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#deleteCompletedTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Nothing to write: null body
+2025-08-17 19:08:22 - Completed 204 NO_CONTENT
+2025-08-17 19:08:22 - Response 204 NO_CONTENT
+2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - GET "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [[]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse[]]
+2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - GET "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [[]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse[]]
+2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [CreateTodoRequest[title=API Test Todo]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - POST "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=API Test Todo]]
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=7, title=API Test Todo, completed=false]]
+2025-08-17 19:08:22 - Completed 201 CREATED
+2025-08-17 19:08:22 - Response 201 CREATED
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/7
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [UpdateTodoRequest[title=Updated API Test Todo, completed=true]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - PUT "/api/todos/7", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#updateTodo(Long, UpdateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [UpdateTodoRequest[title=Updated API Test Todo, completed=true]]
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=7, title=Updated API Test Todo, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/7/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/7/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=7, title=Updated API Test Todo, completed=false]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP DELETE http://localhost:63894/api/todos/7
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - DELETE "/api/todos/7", parameters={masked}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#deleteTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Nothing to write: null body
+2025-08-17 19:08:22 - Completed 204 NO_CONTENT
+2025-08-17 19:08:22 - Response 204 NO_CONTENT
+2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - GET "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [[]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse[]]
+]]></system-out>
+  </testcase>
+  <testcase name="validationAndErrorHandling_ShouldWork" classname="com.example.todobackend.integration.TodoManagementWorkflowTest" time="0.045">
+    <system-out><![CDATA[2025-08-17 19:08:22 - HTTP DELETE http://localhost:63894/api/todos/completed
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - DELETE "/api/todos/completed", parameters={masked}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#deleteCompletedTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Nothing to write: null body
+2025-08-17 19:08:22 - Completed 204 NO_CONTENT
+2025-08-17 19:08:22 - Response 204 NO_CONTENT
+2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - GET "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [[]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse[]]
+2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [CreateTodoRequest[title=Test Todo]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - POST "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Test Todo]]
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=8, title=Test Todo, completed=false]]
+2025-08-17 19:08:22 - Completed 201 CREATED
+2025-08-17 19:08:22 - Response 201 CREATED
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/8
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [UpdateTodoRequest[title=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, completed=null]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - PUT "/api/todos/8", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#updateTodo(Long, UpdateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [UpdateTodoRequest[title=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa (truncated)...]
+2025-08-17 19:08:22 - Using @ExceptionHandler com.example.todobackend.exception.GlobalExceptionHandler#handleValidationErrors(MethodArgumentNotValidException, HttpServletRequest)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [ErrorResponse[message=Validation failed, details=title: Title cannot exceed 500 characters, status=4 (truncated)...]
+2025-08-17 19:08:22 - Response 400 BAD_REQUEST
+2025-08-17 19:08:22 - Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [1] in public org.springframework.http.ResponseEntity<com.example.todobackend.dto.TodoResponse> com.example.todobackend.controller.TodoController.updateTodo(java.lang.Long,com.example.todobackend.dto.UpdateTodoRequest): [Field error in object 'updateTodoRequest' on field 'title': rejected value [aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]; codes [Size.updateTodoRequest.title,Size.title,Size.java.lang.String,Size]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [updateTodoRequest.title,title]; arguments []; default message [title],500,0]; default message [Title cannot exceed 500 characters]] ]
+2025-08-17 19:08:22 - Completed 400 BAD_REQUEST
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.ErrorResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/99999
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [UpdateTodoRequest[title=Updated, completed=null]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - PUT "/api/todos/99999", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#updateTodo(Long, UpdateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [UpdateTodoRequest[title=Updated, completed=null]]
+2025-08-17 19:08:22 - Using @ExceptionHandler com.example.todobackend.exception.GlobalExceptionHandler#handleTodoNotFound(TodoNotFoundException, HttpServletRequest)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [ErrorResponse[message=Todo not found with id: 99999, details=The requested todo does not exist, stat (truncated)...]
+2025-08-17 19:08:22 - Resolved [com.example.todobackend.exception.TodoNotFoundException: Todo not found with id: 99999]
+2025-08-17 19:08:22 - Completed 404 NOT_FOUND
+2025-08-17 19:08:22 - Response 404 NOT_FOUND
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.ErrorResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/99999/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/99999/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using @ExceptionHandler com.example.todobackend.exception.GlobalExceptionHandler#handleTodoNotFound(TodoNotFoundException, HttpServletRequest)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [ErrorResponse[message=Todo not found with id: 99999, details=The requested todo does not exist, stat (truncated)...]
+2025-08-17 19:08:22 - Resolved [com.example.todobackend.exception.TodoNotFoundException: Todo not found with id: 99999]
+2025-08-17 19:08:22 - Completed 404 NOT_FOUND
+2025-08-17 19:08:22 - Response 404 NOT_FOUND
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.ErrorResponse]
+2025-08-17 19:08:22 - HTTP DELETE http://localhost:63894/api/todos/99999
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - DELETE "/api/todos/99999", parameters={masked}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#deleteTodo(Long)
+2025-08-17 19:08:22 - Using @ExceptionHandler com.example.todobackend.exception.GlobalExceptionHandler#handleTodoNotFound(TodoNotFoundException, HttpServletRequest)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [ErrorResponse[message=Todo not found with id: 99999, details=The requested todo does not exist, stat (truncated)...]
+2025-08-17 19:08:22 - Resolved [com.example.todobackend.exception.TodoNotFoundException: Todo not found with id: 99999]
+2025-08-17 19:08:22 - Completed 404 NOT_FOUND
+2025-08-17 19:08:22 - Response 404 NOT_FOUND
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.ErrorResponse]
+]]></system-out>
+  </testcase>
+  <testcase name="partialUpdates_TitleOnlyAndCompletedOnly_ShouldWork" classname="com.example.todobackend.integration.TodoManagementWorkflowTest" time="0.02">
+    <system-out><![CDATA[2025-08-17 19:08:22 - HTTP DELETE http://localhost:63894/api/todos/completed
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - DELETE "/api/todos/completed", parameters={masked}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#deleteCompletedTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Nothing to write: null body
+2025-08-17 19:08:22 - Completed 204 NO_CONTENT
+2025-08-17 19:08:22 - Response 204 NO_CONTENT
+2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - GET "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [[TodoResponse[id=8, title=Test Todo, completed=false]]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse[]]
+2025-08-17 19:08:22 - HTTP DELETE http://localhost:63894/api/todos/8
+2025-08-17 19:08:22 - DELETE "/api/todos/8", parameters={masked}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#deleteTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Nothing to write: null body
+2025-08-17 19:08:22 - Completed 204 NO_CONTENT
+2025-08-17 19:08:22 - Response 204 NO_CONTENT
+2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [CreateTodoRequest[title=Original Title]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - POST "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Original Title]]
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=9, title=Original Title, completed=false]]
+2025-08-17 19:08:22 - Completed 201 CREATED
+2025-08-17 19:08:22 - Response 201 CREATED
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/9
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [UpdateTodoRequest[title=Updated Title, completed=null]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - PUT "/api/todos/9", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#updateTodo(Long, UpdateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [UpdateTodoRequest[title=Updated Title, completed=null]]
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=9, title=Updated Title, completed=false]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/9
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [UpdateTodoRequest[title=null, completed=true]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - PUT "/api/todos/9", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#updateTodo(Long, UpdateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [UpdateTodoRequest[title=null, completed=true]]
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=9, title=Updated Title, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/9
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [UpdateTodoRequest[title=Final Title, completed=false]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - PUT "/api/todos/9", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#updateTodo(Long, UpdateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [UpdateTodoRequest[title=Final Title, completed=false]]
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=9, title=Final Title, completed=false]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+]]></system-out>
+  </testcase>
+  <testcase name="optimisticUpdatePerformance_ShouldMeetRequirements" classname="com.example.todobackend.integration.TodoManagementWorkflowTest" time="0.034">
+    <system-out><![CDATA[2025-08-17 19:08:22 - HTTP DELETE http://localhost:63894/api/todos/completed
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - DELETE "/api/todos/completed", parameters={masked}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#deleteCompletedTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Nothing to write: null body
+2025-08-17 19:08:22 - Completed 204 NO_CONTENT
+2025-08-17 19:08:22 - Response 204 NO_CONTENT
+2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - GET "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [[TodoResponse[id=9, title=Final Title, completed=false]]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse[]]
+2025-08-17 19:08:22 - HTTP DELETE http://localhost:63894/api/todos/9
+2025-08-17 19:08:22 - DELETE "/api/todos/9", parameters={masked}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#deleteTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Nothing to write: null body
+2025-08-17 19:08:22 - Completed 204 NO_CONTENT
+2025-08-17 19:08:22 - Response 204 NO_CONTENT
+2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [CreateTodoRequest[title=Performance Test Todo]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - POST "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Performance Test Todo]]
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=10, title=Performance Test Todo, completed=false]]
+2025-08-17 19:08:22 - Completed 201 CREATED
+2025-08-17 19:08:22 - Response 201 CREATED
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/10/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/10/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=10, title=Performance Test Todo, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/10/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/10/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=10, title=Performance Test Todo, completed=false]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/10/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/10/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=10, title=Performance Test Todo, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/10/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/10/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=10, title=Performance Test Todo, completed=false]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/10/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/10/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=10, title=Performance Test Todo, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/10/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/10/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=10, title=Performance Test Todo, completed=false]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/10/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/10/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=10, title=Performance Test Todo, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/10/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/10/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=10, title=Performance Test Todo, completed=false]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/10/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/10/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=10, title=Performance Test Todo, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/10/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/10/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=10, title=Performance Test Todo, completed=false]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+]]></system-out>
+  </testcase>
+  <testcase name="completeWorkflow_CreateEditToggleDelete_ShouldWork" classname="com.example.todobackend.integration.TodoManagementWorkflowTest" time="0.023">
+    <system-out><![CDATA[2025-08-17 19:08:22 - HTTP DELETE http://localhost:63894/api/todos/completed
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - DELETE "/api/todos/completed", parameters={masked}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#deleteCompletedTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Nothing to write: null body
+2025-08-17 19:08:22 - Completed 204 NO_CONTENT
+2025-08-17 19:08:22 - Response 204 NO_CONTENT
+2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - GET "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getAllTodos()
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [[TodoResponse[id=10, title=Performance Test Todo, completed=false]]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse[]]
+2025-08-17 19:08:22 - HTTP DELETE http://localhost:63894/api/todos/10
+2025-08-17 19:08:22 - DELETE "/api/todos/10", parameters={masked}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#deleteTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Nothing to write: null body
+2025-08-17 19:08:22 - Completed 204 NO_CONTENT
+2025-08-17 19:08:22 - Response 204 NO_CONTENT
+2025-08-17 19:08:22 - HTTP POST http://localhost:63894/api/todos
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [CreateTodoRequest[title=Learn Angular]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - POST "/api/todos", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#createTodo(CreateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [CreateTodoRequest[title=Learn Angular]]
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=11, title=Learn Angular, completed=false]]
+2025-08-17 19:08:22 - Completed 201 CREATED
+2025-08-17 19:08:22 - Response 201 CREATED
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/11
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [UpdateTodoRequest[title=Learn Angular and React, completed=null]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+2025-08-17 19:08:22 - PUT "/api/todos/11", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#updateTodo(Long, UpdateTodoRequest)
+2025-08-17 19:08:22 - Read "application/json;charset=UTF-8" to [UpdateTodoRequest[title=Learn Angular and React, completed=null]]
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=11, title=Learn Angular and React, completed=false]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/11/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/11/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=11, title=Learn Angular and React, completed=true]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP PUT http://localhost:63894/api/todos/11/toggle
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - PUT "/api/todos/11/toggle", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#toggleTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [TodoResponse[id=11, title=Learn Angular and React, completed=false]]
+2025-08-17 19:08:22 - Completed 200 OK
+2025-08-17 19:08:22 - Response 200 OK
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.TodoResponse]
+2025-08-17 19:08:22 - HTTP DELETE http://localhost:63894/api/todos/11
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - DELETE "/api/todos/11", parameters={masked}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#deleteTodo(Long)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Nothing to write: null body
+2025-08-17 19:08:22 - Completed 204 NO_CONTENT
+2025-08-17 19:08:22 - Response 204 NO_CONTENT
+2025-08-17 19:08:22 - HTTP GET http://localhost:63894/api/todos/11
+2025-08-17 19:08:22 - Accept=[application/json, application/*+json]
+2025-08-17 19:08:22 - GET "/api/todos/11", parameters={}
+2025-08-17 19:08:22 - Mapped to com.example.todobackend.controller.TodoController#getTodoById(Long)
+2025-08-17 19:08:22 - Using @ExceptionHandler com.example.todobackend.exception.GlobalExceptionHandler#handleTodoNotFound(TodoNotFoundException, HttpServletRequest)
+2025-08-17 19:08:22 - Using 'application/json', given [application/json, application/*+json] and supported [application/json, application/*+json]
+2025-08-17 19:08:22 - Writing [ErrorResponse[message=Todo not found with id: 11, details=The requested todo does not exist, status= (truncated)...]
+2025-08-17 19:08:22 - Resolved [com.example.todobackend.exception.TodoNotFoundException: Todo not found with id: 11]
+2025-08-17 19:08:22 - Completed 404 NOT_FOUND
+2025-08-17 19:08:22 - Response 404 NOT_FOUND
+2025-08-17 19:08:22 - Reading to [com.example.todobackend.dto.ErrorResponse]
+]]></system-out>
+  </testcase>
+</testsuite>

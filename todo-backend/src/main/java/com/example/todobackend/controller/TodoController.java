@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * REST controller for Todo operations.
  * Provides endpoints for CRUD operations on todos.
- * Enhanced for Feature 03 with frontend debugging support.
+ * Enhanced for Feature 04-08 combined specification with frontend debugging support.
  */
 @RestController
 @RequestMapping("/api/todos")
@@ -44,6 +44,20 @@ public class TodoController {
     }
 
     /**
+     * Retrieves a single todo by ID.
+     * @param id The todo ID
+     * @return The todo if found
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<TodoResponse> getTodoById(@PathVariable Long id) {
+        TodoResponse todo = todoService.getTodoById(id);
+        return ResponseEntity.ok()
+                .header("X-Todo-ID", id.toString())
+                .header("X-Request-ID", UUID.randomUUID().toString())
+                .body(todo);
+    }
+
+    /**
      * Creates a new todo.
      * @param request The create request
      * @return The created todo
@@ -63,15 +77,31 @@ public class TodoController {
 
     /**
      * Updates an existing todo.
+     * 
+     * Enhanced for Feature 04-08:
+     * - Supports optional title updates (null title means no change)
+     * - Empty title after trim deletes the todo (returns 204 No Content)
+     * - Supports both title-only and completed-only updates
+     * 
      * @param id The todo ID
      * @param request The update request
-     * @return The updated todo
+     * @return The updated todo or 204 if deleted due to empty title
      */
     @PutMapping("/{id}")
     public ResponseEntity<TodoResponse> updateTodo(
             @PathVariable Long id,
             @Valid @RequestBody UpdateTodoRequest request) {
         TodoResponse todo = todoService.updateTodo(id, request);
+        
+        // If todo was deleted due to empty title, return 204 No Content
+        if (todo == null) {
+            return ResponseEntity.noContent()
+                    .header("X-Deleted-ID", id.toString())
+                    .header("X-Request-ID", UUID.randomUUID().toString())
+                    .header("X-Debug-Info", "deleted-via-empty-title")
+                    .build();
+        }
+        
         return ResponseEntity.ok()
                 .header("X-Updated-ID", id.toString())
                 .header("X-Request-ID", UUID.randomUUID().toString())

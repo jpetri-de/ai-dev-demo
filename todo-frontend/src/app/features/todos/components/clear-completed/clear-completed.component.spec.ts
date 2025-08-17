@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { ClearCompletedComponent } from './clear-completed.component';
 import { TodoService } from '../../../../core/services/todo.service';
@@ -13,6 +14,7 @@ describe('ClearCompletedComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [ClearCompletedComponent],
+      imports: [HttpClientTestingModule],
       providers: [
         { provide: TodoService, useValue: spy }
       ]

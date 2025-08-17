@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError, forkJoin } from 'rxjs';
 import { TodoAppComponent } from './todo-app.component';
 import { TodoService } from '../../../../core/services/todo.service';
@@ -45,7 +46,7 @@ describe('TodoAppComponent', () => {
         TodoItemComponent,
         TodoFilterComponent
       ],
-      imports: [HttpClientTestingModule, SharedModule],
+      imports: [HttpClientTestingModule, RouterTestingModule, SharedModule],
       providers: [
         { provide: TodoService, useValue: todoServiceSpy },
         { provide: ErrorService, useValue: errorServiceSpy }
@@ -106,7 +107,17 @@ describe('TodoAppComponent', () => {
     
     component.onUpdateTodo(updateData);
     
-    expect(todoService.updateTodo).toHaveBeenCalledWith(updateData.id, { title: updateData.title });
+    expect(todoService.updateTodo).toHaveBeenCalledWith(updateData.id, updateData.title);
+  });
+
+  it('should handle empty title deletion workflow', () => {
+    const updateData = { id: 1, title: '  ' };
+    todoService.deleteTodo.and.returnValue(of(undefined));
+    
+    component.onUpdateTodo(updateData);
+    
+    expect(todoService.deleteTodo).toHaveBeenCalledWith(updateData.id);
+    expect(todoService.updateTodo).not.toHaveBeenCalled();
   });
 
   it('should clear completed todos', () => {
@@ -138,13 +149,6 @@ describe('TodoAppComponent', () => {
       
       expect(errorService.handleError).toHaveBeenCalledWith('Todo title cannot exceed 500 characters');
       expect(todoService.createTodo).not.toHaveBeenCalled();
-    });
-
-    it('should show error for empty title when updating todo', () => {
-      component.onUpdateTodo({ id: 1, title: '  ' });
-      
-      expect(errorService.handleError).toHaveBeenCalledWith('Todo title cannot be empty');
-      expect(todoService.updateTodo).not.toHaveBeenCalled();
     });
 
     it('should show error for title exceeding max length when updating todo', () => {

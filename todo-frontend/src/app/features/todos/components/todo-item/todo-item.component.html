@@ -1,22 +1,30 @@
-<li [ngClass]="{ completed: todo.completed, editing: isEditing }">
+<li [ngClass]="{ 
+  completed: todo.completed, 
+  editing: isEditing,
+  loading: isLoading,
+  deleting: isDeleting 
+}">
   <div class="view" *ngIf="!isEditing">
     <input 
       class="toggle" 
       type="checkbox" 
       [checked]="todo.completed"
+      [disabled]="isLoading"
       (change)="onToggle()"
       [id]="'todo-' + todo.id"
-      [attr.aria-label]="'Mark todo as ' + (todo.completed ? 'incomplete' : 'complete')">
+      [attr.aria-label]="'Mark ' + todo.title + ' as ' + (todo.completed ? 'incomplete' : 'complete')">
     <label 
       [for]="'todo-' + todo.id"
-      (dblclick)="startEditing()">
+      (dblclick)="startEditing()"
+      [attr.aria-label]="'Edit ' + todo.title">
       {{ todo.title }}
     </label>
     <button 
       type="button"
       class="destroy" 
+      [disabled]="isLoading"
       (click)="onDelete()"
-      aria-label="Delete todo">
+      [attr.aria-label]="'Delete ' + todo.title">
     </button>
   </div>
   <input 
@@ -24,10 +32,11 @@
     #editInput
     class="edit" 
     [(ngModel)]="editingTitle"
+    [disabled]="isLoading"
     (blur)="onBlur()"
-    (keydown.enter)="onBlur()"
-    (keydown.escape)="cancelEdit()"
-    [attr.aria-label]="'Edit todo: ' + todo.title"
+    (keyup.enter)="saveEdit()"
+    (keyup.escape)="cancelEdit()"
+    [attr.aria-label]="'Edit ' + todo.title"
     placeholder="Edit todo"
     maxlength="500">
 </li>

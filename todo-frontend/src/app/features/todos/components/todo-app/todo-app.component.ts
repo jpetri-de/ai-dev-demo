@@ -29,24 +29,10 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
   // UI state management
   showMain$ = this.uiStateService.showMain$;
   showFooter$ = this.uiStateService.showFooter$;
-  currentFilter$ = this.uiStateService.currentFilter$;
+  currentFilter$ = this.todoService.getCurrentFilter();
   
   // Filtered todos based on current route/filter
-  filteredTodos$ = combineLatest([
-    this.todos$,
-    this.currentFilter$
-  ]).pipe(
-    map(([todos, filter]) => {
-      switch (filter) {
-        case 'active':
-          return todos.filter(todo => !todo.completed);
-        case 'completed':
-          return todos.filter(todo => todo.completed);
-        default:
-          return todos;
-      }
-    })
-  );
+  filteredTodos$ = this.todoService.getCurrentlyFilteredTodos();
   
   isCreating = false;
 
@@ -59,9 +45,15 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    console.log('TodoAppComponent: ngOnInit called');
     this.loadTodos();
     this.initializeFilterFromRoute();
     this.setupUIStateManagement();
+    
+    // Debug filtered todos
+    this.filteredTodos$.pipe(takeUntil(this.destroy$)).subscribe(todos => {
+      console.log('TodoAppComponent: Filtered todos updated:', todos.map(t => `${t.title} (${t.completed ? 'completed' : 'active'})`));
+    });
   }
 
   ngAfterViewInit(): void {
@@ -86,20 +78,26 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
   private initializeFilterFromRoute(): void {
     // Get initial filter from route
     this.route.url.pipe(takeUntil(this.destroy$)).subscribe(segments => {
-      if (segments.length > 0) {
-        const path = segments[0].path;
-        switch (path) {
-          case 'active':
-            this.uiStateService.setCurrentFilter('active');
-            break;
-          case 'completed':
-            this.uiStateService.setCurrentFilter('completed');
-            break;
-          default:
-            this.uiStateService.setCurrentFilter('all');
-        }
-        this.cdr.markForCheck();
+      let newFilter: 'all' | 'active' | 'completed' = 'all';
+      
+      console.log('TodoAppComponent - Route segments:', segments.map(s => s.path));
+      console.log('TodoAppComponent - Full URL:', window.location.pathname);
+      
+      // Check the actual URL path instead of route segments
+      const path = window.location.pathname;
+      console.log('TodoAppComponent - Window path:', path);
+      
+      if (path === '/active') {
+        newFilter = 'active';
+      } else if (path === '/completed') {
+        newFilter = 'completed';
+      } else {
+        newFilter = 'all';
       }
+      
+      console.log('TodoAppComponent - Setting filter to:', newFilter);
+      this.todoService.setCurrentFilter(newFilter);
+      this.cdr.markForCheck();
     });
   }
 

@@ -1,7 +1,6 @@
 import { Component, ChangeDetectionStrategy, OnDestroy, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { TodoService } from '../../../../core/services/todo.service';
 
 export interface FilterOption {
@@ -16,10 +15,11 @@ export interface FilterOption {
     <ul class="filters">
       <li *ngFor="let filter of filterOptions">
         <a 
-          [routerLink]="filter.route"
-          [class.selected]="currentFilter === filter.type"
+          href="#"
+          (click)="onFilterClick(filter.type, $event)"
+          [class.selected]="(currentFilter$ | async) === filter.type"
           [attr.aria-label]="'Show ' + filter.label.toLowerCase() + ' todos'"
-          [attr.aria-current]="currentFilter === filter.type ? 'page' : null">
+          [attr.aria-current]="(currentFilter$ | async) === filter.type ? 'page' : null">
           {{ filter.label }}
         </a>
       </li>
@@ -31,7 +31,7 @@ export interface FilterOption {
 export class TodoFilterComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   
-  currentFilter: 'all' | 'active' | 'completed' = 'all';
+  currentFilter$ = this.todoService.getCurrentFilter();
   
   filterOptions: FilterOption[] = [
     { type: 'all', label: 'All', route: '/' },
@@ -40,13 +40,13 @@ export class TodoFilterComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private todoService: TodoService
+    private todoService: TodoService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.initializeFilterFromRoute();
+    // Route handling is now done by TodoAppComponent
+    // This component only displays the current filter state
   }
 
   ngOnDestroy(): void {
@@ -54,42 +54,13 @@ export class TodoFilterComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private initializeFilterFromRoute(): void {
-    // Listen to route changes to update current filter
-    this.route.url.pipe(takeUntil(this.destroy$)).subscribe(segments => {
-      if (segments.length > 0) {
-        const path = segments[0].path;
-        switch (path) {
-          case 'active':
-            this.currentFilter = 'active';
-            break;
-          case 'completed':
-            this.currentFilter = 'completed';
-            break;
-          default:
-            this.currentFilter = 'all';
-        }
-      } else {
-        this.currentFilter = 'all';
-      }
-    });
-
-    // Also listen to URL fragments for hash-based routing (if needed)
-    this.route.fragment.pipe(takeUntil(this.destroy$)).subscribe(fragment => {
-      if (fragment) {
-        switch (fragment) {
-          case 'active':
-            this.currentFilter = 'active';
-            break;
-          case 'completed':
-            this.currentFilter = 'completed';
-            break;
-          case 'all':
-          default:
-            this.currentFilter = 'all';
-            break;
-        }
-      }
-    });
+  onFilterClick(filterType: 'all' | 'active' | 'completed', event: Event): void {
+    event.preventDefault();
+    console.log('Filter clicked:', filterType);
+    
+    // Navigate to the appropriate route
+    const route = filterType === 'all' ? '/' : `/${filterType}`;
+    console.log('Navigating to:', route);
+    this.router.navigate([route]);
   }
 }

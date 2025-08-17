@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError, timer, forkJoin, of } from 'rxjs';
+import { BehaviorSubject, Observable, throwError, timer, forkJoin, of, combineLatest } from 'rxjs';
 import { map, catchError, retry, delayWhen, tap, switchMap } from 'rxjs/operators';
 import { 
   Todo, 
@@ -19,6 +19,7 @@ export class TodoService {
   private readonly apiUrl = 'http://localhost:8080/api/todos';
   private todosSubject = new BehaviorSubject<Todo[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
+  private currentFilterSubject = new BehaviorSubject<'all' | 'active' | 'completed'>('all');
   
   public todos$ = this.todosSubject.asObservable();
   public loading$ = this.loadingSubject.asObservable();
@@ -320,6 +321,36 @@ export class TodoService {
         }
       })
     );
+  }
+
+  // Get currently filtered todos (reactive to current filter)
+  getCurrentlyFilteredTodos(): Observable<Todo[]> {
+    return combineLatest([this.todos$, this.currentFilterSubject]).pipe(
+      map(([todos, filter]) => {
+        const result = (() => {
+          switch (filter) {
+            case 'active':
+              return todos.filter(todo => !todo.completed);
+            case 'completed':
+              return todos.filter(todo => todo.completed);
+            default:
+              return todos;
+          }
+        })();
+        console.log(`Filter: ${filter}, Total todos: ${todos.length}, Filtered: ${result.length}`);
+        return result;
+      })
+    );
+  }
+
+  // Set current filter
+  setCurrentFilter(filter: 'all' | 'active' | 'completed'): void {
+    this.currentFilterSubject.next(filter);
+  }
+
+  // Get current filter
+  getCurrentFilter(): Observable<'all' | 'active' | 'completed'> {
+    return this.currentFilterSubject.asObservable();
   }
 
   // Network status detection for enhanced error handling

@@ -38,7 +38,304 @@ In `~/.continue/config.json`:
 
 ---
 
-## 1. 💬 Chat-Modus: Filter Status Popup Component
+## 1. 🚀 Autocomplete: Angular Service-Methoden (Einstieg)
+
+### Scenario
+Sie implementieren einen Angular Service für Todo-API-Aufrufe. Dies ist der **einfachste Einstieg** in continue.dev - kein expliziter Prompt nötig!
+
+### Kontext für besseren Autocomplete
+**Laden Sie diese Dateien mit `Ctrl+L` für kontextuellen Autocomplete:**
+
+1. **Bestehende Services (für Patterns):**
+   - `src/app/core/services/error.service.ts` (für Error handling patterns)
+   - `src/app/core/services/ui-state.service.ts` (für Observable patterns)
+
+2. **Interfaces/DTOs:**
+   - `src/app/core/models/todo.interface.ts` (für Todo type)
+   - `backend/src/main/java/com/example/todobackend/dto/CreateTodoRequest.java` (für API schema)
+
+3. **HTTP-Configuration:**
+   - `src/app/app.config.ts` (für HttpClient setup)
+   - `angular.json` (für proxy configuration)
+
+### Situation im Editor
+Sie tippen in `todo.service.ts`:
+
+```typescript
+@Injectable({
+  providedIn: 'root'
+})
+export class TodoService {
+  private apiUrl = 'http://localhost:8080/api/todos';
+  
+  constructor(private http: HttpClient) {}
+  
+  createTodo(title: string): |  // ← Cursor hier
+```
+
+### Autocomplete-Vorschläge
+Continue.dev schlägt kontextbasiert vor:
+
+```typescript
+// Vorschlag 1: Observable mit Error Handling
+Observable<Todo> {
+  const request: CreateTodoRequest = { title };
+  return this.http.post<Todo>(this.apiUrl, request).pipe(
+    retry(2),
+    catchError(this.handleError)
+  );
+}
+
+// Vorschlag 2: Mit Optimistic Updates
+Observable<Todo> {
+  const request: CreateTodoRequest = { title };
+  return this.http.post<Todo>(this.apiUrl, request).pipe(
+    tap(newTodo => {
+      const currentTodos = this.todosSubject.value;
+      this.todosSubject.next([...currentTodos, newTodo]);
+    }),
+    catchError(error => {
+      console.error('Failed to create todo:', error);
+      return throwError(() => error);
+    })
+  );
+}
+```
+
+### Warum ist das intelligent?
+- **Framework-Kontext**: Erkennt Angular und RxJS Patterns
+- **HTTP-Patterns**: Kennt übliche HttpClient-Verwendung
+- **Error Handling**: Schlägt robuste Fehlerbehandlung vor
+- **State Management**: Versteht Observable-basierte State-Updates
+- **Sofortige Produktivität**: Keine Prompts, funktioniert beim Tippen
+
+---
+
+## 2. ✏️ Edit-Modus: Javadoc-Dokumentation hinzufügen
+
+### Scenario
+Der generierte Controller benötigt professionelle Dokumentation.
+
+### Vorgehen
+1. **Kontext laden**: Diese Dateien mit `Ctrl+L` hinzufügen:
+   - `src/main/java/com/example/todobackend/controller/TodoController.java` (Ziel-Controller)
+   - `src/main/java/com/example/todobackend/dto/CreateTodoRequest.java` (Request DTO)
+   - `src/main/java/com/example/todobackend/dto/TodoResponse.java` (Response DTO)
+   - `src/main/java/com/example/todobackend/exception/GlobalExceptionHandler.java` (für Exception handling)
+
+2. **Methode markieren**: `createTodo`-Methode im Editor selektieren
+3. **Edit-Modus aktivieren**: `Ctrl+I` (Windows/Linux) oder `Cmd+I` (Mac)
+4. **Detaillierten Prompt eingeben**:
+
+```
+Füge umfassende Javadoc-Dokumentation für diese Spring Boot REST Controller Methode hinzu.
+
+REQUIREMENTS:
+- Vollständige Methodenbeschreibung mit Business-Zweck
+- Alle @param Tags mit detaillierter Beschreibung
+- @return Tag mit ResponseEntity und DTO-Erklärung
+- @throws Tags für alle möglichen Exceptions
+- @apiNote mit HTTP Status Codes (200, 201, 400, 500)
+- @since Version tag
+- @see References zu verwandten Klassen
+- Validation-Regeln dokumentieren (title nicht leer, max length)
+- REST-Conventions erklären
+- Example Request/Response wenn sinnvoll
+
+STIL:
+- Professional enterprise documentation
+- Javadoc-konform formatting
+- Klare, präzise Sprache
+- Technische Details für API-Consumers
+```
+
+### Ergebnis
+```java
+/**
+ * Creates a new Todo item in the system.
+ * 
+ * This endpoint accepts a CreateTodoRequest containing the title of the new todo.
+ * The todo is created with completed status set to false by default.
+ * 
+ * @param request the request object containing the todo title and any additional data
+ * @return ResponseEntity containing the created TodoResponse with HTTP 201 status
+ * @throws ValidationException if the request fails validation (title is blank or too long)
+ * 
+ * @apiNote This endpoint follows REST conventions:
+ *          - HTTP 201 (Created) for successful creation
+ *          - HTTP 400 (Bad Request) for validation errors
+ *          - HTTP 500 (Internal Server Error) for system errors
+ * 
+ * @since 1.0
+ * @see TodoResponse
+ * @see CreateTodoRequest
+ */
+@PostMapping
+public ResponseEntity<TodoResponse> createTodo(@Valid @RequestBody CreateTodoRequest request) {
+    // Existing implementation...
+}
+```
+
+### Vorteile des Edit-Modus
+- **Chirurgische Präzision**: Nur die markierte Stelle wird verändert
+- **Kontextbewusst**: Versteht die umgebende Codebasis
+- **Schnell**: Kein vollständiges Neugenerieren erforderlich
+- **Konsistent**: Behält bestehenden Code-Stil bei
+
+---
+
+## 3. ✏️ Edit-Modus: Template-Accessibility verbessern
+
+### Scenario
+Eine Angular-Komponente braucht bessere Barrierefreiheit.
+
+### Ausgangscode
+```html
+<li [class.completed]="todo.completed" [class.editing]="isEditing">
+  <div class="view" *ngIf="!isEditing">
+    <input class="toggle" type="checkbox" [checked]="todo.completed" (click)="toggleTodo()">
+    <label (dblclick)="startEditing()">{{ todo.title }}</label>
+    <button class="destroy" (click)="deleteTodo()"></button>
+  </div>
+  
+  <input *ngIf="isEditing" class="edit" [value]="editText" 
+         (keyup.enter)="saveEdit()" (keyup.escape)="cancelEdit()" 
+         (blur)="saveEdit()">
+</li>
+```
+
+### Edit-Modus Aktion
+1. **Kontext für Accessibility**: Diese Dateien mit `Ctrl+L` laden:
+   - `src/app/features/todos/components/todo-item/todo-item.component.ts` (Component logic)
+   - `src/app/features/todos/components/todo-item/todo-item.component.css` (für CSS updates)
+   - `src/app/core/models/todo.interface.ts` (für Todo properties)
+   - `resources/css/main.css` (für base TodoMVC styles)
+
+2. **Template markieren**: Gesamtes `<li>`-Element selektieren
+3. **Edit-Modus**: `Ctrl+I`
+4. **Detaillierten Accessibility-Prompt eingeben**:
+
+```
+Verbessere diese Angular Todo-Component für WCAG 2.1 AA Compliance:
+
+ARIA REQUIREMENTS:
+- role="listitem" für semantische Liste
+- aria-label für todo status und content
+- aria-describedby für zusätzliche Info
+- aria-disabled für disabled states
+- aria-live für dynamische updates
+
+KEYBOARD NAVIGATION:
+- tabindex für alle interaktiven Elemente
+- Enter/Space key handlers für buttons
+- Focus management nach actions
+- Visible focus indicators
+- Tab-order optimization
+
+SCREENREADER SUPPORT:
+- Descriptive aria-labels (nicht nur "Delete" sondern "Delete todo: {{title}}")
+- Screen-reader-only text mit .sr-only class
+- aria-hidden für decorative icons
+- Announced state changes
+
+TOUCH ACCESSIBILITY:
+- Minimum 44x44px touch targets
+- No hover-only interactions
+- Touch-friendly spacing
+- Mobile-optimized focus indicators
+
+SEMANTICS:
+- Proper button vs link usage
+- Input labels und descriptions
+- Form accessibility
+- Error message association
+
+DYNAMIC CONTENT:
+- Loading states announcements
+- Success/error feedback
+- State change notifications
+- Progress indicators
+
+Generiere vollständiges accessible template mit allen erforderlichen ARIA-Attributen und CSS.
+```
+
+### Verbessertes Template
+```html
+<li [class.completed]="todo.completed" 
+    [class.editing]="isEditing"
+    role="listitem"
+    [attr.aria-label]="'Todo: ' + todo.title + (todo.completed ? ' (completed)' : ' (active)')">
+  
+  <div class="view" *ngIf="!isEditing">
+    <input class="toggle" 
+           type="checkbox" 
+           [checked]="todo.completed"
+           [attr.aria-label]="'Mark ' + todo.title + ' as ' + (todo.completed ? 'active' : 'completed')"
+           (click)="toggleTodo()"
+           [disabled]="isToggling">
+    
+    <label (dblclick)="startEditing()"
+           [attr.aria-label]="'Edit todo: ' + todo.title"
+           tabindex="0"
+           (keydown.enter)="startEditing()"
+           (keydown.space)="startEditing()">
+      {{ todo.title }}
+    </label>
+    
+    <button class="destroy" 
+            (click)="deleteTodo()"
+            [attr.aria-label]="'Delete todo: ' + todo.title"
+            [disabled]="isDeleting"
+            type="button">
+      <span aria-hidden="true">×</span>
+      <span class="sr-only">Delete</span>
+    </button>
+  </div>
+  
+  <input *ngIf="isEditing" 
+         class="edit" 
+         [value]="editText"
+         [attr.aria-label]="'Edit todo title'"
+         (keyup.enter)="saveEdit()" 
+         (keyup.escape)="cancelEdit()" 
+         (blur)="saveEdit()"
+         #editInput>
+</li>
+```
+
+### CSS-Ergänzung (auch per Edit-Modus)
+```css
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Touch device optimization */
+@media (hover: none) {
+  .todo-list li .destroy {
+    display: block;
+    opacity: 0.6;
+  }
+}
+
+/* Focus indicators */
+.todo-list li label:focus,
+.todo-list li button:focus {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+```
+
+---
+
+## 4. 💬 Chat-Modus: Filter Status Popup Component
 
 ### Scenario
 Das bestehende TodoMVC-Projekt hat bereits einen funktionierenden Todo-Controller. Wir möchten eine neue Feature hinzufügen: Ein animiertes Popup, das beim Filter-Wechsel die aktuellen Statistiken anzeigt.
@@ -292,79 +589,7 @@ public ResponseEntity<TodoResponse> createTodo(@Valid @RequestBody CreateTodoReq
 
 ---
 
-## 3. 🚀 Autocomplete: Angular Service-Methoden
-
-### Scenario
-Sie implementieren einen Angular Service für Todo-API-Aufrufe.
-
-### Kontext für besseren Autocomplete
-**Laden Sie diese Dateien mit `Ctrl+L` für kontextuellen Autocomplete:**
-
-1. **Bestehende Services (für Patterns):**
-   - `src/app/core/services/error.service.ts` (für Error handling patterns)
-   - `src/app/core/services/ui-state.service.ts` (für Observable patterns)
-
-2. **Interfaces/DTOs:**
-   - `src/app/core/models/todo.interface.ts` (für Todo type)
-   - `backend/src/main/java/com/example/todobackend/dto/CreateTodoRequest.java` (für API schema)
-
-3. **HTTP-Configuration:**
-   - `src/app/app.config.ts` (für HttpClient setup)
-   - `angular.json` (für proxy configuration)
-
-### Situation im Editor
-Sie tippen in `todo.service.ts`:
-
-```typescript
-@Injectable({
-  providedIn: 'root'
-})
-export class TodoService {
-  private apiUrl = 'http://localhost:8080/api/todos';
-  
-  constructor(private http: HttpClient) {}
-  
-  createTodo(title: string): |  // ← Cursor hier
-```
-
-### Autocomplete-Vorschläge
-Continue.dev schlägt kontextbasiert vor:
-
-```typescript
-// Vorschlag 1: Observable mit Error Handling
-Observable<Todo> {
-  const request: CreateTodoRequest = { title };
-  return this.http.post<Todo>(this.apiUrl, request).pipe(
-    retry(2),
-    catchError(this.handleError)
-  );
-}
-
-// Vorschlag 2: Mit Optimistic Updates
-Observable<Todo> {
-  const request: CreateTodoRequest = { title };
-  return this.http.post<Todo>(this.apiUrl, request).pipe(
-    tap(newTodo => {
-      const currentTodos = this.todosSubject.value;
-      this.todosSubject.next([...currentTodos, newTodo]);
-    }),
-    catchError(error => {
-      console.error('Failed to create todo:', error);
-      return throwError(() => error);
-    })
-  );
-}
-```
-
-### Warum ist das intelligent?
-- **Framework-Kontext**: Erkennt Angular und RxJS Patterns
-- **HTTP-Patterns**: Kennt übliche HttpClient-Verwendung
-- **Error Handling**: Schlägt robuste Fehlerbehandlung vor
-- **State Management**: Versteht Observable-basierte State-Updates
-
----
-
-## 4. 🐛 Chat-Modus: CORS-Problem debugging
+## 5. 🐛 Chat-Modus: CORS-Problem debugging
 
 ### Das Problem
 Ihre Angular-App kann nicht mit dem Spring Boot Backend kommunizieren:
@@ -499,7 +724,11 @@ public class CorsConfig {
 
 ---
 
-## 5. ✏️ Edit-Modus: Template-Accessibility verbessern
+## 6. 🆕 **BONUS: Live Feature Implementation**
+
+### **Filter Status Popup - Real-World Example**
+
+Während der Erstellung dieses Tutorials haben wir eine neue Feature live implementiert!
 
 ### Scenario
 Eine Angular-Komponente braucht bessere Barrierefreiheit.

@@ -1,0 +1,301 @@
+/* Filter Status Popup - Modern TodoMVC Design */
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 120px;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.popup-content {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 16px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  padding: 24px;
+  min-width: 280px;
+  max-width: 400px;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+}
+
+.popup-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.filter-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.icon-all {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.icon-active {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.icon-completed {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.popup-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  letter-spacing: -0.02em;
+}
+
+.popup-body {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.counter-container {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.counter-label {
+  font-size: 16px;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.counter-number {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.count-all {
+  color: #667eea;
+}
+
+.count-active {
+  color: #f5576c;
+}
+
+.count-completed {
+  color: #00d4aa;
+}
+
+.counter-suffix {
+  font-size: 16px;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.stats-summary {
+  margin-top: 8px;
+}
+
+.stats-text {
+  font-size: 13px;
+  color: #95a5a6;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.popup-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background-size: 200% 100%;
+  animation: progressShimmer 2.5s linear infinite;
+}
+
+@keyframes progressShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .popup-overlay {
+    padding: 20px;
+    padding-top: 100px;
+  }
+  
+  .popup-content {
+    min-width: unset;
+    width: 100%;
+    max-width: 320px;
+    padding: 20px;
+  }
+  
+  .counter-number {
+    font-size: 28px;
+  }
+  
+  .popup-title {
+    font-size: 16px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .popup-content {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #ecf0f1;
+  }
+  
+  .popup-title {
+    color: #ecf0f1;
+  }
+  
+  .counter-suffix {
+    color: #bdc3c7;
+  }
+  
+  .counter-label {
+    color: #95a5a6;
+  }
+  
+  .stats-text {
+    color: #7f8c8d;
+  }
+  
+  .popup-progress {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .popup-content {
+    border: 2px solid #000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .filter-icon {
+    border: 2px solid #000;
+  }
+  
+  .popup-title,
+  .counter-number,
+  .counter-suffix {
+    color: #000;
+    text-shadow: none;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .popup-content {
+    transition: none;
+  }
+  
+  .progress-bar {
+    animation: none;
+    background: #667eea;
+  }
+  
+  .counter-number {
+    transition: none;
+  }
+}
+
+/* Focus Management for Accessibility */
+.popup-content:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Loading State */
+.popup-content.loading .counter-number {
+  opacity: 0.6;
+  transform: scale(0.9);
+}
+
+/* Success State Animation */
+.counter-number.counting {
+  animation: countBounce 0.6s ease-out;
+}
+
+@keyframes countBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Enhanced Hover Effects */
+.popup-content:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 24px 70px rgba(0, 0, 0, 0.18),
+    0 12px 32px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced hover effects and micro-interactions */
+.filter-icon {
+  transition: transform 0.2s ease;
+}
+
+.filter-icon:hover {
+  transform: scale(1.05) rotate(2deg);
+}
+
+.counter-number {
+  transition: transform 0.2s ease;
+}
+
+.counter-number:hover {
+  transform: scale(1.02);
+}

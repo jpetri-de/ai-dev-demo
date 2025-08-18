@@ -11,3 +11,71 @@
 .error-banner button:hover {
   opacity: 0.8;
 }
+
+/* Simple Filter Popup Styles */
+.filter-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 120px;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in;
+}
+
+.filter-popup-content {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  padding: 16px 24px;
+  max-width: 300px;
+  animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.filter-popup-message {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { 
+    transform: translateY(-20px) scale(0.9);
+    opacity: 0;
+  }
+  to { 
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive popup */
+@media (max-width: 480px) {
+  .filter-popup-overlay {
+    padding: 20px;
+    padding-top: 100px;
+  }
+  
+  .filter-popup-content {
+    width: 100%;
+    max-width: 280px;
+    padding: 14px 20px;
+  }
+  
+  .filter-popup-message {
+    font-size: 15px;
+  }
+}

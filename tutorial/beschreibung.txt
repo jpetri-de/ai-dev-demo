@@ -1,0 +1,220 @@
+Ein Leitfaden für Entwickler zur KI-gestützten Full-Stack-Entwicklung: Erstellung einer TodoMVC-App mit Angular, Spring Boot und continue.dev
+Abschnitt 1: Einführung und strategische Einrichtung: Ihr KI-Copilot
+Dieser Abschnitt legt das grundlegende Wissen für das Tutorial fest. Er stellt continue.dev nicht als magischen Codegenerator vor, sondern als einen leistungsstarken, anpassbaren Copiloten, der sich direkt in den Arbeitsablauf des Entwicklers integriert. Wir werden die wesentliche Einrichtung und Konfiguration behandeln, um sicherzustellen, dass der Benutzer das Werkzeug sofort mit seinen bevorzugten OpenAI-Modellen verwenden kann.
+1.1 Der Copilot des modernen Entwicklers: Mehr als nur Autovervollständigung
+Die Entwicklung von Programmierwerkzeugen hat sich von einfacher Autovervollständigung, wie sie frühe Versionen von IntelliSense boten, zu dialogorientierten, kontextbewussten KI-Assistenten weiterentwickelt. In diesem neuen Paradigma positioniert sich continue.dev als eine quelloffene und flexible Alternative zu proprietären Systemen. Es bietet Entwicklern die volle Kontrolle über die verwendeten Modelle, den Datenschutz und die Arbeitsabläufe.
+Die Kernfunktionalität von continue.dev lässt sich in drei primäre, nicht-agentenbasierte Interaktionsmodi unterteilen, die den Entwicklungszyklus unterstützen:
+Chat: Für dialogorientierte Codegenerierung, Fehlerbehebung und das Stellen konzeptioneller Fragen.
+Edit: Für gezielte, inline durchgeführte Codeänderungen mittels Anweisungen in natürlicher Sprache.
+Autocomplete: Für kontextbezogene Codevorschläge, die während des Tippens erscheinen und den Entwicklungsfluss aufrechterhalten.
+Diese Modi bilden die Grundlage für die praktischen Anwendungsfälle, die in diesem Tutorial demonstriert werden.
+1.2 Erstmalige Einrichtung und Konfiguration für OpenAI
+Um continue.dev mit den leistungsstarken Modellen von OpenAI zu nutzen, sind einige Konfigurationsschritte erforderlich.
+Installation: Die continue.dev-Erweiterung kann direkt aus dem Marketplace der jeweiligen IDE installiert werden.
+Für VS Code: Öffnen Sie die "Quick Open"-Palette (Ctrl+P), fügen Sie den Befehl ext install Continue.continue ein und führen Sie ihn aus.
+Für JetBrains IDEs (z. B. IntelliJ IDEA): Öffnen Sie die Einstellungen (Ctrl+Alt+S), navigieren Sie zum Plugin-Marktplatz, suchen Sie nach "Continue.dev" und installieren Sie es.
+Verbindung zu OpenAI: Nach der Installation muss die Konfigurationsdatei angepasst werden, die sich standardmäßig im Verzeichnis ~/.continue/ befindet. In der Datei config.yaml (oder config.json) wird die Verbindung zu den OpenAI-Modellen hergestellt.
+Fügen Sie den folgenden Block in Ihre config.yaml-Datei ein und ersetzen Sie <YOUR_OPENAI_API_KEY> durch Ihren persönlichen API-Schlüssel:
+models:
+  - name: OpenAI GPT-4o
+    provider: openai
+    model: gpt-4o
+    apiKey: <YOUR_OPENAI_API_KEY>
+
+
+Diese Konfiguration weist continue.dev an, das gpt-4o-Modell von OpenAI für seine Operationen zu verwenden. Es können auch andere Modelle wie gpt-5 oder spezialisierte Varianten angegeben werden, je nach Verfügbarkeit und den spezifischen Anforderungen des Projekts, wie z. B. erweiterte Programmier- und Logikfähigkeiten.
+1.3 Erstellung der Projektstruktur mit KI
+Der erste praktische Einsatz des Assistenten besteht darin, die Erstellung der anfänglichen Projektgerüste für das Spring Boot-Backend und das Angular-Frontend zu automatisieren. Dies demonstriert sofort den Wert des Werkzeugs bei der Reduzierung von Boilerplate-Aufgaben.
+Beispiel-Prompt (Chat):
+Erstelle ein Bash-Skript. Zuerst soll es die Spring Initializr CLI verwenden, um ein neues Spring Boot-Projekt namens 'todo-backend' mit Java 17, Maven und den Abhängigkeiten 'Spring Web' und 'Spring Data JPA' zu erstellen. Anschließend soll es die Angular CLI verwenden, um eine neue, eigenständige Anwendung namens 'todo-frontend' mit Routing und CSS zu erstellen.
+
+
+Analyse: Dieser erste Schritt zeigt, wie der Assistent zeitaufwändige, wenn auch einfache, Routineaufgaben automatisieren kann. Die Fähigkeit, Befehlssequenzen für verschiedene Technologien in einem einzigen Schritt zu generieren, beschleunigt den Projektstart erheblich.
+1.4 Tutorial-Roadmap: Eine Zusammenfassung der KI-gestützten Anwendungsfälle
+Die wahre Stärke eines KI-Assistenten entfaltet sich nicht bei einmaligen Aufgaben, sondern durch seine Integration als kontinuierlicher Partner über den gesamten Softwareentwicklungszyklus. Von der initialen Projektidee über die Implementierung, das Testen, die Dokumentation bis hin zur Wartung und Fehlerbehebung kann der Assistent als wertvolles Werkzeug dienen. Diese durchgängige Unterstützung ist ein Paradigmenwechsel, der den Entwickler befähigt, sich stärker auf architektonische und logische Herausforderungen zu konzentrieren, während Routineaufgaben automatisiert werden. Die folgende Tabelle dient als Roadmap für dieses Tutorial und skizziert die verschiedenen Anwendungsfälle, die wir untersuchen werden. Sie verdeutlicht, wie continue.dev in jeder Phase des Projekts einen Mehrwert schafft.
+Tabelle 1: Zusammenfassung der continue.dev-Anwendungsfälle für die Full-Stack-Entwicklung
+Anwendungsfall
+Beschreibung
+continue.dev-Funktion
+Beispiel-Prompt-Ausschnitt
+Ziel
+Projekt-Scaffolding
+Automatisierung der Erstellung von initialen Projektstrukturen und Build-Dateien.
+Chat
+"Erstelle ein Bash-Skript, um ein Spring Boot- und Angular-Projekt zu erstellen..."
+Beide
+Datenschicht-Generierung
+Erstellung von JPA-Entitäten und Spring Data-Repositories aus einer Beschreibung.
+Chat
+"Erstelle eine JPA-Entität 'Todo' mit den Feldern: id, title, completed..."
+Backend
+API-Controller-Generierung
+Generierung eines vollständigen Spring Boot REST-Controllers mit CRUD-Endpunkten.
+Chat
+"Generiere einen REST-Controller für die Todo-Entität unter Verwendung des TodoRepository..."
+Backend
+Code-Dokumentation
+Hinzufügen von Javadoc-Kommentaren zu bestehenden Methoden und Klassen.
+Edit / Chat
+Methode markieren, Ctrl+I: "Füge Javadoc-Dokumentation für diese Methode hinzu."
+Backend
+Unit-Test-Generierung
+Erstellung umfassender JUnit-Tests für Services und Controller.
+Chat
+"Generiere JUnit 5-Tests für den TodoController unter Verwendung von MockMvc..."
+Backend
+Moderne Komponenten-Erstellung
+Erstellung einer vollständigen, eigenständigen Angular-Komponente nach Best Practices.
+Chat
+"Erstelle eine eigenständige Angular-Komponente 'TodoItem', die ein Todo entgegennimmt..."
+Frontend
+Service- und Zustandslogik
+Generierung eines Angular-Services für die API-Kommunikation und Zustandsverwaltung.
+Chat
+"Erstelle einen Angular-Service 'TodoService', um Todos vom Backend abzurufen..."
+Frontend
+Template- & Stil-Refactoring
+Gezielte Änderungen an HTML-Templates und CSS mit natürlicher Sprache.
+Edit
+Template markieren, Ctrl+I: "Wandle diesen Div um, damit er Flexbox verwendet und seine Kinder zentriert."
+Frontend
+Komponenten-Test-Generierung
+Erstellung von Jasmine/Karma-Unit-Tests für Angular-Komponenten.
+Chat
+"Schreibe Jasmine-Tests für die TodoListComponent und mocke den TodoService."
+Frontend
+Fehlermeldungs-Erklärung
+Entschlüsselung komplexer Stack-Traces oder kryptischer Fehlermeldungen.
+Chat
+Ctrl+L mit Fehlerprotokoll: "Erkläre diese NullPointerException und schlage eine Lösung vor."
+Beide
+Kontextbezogenes Refactoring
+Durchführung von Änderungen, die ein Verständnis der breiteren Codebasis erfordern.
+Chat + @Codebase
+"Refaktoriere die Todo-Entität, um ein 'priority'-Feld hinzuzufügen, und aktualisiere dessen Verwendung in der gesamten Codebasis."
+Beide
+Lernen aus Dokumentationen
+Stellen von Fragen zu einem Framework unter Verwendung externer Dokumentation als Kontext.
+Chat + @Docs
+"@docs(angular) Wie verwende ich die neue Control-Flow-Syntax, um über meine Todos zu iterieren?"
+Frontend
+Teamstandards durchsetzen
+Erstellung wiederverwendbarer, benutzerdefinierter Befehle für gängige, standardisierte Aufgaben.
+Custom Slash Command
+"/add-crud-tests"
+Beide
+
+Abschnitt 2: KI-gestützte Backend-Entwicklung: Aufbau der Spring Boot API
+Dieser Abschnitt ist eine praktische, schrittweise Anleitung zum Aufbau des Backends. Jeder Schritt demonstriert einen spezifischen Anwendungsfall aus der Übersichtstabelle, liefert den genauen Prompt, analysiert die KI-generierte Ausgabe und erklärt die zugrunde liegende Strategie.
+2.1 Generierung der Datenschicht: Entitäten und Repositories
+Die Grundlage jeder datengesteuerten Anwendung ist die Datenschicht. Mit continue.dev kann diese Schicht effizient aus einer Beschreibung in natürlicher Sprache generiert werden.
+Prompt (Chat):
+Erstelle eine JPA-Entitätsklasse namens 'Todo' im Paket 'com.example.todobackend.model'. Sie sollte die folgenden Felder haben: eine Long 'id' als Primärschlüssel mit Identity-Generierung, einen String 'title', der nicht null sein darf, und einen boolean 'completed'. Generiere außerdem eine Spring Data JPA-Repository-Schnittstelle namens 'TodoRepository' für diese Entität im Paket 'com.example.todobackend.repository'.
+
+
+Analyse: Dieser Prompt ist bewusst präzise. Durch die Angabe von Paketnamen, Datentypen, Constraints (nullable=false) und JPA-spezifischen Details (GenerationType.IDENTITY) wird die KI angeleitet, Code zu produzieren, der nur minimale manuelle Anpassungen erfordert. Diese Detailgenauigkeit ist der Schlüssel zur Erzeugung von qualitativ hochwertigem Code.
+2.2 Aufbau der API-Schicht: Der REST-Controller
+Die API-Schicht stellt die Funktionalität des Backends nach außen zur Verfügung. Durch die Bereitstellung von Kontext aus zuvor generiertem Code kann der Assistent einen voll funktionsfähigen Controller erstellen.
+Prompt (Chat): Markieren Sie den Code der zuvor generierten Todo-Entität und des TodoRepository. Fügen Sie ihn mit Cmd/Ctrl+L dem Chat-Kontext hinzu. Geben Sie dann den folgenden Prompt ein:
+Unter Verwendung der bereitgestellten Todo-Entität und des Repositories, generiere einen Spring Boot @RestController namens 'TodoController'. Er sollte das Repository injizieren und die folgenden Endpunkte bereitstellen: GET /api/todos, GET /api/todos/{id}, POST /api/todos, PUT /api/todos/{id} und DELETE /api/todos/{id}. Befolge dabei die üblichen REST-Praktiken.
+
+
+Analyse: Dieser Anwendungsfall demonstriert die Stärke der kontextbezogenen Generierung. Ohne den Kontext des TodoRepository würde die KI nur Platzhaltercode erzeugen. Mit dem Kontext kann sie jedoch einen funktionsfähigen Controller generieren, der die Methoden des Repositories (findAll, findById, save, deleteById) korrekt verwendet.
+2.3 Sicherstellung der Codequalität: Generierung von Javadoc
+Dokumentation ist eine wertvolle, aber oft vernachlässigte Aufgabe. Die Edit-Funktion eignet sich hervorragend, um Code gezielt zu ergänzen, ohne ihn neu zu generieren.
+Prompt (Edit): Markieren Sie in der generierten Datei TodoController.java die gesamte createTodo-Methode. Drücken Sie Cmd/Ctrl+I und geben Sie den folgenden Text ein:
+Füge eine umfassende Javadoc-Dokumentation für diese Methode hinzu. Erkläre den Zweck, den @RequestBody-Parameter und was die Methode zurückgibt.
+
+
+Analyse: Dies zeigt die chirurgische Präzision der Edit-Funktion für die Code-Anreicherung. Es ist schneller als das manuelle Schreiben von Javadoc und hilft, einen konsistenten Dokumentationsstil im gesamten Projekt beizubehalten.
+2.4 Vertrauen schaffen: Generierung von Unit- und Integrationstests
+Tests sind entscheidend für die Wartbarkeit und Stabilität einer Anwendung. Ein KI-Assistent kann die Erstellung von Test-Boilerplate erheblich beschleunigen.
+Prompt (Chat): Stellen Sie den Code des TodoController als Kontext bereit (Cmd/Ctrl+L). Geben Sie dann den folgenden Prompt ein:
+Generiere eine vollständige JUnit 5-Testklasse für den bereitgestellten TodoController. Verwende @WebMvcTest und MockMvc. Die Tests sollten Folgendes abdecken: Abrufen aller Todos (erwartet einen OK-Status und ein JSON-Array), Erstellen eines neuen Todos (erwartet einen CREATED-Status) und Abrufen eines nicht existierenden Todos (erwartet einen NOT_FOUND-Status). Verwende Mockito, um das TodoRepository zu mocken.
+
+
+Analyse: Ein Entwickler unter Zeitdruck könnte einen einfachen Test schreiben. Ein detaillierter Prompt wie dieser fungiert jedoch als "Leitplanke" für Best Practices. Er fordert die KI nicht nur auf, "einen Test zu schreiben", sondern "einen Test zu schreiben, der den hohen Standards des Teams für Integrationstests entspricht". Der Prompt spezifiziert die zu verwendenden Frameworks (JUnit 5, MockMvc, Mockito) und die abzudeckenden Testfälle, einschließlich negativer Szenarien. Das Ergebnis ist nicht nur eine Zeitersparnis, sondern auch eine unmittelbare Steigerung der Codequalität, da die bevorzugte, robustere Testmethodik von Anfang an angewendet wird.
+Abschnitt 3: KI-gestützte Frontend-Entwicklung: Gestaltung der Angular-UI
+Dieser Abschnitt widmet sich dem Frontend und konzentriert sich darauf, wie continue.dev genutzt werden kann, um eine moderne, reaktive Angular-Anwendung zu erstellen. Ein zentrales Thema ist die Einbindung offizieller Angular Best Practices direkt in die Prompts, um qualitativ hochwertigen Code zu gewährleisten.
+3.1 Prompting mit Best Practices: Der Angular AI Guide
+Moderne Frameworks wie Angular entwickeln sich schnell weiter. Um sicherzustellen, dass die KI aktuellen Code generiert, ist es entscheidend, ihr die neuesten Konventionen mitzuteilen. Der offizielle Angular-Leitfaden für die KI-Codegenerierung ist hierfür eine unschätzbare Ressource. Indem man diese Best Practices als "System-Prompt" zu Beginn einer Chat-Sitzung bereitstellt, wird die Qualität des generierten Codes erheblich verbessert.
+Beispiel System-Prompt (Chat): Starten Sie eine neue Chat-Sitzung und fügen Sie die folgenden Schlüsselregeln ein:
+Du bist ein Experte für Angular. Verwende immer eigenständige Komponenten. Verwende Signale für die Zustandsverwaltung. Verwende die Funktionen input() und output() anstelle von Dekoratoren. Setze changeDetection auf OnPush. Verwende die inject()-Funktion anstelle der Konstruktor-Injektion.
+
+
+Diese Vorkonditionierung stellt sicher, dass alle nachfolgenden Generierungen den modernen Angular-Standards entsprechen.
+3.2 Generierung des zentralen Service und der Zustandsverwaltung
+Der TodoService ist für die Kommunikation mit dem Backend und die Verwaltung des Anwendungszustands zuständig.
+Prompt (Chat): (Nach dem System-Prompt aus 3.1)
+Erstelle einen Angular-Service namens 'TodoService'. Er sollte die inject()-Funktion verwenden, um den HttpClient zu erhalten. Er sollte ein privates, schreibbares Signal für die Liste der Todos haben. Stelle ein öffentliches, berechnetes Signal für die Todos bereit. Erstelle Methoden, um alle Todos von 'http://localhost:8080/api/todos' abzurufen, ein neues Todo hinzuzufügen und ein Todo zu löschen. Die Methoden sollten das Signal entsprechend aktualisieren.
+
+
+Analyse: Dieser Prompt fordert explizit moderne Angular-Funktionen wie Signale und inject() an. Die KI, die durch den System-Prompt vorbereitet wurde, wird diese korrekt implementieren und veraltete, klassenbasierte Service-Muster vermeiden.
+3.3 Erstellung von Komponenten: Der "Makro"-Workflow mit Chat
+Die Chat-Funktion eignet sich hervorragend, um die gesamte Struktur einer Komponente, einschließlich Template und Logik, in einem Schritt zu generieren.
+Prompt (Chat): (In derselben Sitzung)
+Erstelle nun eine eigenständige 'TodoListComponent'. Sie sollte den TodoService injizieren. Verwende in ihrem Template den neuen @for-Block, um über die Todos aus dem Signal des Services zu iterieren. Rendere für jedes Todo eine 'app-todo-item'-Komponente (diese erstellen wir als Nächstes) und übergebe das Todo als Input. Füge auch ein Eingabefeld und einen Button hinzu, um ein neues Todo hinzuzufügen.
+
+
+Analyse: Dies demonstriert den "Makro"-Workflow, bei dem Chat verwendet wird, um das vollständige Gerüst einer Komponente zu erstellen. Es zeigt auch, wie Anfragen verkettet werden können, um auf zuvor generiertem Code im selben Gesprächskontext aufzubauen.
+3.4 Verfeinerung von Templates: Der "Mikro"-Workflow mit Edit
+Für UI-Anpassungen und Stiländerungen ist die Edit-Funktion weitaus effizienter als die Neugenerierung der gesamten Komponente. Dieser iterative Ansatz spiegelt den realen Entwicklungsprozess wider.
+Prompt (Edit): Markieren Sie in der Datei todo-list.component.ts den HTML-Template-Bereich. Drücken Sie Cmd/Ctrl+I und geben Sie ein:
+Umschließe das gesamte Template mit einem main-Abschnitt mit der Klasse 'todoapp'. Füge einen Header mit einem h1-Tag hinzu, das 'todos' enthält. Umschließe die Todo-Liste selbst mit einem section-Abschnitt mit der Klasse 'main'.
+
+
+Führen Sie anschließend einen weiteren Edit-Befehl für das CSS aus:
+Füge Stile für die '.todoapp'-Klasse hinzu, um eine Hintergrundfarbe von #f5f5f5 und einen Abstand von 130px 0 40px 0 festzulegen.
+
+
+Analyse: Die Produktivität mit KI-Assistenten hängt davon ab, den Fluss zwischen den verschiedenen Interaktionsmodi zu beherrschen. Ein Anfänger könnte versuchen, alles in einem einzigen, riesigen Chat-Prompt perfekt zu machen, was oft zu Frustration führt. Ein Experte hingegen nutzt den Chat, um eine 70%-Lösung zu erhalten, und wechselt dann fließend zum Edit-Modus für mehrere "Mikro"-Prompts, um die Details zu verfeinern. Dieser iterative, bimodale Arbeitsablauf ist eine Kernkompetenz, die die Effizienz maximiert.
+3.5 Generierung von Komponententests mit Jasmine und Karma
+Wie beim Backend ist auch im Frontend das Testen entscheidend. Spezifische Prompts helfen, qualitativ hochwertige Tests zu generieren.
+Prompt (Chat): Stellen Sie den Code der TodoListComponent und eine vereinfachte Version des TodoService als Kontext bereit. Geben Sie dann den folgenden Prompt ein:
+Generiere eine Jasmine/Karma-Testsuite für die bereitgestellte TodoListComponent. Erstelle einen Mock-TodoService mit einem Signal, das eine vordefinierte Liste von Todos zurückgibt. Die Tests sollten überprüfen, dass: 1. Die Komponente die korrekte Anzahl von Todo-Elementen rendert. 2. Wenn der 'Hinzufügen'-Button geklickt wird, die 'addTodo'-Methode des Mock-Services aufgerufen wird.
+
+
+Analyse: Ähnlich wie bei den Backend-Tests stellt dieser Prompt sicher, dass qualitativ hochwertige Tests generiert werden, indem er das Test-Framework (Jasmine), die Mocking-Strategie und die genauen zu treffenden Zusicherungen vorgibt.
+Abschnitt 4: Fortgeschrittene Arbeitsabläufe: Vom Entwickler zum KI-Orchestrator
+Dieser letzte Abschnitt geht über die grundlegende Codegenerierung hinaus und zeigt, wie continue.dev die Rolle des Entwicklers zu der eines "KI-Orchestrators" wandelt, der strategisch Kontext bereitstellt und das Werkzeug anpasst, um komplexe Probleme zu lösen.
+4.1 Fehlerbehebung und Erklärung von Fehlermeldungen
+In der realen Welt treten unweigerlich Fehler auf. Ein KI-Assistent kann ein leistungsstarkes Werkzeug sein, um komplexe Fehler zu analysieren, die sich über mehrere Systemschichten erstrecken.
+Anwendungsfall: Eine Anfrage vom Frontend zum Backend schlägt mit einem CORS-Fehler im Browser und einer NullPointerException in den Spring Boot-Logs fehl.
+Prompt (Chat): Kopieren Sie den gesamten Java-Stack-Trace aus dem Backend-Terminal und den CORS-Fehler aus der Browser-Konsole. Fügen Sie beides in das Chat-Fenster ein (Cmd/Ctrl+L) und fragen Sie:
+Ich erhalte diesen CORS-Fehler in meiner Angular-App, wenn ich mein Spring Boot-Backend aufrufe, das diese NullPointerException auslöst. Erkläre die Ursache beider Fehler und liefere die exakten Code-Änderungen für den Spring Boot-Controller, um das CORS-Problem zu beheben und den Null-Pointer zu verhindern.
+
+
+Analyse: Dies ist ein äußerst praxisnahes Szenario. Die Fähigkeit des Assistenten, einen Frontend- und einen Backend-Fehler zu korrelieren und eine ganzheitliche Lösung anzubieten, ist ein enormer Produktivitätsgewinn. Es zeigt den Nutzen, Terminalausgaben oder Log-Dateien als Kontext bereitzustellen.
+4.2 Kontext ist entscheidend: Verwendung von @Codebase und @Docs
+Die Effektivität eines KI-Assistenten steigt exponentiell mit der Qualität des bereitgestellten Kontexts. continue.dev bietet leistungsstarke Kontextanbieter, um dies zu erleichtern.
+Anwendungsfall 1 (@Codebase): Wir müssen ein creationDate-Feld zur Todo-Entität hinzufügen und es im Frontend anzeigen. Diese Änderung betrifft die Backend-Entität, den Controller, den Frontend-Service und das Komponenten-Template.
+Prompt (Chat):
+@codebase Füge ein 'creationDate'-Feld vom Typ Instant zur Todo-Entität hinzu. Aktualisiere den Backend- und Frontend-Code, um dieses neue Feld zu verarbeiten. Das Datum sollte in der TodoItemComponent angezeigt werden.
+
+
+Analyse: Dies ist eine Aufgabe, die für eine KI ohne projektweiten Kontext schwierig ist. Der @Codebase-Anbieter ermöglicht es continue.dev, semantische Suchen über den gesamten Arbeitsbereich durchzuführen, um alle relevanten Dateien zu finden. Dies macht komplexe, übergreifende Refactorings möglich.
+Anwendungsfall 2 (@Docs): Der Entwickler möchte eine Drag-and-Drop-Funktion zur Neuanordnung der Todo-Liste implementieren und muss wissen, wie dies in Angular am besten umzusetzen ist.
+Prompt (Chat):
+@docs(angular) Was ist die moderne, empfohlene Methode, um Drag-and-Drop-Funktionalität für eine Liste in Angular zu implementieren? Liefere ein einfaches Beispiel unter Verwendung des Angular CDK.
+
+
+Analyse: Dies erspart dem Entwickler das Verlassen der IDE und das Durchsuchen von Web-Dokumentationen. Durch die Indizierung der offiziellen Angular-Dokumentation kann der Assistent genaue, aktuelle Informationen direkt im Chat bereitstellen, komplett mit Codebeispielen.
+4.3 Ein Kraftmultiplikator: Erstellung benutzerdefinierter Slash-Befehle
+Die Anpassung des Werkzeugs an team-spezifische Arbeitsabläufe ist der ultimative Schritt zur Produktivitätssteigerung.
+Anwendungsfall: Das Team beschließt, dass jede Service-Methode einen Unit-Test in einem bestimmten Stil haben muss. Diese sich wiederholende Aufgabe ist ein perfekter Kandidat für die Automatisierung.
+Implementierung: Erstellen Sie einen benutzerdefinierten Slash-Befehl /add-service-test mithilfe einer .prompt-Datei. Die Prompt-Datei könnte eine Vorlage wie diese enthalten:
+Du bist ein Experte für die Testgenerierung. Erstelle für die markierte Angular-Service-Methode einen Jasmine-Unit-Test. Der Test sollte alle Abhängigkeiten mit jasmine.createSpyObj mocken und überprüfen, ob die Methode sich korrekt verhält. {{highlighted_code}}
+
+
+Verwendung: Der Entwickler kann nun einfach eine neue Methode in TodoService.ts markieren, /add-service-test in den Chat eingeben und erhält sofort einen perfekt formatierten Testfall.
+Analyse: Dies ist der Höhepunkt der Nutzung des KI-Assistenten. Er ist nicht mehr nur ein Werkzeug für einmalige Fragen, sondern eine anpassbare Plattform zur Kodifizierung und Automatisierung von teamspezifischen Arbeitsabläufen und Best Practices. Das Werkzeug wird zu einem Mechanismus, um das Fachwissen von leitenden Entwicklern im gesamten Team zu skalieren und konsistent anzuwenden.
+Abschnitt 5: Fazit: Der KI-erweiterte Entwickler
+Dieses Tutorial hat gezeigt, wie ein KI-Coding-Assistent wie continue.dev den gesamten Full-Stack-Entwicklungsprozess unterstützen kann. Die Vorteile sind vielfältig und gehen weit über die reine Codegenerierung hinaus.
+Zusammenfassung der Vorteile:
+Beschleunigung: Die Generierung von Boilerplate-Code für Projekte, Datenmodelle, APIs und Tests wird drastisch verkürzt.
+Qualitätssteigerung: Durch gezielte Prompts, die Best Practices erzwingen, dient die KI als "Leitplanke", die von Anfang an zu qualitativ hochwertigerem und modernerem Code führt.
+Konsistenz: Benutzerdefinierte Befehle ermöglichen die Kodifizierung und Automatisierung von Teamstandards, was zu einer einheitlicheren Codebasis führt.
+Effizienz: Der nahtlose Wechsel zwischen "Makro"-Generierung (Chat) und "Mikro"-Verfeinerung (Edit) sowie die Integration von Dokumentation und Fehleranalyse direkt in der IDE halten den Entwickler im "Flow".
+Die effektivste Nutzung von KI-Coding-Assistenten erfordert einen Wandel in der Rolle des Entwicklers. Statt nur Code zu schreiben, wird der KI-erweiterte Entwickler zu einem Experten für die Bereitstellung von Kontext, das Stellen präziser Fragen und die Anpassung seiner Werkzeuge. Der Assistent ist kein Ersatz für Fachwissen, sondern ein leistungsstarker Multiplikator dafür. Die Fähigkeit, die KI effektiv zu "orchestrieren", wird zu einer entscheidenden Kompetenz, die es Entwicklern ermöglicht, ihre eigene Expertise zu verstärken und architektonische Visionen in großem Maßstab umzusetzen.
+Quellenangaben
+1. Continue.dev: The Open-Source AI Assistant | by Simple Stack | Let's Code Future | Medium, https://medium.com/lets-code-future/continue-dev-the-open-source-ai-assistant-02584d320381 2. Continue.dev, https://www.continue.dev/ 3. Ship faster with Continuous AI. Build and run custom agents across your IDE, terminal, and CI - GitHub, https://github.com/continuedev/continue 4. Continue - open-source AI code assistant - Visual Studio Marketplace, https://marketplace.visualstudio.com/items?itemName=Continue.continue 5. Introduction - Continue, https://docs.continue.dev/ 6. How to Use Continue.dev AI IDE - Apidog, https://apidog.com/blog/how-to-use-continue-dev/ 7. OpenAI - Continue doc, https://docs.continue.dev/customize/model-providers/top-level/openai 8. Introducing GPT‑5 for developers - OpenAI, https://openai.com/index/introducing-gpt-5-for-developers/ 9. Integrating Continue.dev VSCode Extension with Open WebUI, https://docs.openwebui.com/tutorials/integrations/continue-dev/ 10. continue.dev - AI/ML API Documentation, https://docs.aimlapi.com/integrations/continue.dev 11. Continue, https://hub.continue.dev/ 12. From Zero to Wow: Building a Beginner-Friendly Angular GPT AI-Powered App, https://dev.to/this-is-angular/from-zero-to-wow-building-a-beginner-friendly-angular-gpt-powered-app-1j1n 13. Quickstart - Spring, https://spring.io/quickstart/ 14. Getting Started | Building an Application with Spring Boot, https://spring.io/guides/gs/spring-boot/ 15. Spring Boot for Beginners - Daily.dev, https://daily.dev/blog/spring-boot-for-beginners 16. 1. Working with Spring Data Repositories, https://docs.spring.io/spring-data/data-commons/docs/1.6.1.RELEASE/reference/html/repositories.html 17. Create an Entity and Repository using Spring Boot 3 - DEV Community, https://dev.to/wkreuch/create-an-entity-and-repository-using-spring-boot-3-2l6 18. Free AI-powered Spring Boot Code Generator: Simplify Java Development - Workik, https://workik.com/spring-boot-code-generator 19. Unlocking AI Coding Assistants: Generate Spring Boot Application - mydeveloperplanet.com, https://mydeveloperplanet.com/2025/04/02/unlocking-ai-coding-assistants-generate-spring-boot-application/ 20. How to Make a Simple RestController in Spring Boot? - GeeksforGeeks, https://www.geeksforgeeks.org/springboot/how-to-make-a-simple-restcontroller-in-spring-boot/ 21. Getting Started | Building REST services with Spring, https://spring.io/guides/tutorials/rest/ 22. Spring - REST Controller - GeeksforGeeks, https://www.geeksforgeeks.org/advance-java/spring-rest-controller/ 23. Developing AI-powered Javadoc IntelliJ plugin | by Pavel Polívka | Python in Plain English, https://python.plainenglish.io/developing-ai-powered-javadoc-intellij-plugin-b3b89052aa5e 24. Javadoc - the Documentation Generator - Dev.java, https://dev.java/learn/jvm/tools/core/javadoc/ 25. Let GPT write Javadocs in your PR | by Ming | Medium, https://blog.myli.page/let-gpt-write-javadocs-into-their-prs-d3c3bbcbe10c 26. Free AI-Powered JUnit Test Case Generator – Automate Java Testing - Workik, https://workik.com/junit-test-generator 27. Build a Spring Boot App with AI Assistant | The IntelliJ IDEA Blog, https://blog.jetbrains.com/idea/2024/02/build-a-spring-boot-app-with-ai-assistant/ 28. Unlocking AI Coding Assistants: Generate Unit Tests - mydeveloperplanet.com, https://mydeveloperplanet.com/2025/04/16/unlocking-ai-coding-assistants-generate-unit-tests/ 29. LLM prompts and AI IDE setup • Angular, https://angular.dev/ai/develop-with-ai 30. Angular development and AI - Reddit, https://www.reddit.com/r/angular/comments/1kt6ifm/angular_development_and_ai/ 31. Prompting AI to Generate Angular Applications: A Developer's Guide for Clean, Scalable Development | by Omar Aljaber | Medium, https://medium.com/@omar.aljaber_70701/prompting-ai-to-generate-angular-applications-a-developers-guide-for-clean-scalable-development-ae518fb0cce3 32. Build with AI - Angular, https://angular.dev/ai 33. Build an Angular 19 AI Assistant with Function Calling and LLM — No More Hallucinations!, https://medium.com/@geethab/build-an-angular-19-ai-assistant-with-function-calling-and-llm-no-more-hallucinations-b5b4e871d1e6 34. FREE AI Angular Code Generator Online - Revolutionize Your Web Development - Workik, https://workik.com/angular-code-generator 35. starter/angular-assistant - Continue Hub, https://hub.continue.dev/starter/angular-assistant 36. Quick Start - Continue, https://docs.continue.dev/features/edit/quick-start 37. Quick Start - Continue doc, https://docs.continue.dev/features/chat/quick-start 38. Angular AI AssistView Component | Syncfusion, https://www.syncfusion.com/angular-components/angular-ai-assistview 39. CodeGPT: AI Agents for Software Development, https://codegpt.co/ 40. Unit Testing in a New Angular Project - Best Library Recommendations? - Reddit, https://www.reddit.com/r/angular/comments/1j3w38e/unit_testing_in_a_new_angular_project_best/ 41. Testing • Overview - Angular, https://angular.dev/guide/testing 42. Troubleshooting - Continue doc, https://docs.continue.dev/troubleshooting 43. times out while waiting for response (setting timeout doesn't fix) · Issue #714 · continuedev/continue - GitHub, https://github.com/continuedev/continue/issues/714 44. errors, when starting continue server with a custom configuration file · Issue #659 - GitHub, https://github.com/continuedev/continue/issues/659 45. Codebase - Continue doc, https://docs.continue.dev/customize/context/codebase 46. continuedev/docs-context - Continue Hub, https://hub.continue.dev/continuedev/docs-context 47. Enabling the @Docs context provider - Docs | Continue, https://docs.continue.dev/customize/deep-dives/docs 48. Slash commands - Continue, https://docs.continue.dev/customize/deep-dives/slash-commands 49. Continue.dev vs Copilot: Unlocking the Future of Code with Ty Dunn #0to1AI - YouTube, https://www.youtube.com/watch?v=25Z1ydfCvds

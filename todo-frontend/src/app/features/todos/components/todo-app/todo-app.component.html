@@ -42,3 +42,10 @@
     <app-clear-completed></app-clear-completed>
   </footer>
 </section>
+
+<!-- Simple Filter Status Popup -->
+<div class="filter-popup-overlay" *ngIf="showFilterPopup" (click)="hidePopup()">
+  <div class="filter-popup-content">
+    <div class="filter-popup-message">{{ popupMessage }}</div>
+  </div>
+</div>

@@ -8,6 +8,8 @@ import { TodoFilterComponent } from './components/todo-filter/todo-filter.compon
 import { TodoCounterComponent } from './components/todo-counter/todo-counter.component';
 import { ClearCompletedComponent } from './components/clear-completed/clear-completed.component';
 import { ToggleAllComponent } from './components/toggle-all/toggle-all.component';
+import { PopupContainerComponent } from '../../shared/components/popup-container/popup-container.component';
+import { FilterStatusPopupComponent } from '../../shared/components/filter-status-popup/filter-status-popup.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { ToggleAllComponent } from './components/toggle-all/toggle-all.component
   ],
   imports: [
     SharedModule,
-    TodosRoutingModule
+    TodosRoutingModule,
+    PopupContainerComponent,
+    FilterStatusPopupComponent
   ],
   exports: [
     TodoAppComponent

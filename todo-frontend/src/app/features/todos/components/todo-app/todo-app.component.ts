@@ -1,10 +1,11 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, combineLatest } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil, map, distinctUntilChanged, delay } from 'rxjs/operators';
 import { TodoService } from '../../../../core/services/todo.service';
 import { ErrorService } from '../../../../core/services/error.service';
 import { UIStateService } from '../../../../core/services/ui-state.service';
+import { PopupService } from '../../../../shared/services/popup.service';
 import { TodoValidator } from '../../models/todo-validation';
 
 @Component({
@@ -35,11 +36,17 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
   filteredTodos$ = this.todoService.getCurrentlyFilteredTodos();
   
   isCreating = false;
+  
+  // Simple popup state for testing
+  showFilterPopup = false;
+  popupMessage = '';
+  popupTimer?: ReturnType<typeof setTimeout>;
 
   constructor(
     private todoService: TodoService,
     private errorService: ErrorService,
     private uiStateService: UIStateService,
+    private popupService: PopupService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute
   ) {}
@@ -49,6 +56,7 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loadTodos();
     this.initializeFilterFromRoute();
     this.setupUIStateManagement();
+    this.setupFilterPopups(); // simple version for testing
     
     // Debug filtered todos
     this.filteredTodos$.pipe(takeUntil(this.destroy$)).subscribe(todos => {
@@ -220,5 +228,69 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   clearError(): void {
     this.errorService.clearError();
+  }
+
+  private setupFilterPopups(): void {
+    // Simple popup when filter changes
+    combineLatest([
+      this.currentFilter$,
+      this.todos$
+    ]).pipe(
+      takeUntil(this.destroy$),
+      distinctUntilChanged(([prevFilter], [currFilter]) => prevFilter === currFilter),
+      delay(300) // Small delay to ensure counts are accurate
+    ).subscribe(([currentFilter, allTodos]) => {
+      console.log('Filter popup trigger:', { currentFilter, totalCount: allTodos.length });
+      
+      // Don't show popup on initial load or if no todos
+      if (allTodos.length === 0) return;
+      
+      // Calculate counts based on filter type
+      let displayCount = 0;
+      let filterLabel = '';
+      
+      switch (currentFilter) {
+        case 'active':
+          displayCount = allTodos.filter(todo => !todo.completed).length;
+          filterLabel = 'active';
+          break;
+        case 'completed':
+          displayCount = allTodos.filter(todo => todo.completed).length;
+          filterLabel = 'completed';
+          break;
+        case 'all':
+        default:
+          displayCount = allTodos.length;
+          filterLabel = 'total';
+          break;
+      }
+      
+      // Show simple popup
+      this.showSimplePopup(`Showing ${displayCount} ${filterLabel} todo${displayCount !== 1 ? 's' : ''}`);
+    });
+  }
+
+  private showSimplePopup(message: string): void {
+    this.popupMessage = message;
+    this.showFilterPopup = true;
+    this.cdr.markForCheck();
+    
+    // Auto-hide after 2.5 seconds
+    if (this.popupTimer) {
+      clearTimeout(this.popupTimer);
+    }
+    
+    this.popupTimer = setTimeout(() => {
+      this.showFilterPopup = false;
+      this.cdr.markForCheck();
+    }, 2500);
+  }
+
+  hidePopup(): void {
+    this.showFilterPopup = false;
+    if (this.popupTimer) {
+      clearTimeout(this.popupTimer);
+    }
+    this.cdr.markForCheck();
   }
 }

@@ -5,9 +5,9 @@ Ein praktischer Leitfaden zur KI-gestützten Entwicklung mit echten Beispielen a
 ## 📋 Überblick
 
 Dieses Tutorial zeigt, wie Sie continue.dev in allen drei Modi nutzen:
-- **Chat**: Vollständige Code-Generierung und Problemlösung
-- **Edit**: Gezielte Code-Verbesserungen ohne Neugenerierung  
-- **Autocomplete**: Intelligente Vervollständigung während des Tippens
+- **Autocomplete**: Intelligente Vervollständigung während des Tippens (Einstieg)
+- **Edit**: Gezielte Code-Verbesserungen ohne Neugenerierung (Mittelstufe)
+- **Chat**: Vollständige Code-Generierung und Problemlösung (Fortgeschritten)
 
 Alle Beispiele stammen aus einem echten TodoMVC-Projekt mit:
 - **Backend**: Spring Boot 3.2 (25 Java-Dateien, 3.063 Zeilen)

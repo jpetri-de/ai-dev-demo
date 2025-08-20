@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError, timer, forkJoin, of, combineLatest } from 'rxjs';
 import { map, catchError, retry, delayWhen, tap, switchMap } from 'rxjs/operators';
-import { 
-  Todo, 
-  TodoStats, 
-  CreateTodoRequest, 
+import {
+  Todo,
+  TodoStats,
+  CreateTodoRequest,
   UpdateTodoRequest,
   TodoApiError,
-  TodoId 
+  TodoId
 } from '../../features/todos/models';
 import { TodoValidator } from '../../features/todos/models/todo-validation';
 
@@ -20,7 +20,7 @@ export class TodoService {
   private todosSubject = new BehaviorSubject<Todo[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
   private currentFilterSubject = new BehaviorSubject<'all' | 'active' | 'completed'>('all');
-  
+
   public todos$ = this.todosSubject.asObservable();
   public loading$ = this.loadingSubject.asObservable();
 
@@ -50,7 +50,7 @@ export class TodoService {
   // GET /api/todos - Retrieve all todos
   getTodos(): Observable<Todo[]> {
     this.setLoading(true);
-    
+
     return this.http.get<Todo[]>(this.apiUrl).pipe(
       retry({
         count: 3,
@@ -67,21 +67,22 @@ export class TodoService {
     );
   }
 
+
   // POST /api/todos - Create new todo with enhanced error handling
   createTodo(title: string): Observable<Todo> {
     // Exact specification validation
     const trimmedTitle = title.trim();
-    
+
     if (!trimmedTitle) {
       return throwError(() => new Error('Todo title cannot be empty'));
     }
-    
+
     if (trimmedTitle.length > TodoValidator.MAX_TITLE_LENGTH) {
       return throwError(() => new Error(`Todo title cannot exceed ${TodoValidator.MAX_TITLE_LENGTH} characters`));
     }
 
-    const request: CreateTodoRequest = { 
-      title: trimmedTitle 
+    const request: CreateTodoRequest = {
+      title: trimmedTitle
     };
 
     // Optimistic update with negative ID for temporary todos
@@ -102,7 +103,7 @@ export class TodoService {
       tap(createdTodo => {
         // Replace temp todo with real todo from server using current state
         const latestTodos = this.todosSubject.value;
-        const updatedTodos = latestTodos.map(todo => 
+        const updatedTodos = latestTodos.map(todo =>
           todo.id === tempTodo.id ? createdTodo : todo
         );
         this.updateTodos(updatedTodos);
@@ -115,15 +116,16 @@ export class TodoService {
     );
   }
 
+
   // PUT /api/todos/{id} - Update todo with enhanced validation
   updateTodo(id: TodoId, title: string): Observable<Todo> {
     // Exact specification validation
     const trimmedTitle = title.trim();
-    
+
     if (!trimmedTitle) {
       return throwError(() => new Error('Todo title cannot be empty'));
     }
-    
+
     if (trimmedTitle.length > TodoValidator.MAX_TITLE_LENGTH) {
       return throwError(() => new Error(`Todo title cannot exceed ${TodoValidator.MAX_TITLE_LENGTH} characters`));
     }
@@ -132,7 +134,7 @@ export class TodoService {
 
     // Optimistic update
     const currentTodos = this.todosSubject.value;
-    const optimisticTodos = currentTodos.map(todo => 
+    const optimisticTodos = currentTodos.map(todo =>
       todo.id === id ? { ...todo, title: trimmedTitle } : todo
     );
     this.updateTodos(optimisticTodos);
@@ -145,7 +147,7 @@ export class TodoService {
       tap(updatedTodo => {
         // Update with server response using current state (not old state)
         const latestTodos = this.todosSubject.value;
-        const serverUpdatedTodos = latestTodos.map(todo => 
+        const serverUpdatedTodos = latestTodos.map(todo =>
           todo.id === id ? updatedTodo : todo
         );
         this.updateTodos(serverUpdatedTodos);
@@ -182,7 +184,7 @@ export class TodoService {
   toggleTodo(id: TodoId): Observable<Todo> {
     // Optimistic update
     const currentTodos = this.todosSubject.value;
-    const optimisticTodos = currentTodos.map(todo => 
+    const optimisticTodos = currentTodos.map(todo =>
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
     );
     this.updateTodos(optimisticTodos);
@@ -191,7 +193,7 @@ export class TodoService {
       tap(updatedTodo => {
         // Update with server response using current state (not old state)
         const latestTodos = this.todosSubject.value;
-        const serverUpdatedTodos = latestTodos.map(todo => 
+        const serverUpdatedTodos = latestTodos.map(todo =>
           todo.id === id ? updatedTodo : todo
         );
         this.updateTodos(serverUpdatedTodos);
@@ -228,7 +230,7 @@ export class TodoService {
   toggleAllTodos(completed: boolean): Observable<Todo[]> {
     const currentTodos = this.todosSubject.value;
     const todosToToggle = currentTodos.filter(todo => todo.completed !== completed);
-    
+
     if (todosToToggle.length === 0) {
       return of(currentTodos);
     }
@@ -238,7 +240,7 @@ export class TodoService {
     this.updateTodos(optimisticTodos);
 
     // Execute individual toggle requests in parallel
-    const toggleOperations = todosToToggle.map(todo => 
+    const toggleOperations = todosToToggle.map(todo =>
       this.http.put<Todo>(`${this.apiUrl}/${todo.id}/toggle`, {}).pipe(
         retry({
           count: 2,
@@ -256,7 +258,7 @@ export class TodoService {
       map(toggledTodos => {
         // Create a map of toggled todos for quick lookup
         const toggledMap = new Map(toggledTodos.map(t => [t.id, t]));
-        
+
         // Update with server responses, keeping the completed state from server
         const finalTodos = currentTodos.map(todo => {
           if (toggledMap.has(todo.id)) {
@@ -267,7 +269,7 @@ export class TodoService {
             return { ...todo, completed };
           }
         });
-        
+
         this.updateTodos(finalTodos);
         return finalTodos;
       }),
@@ -374,7 +376,7 @@ export class TodoService {
       // Network error
       apiError = {
         status: 0,
-        message: this.isOnline() 
+        message: this.isOnline()
           ? 'Network error. Please check your connection.'
           : 'You are offline. Please check your internet connection.'
       };

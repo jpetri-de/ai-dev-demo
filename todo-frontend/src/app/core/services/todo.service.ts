@@ -313,14 +313,18 @@ export class TodoService {
   getFilteredTodos(filter: 'all' | 'active' | 'completed'): Observable<Todo[]> {
     return this.todos$.pipe(
       map(todos => {
-        switch (filter) {
-          case 'active':
-            return todos.filter(todo => !todo.completed);
-          case 'completed':
-            return todos.filter(todo => todo.completed);
-          default:
-            return todos;
-        }
+        const filtered = (() => {
+          switch (filter) {
+            case 'active':
+              return todos.filter(todo => !todo.completed);
+            case 'completed':
+              return todos.filter(todo => todo.completed);
+            default:
+              return todos;
+          }
+        })();
+        // Apply alphabetical sorting
+        return this.sortTodosAlphabetically(filtered);
       })
     );
   }
@@ -340,7 +344,8 @@ export class TodoService {
           }
         })();
         console.log(`Filter: ${filter}, Total todos: ${todos.length}, Filtered: ${result.length}`);
-        return result;
+        // Apply alphabetical sorting
+        return this.sortTodosAlphabetically(result);
       })
     );
   }
@@ -363,6 +368,16 @@ export class TodoService {
   // Private helper methods
   private updateTodos(todos: Todo[]): void {
     this.todosSubject.next(todos);
+  }
+
+  // Separate, reusable sorting method for demonstration and modification purposes
+  private sortTodosAlphabetically(todos: Todo[]): Todo[] {
+    return [...todos].sort((a, b) => 
+      a.title.localeCompare(b.title, 'de-DE', { 
+        numeric: true,      // "Todo 2" comes before "Todo 10"
+        sensitivity: 'base' // Case-insensitive comparison
+      })
+    );
   }
 
   private setLoading(loading: boolean): void {

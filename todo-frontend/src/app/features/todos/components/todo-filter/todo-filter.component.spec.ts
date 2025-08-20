@@ -12,7 +12,8 @@ describe('TodoFilterComponent', () => {
   let mockActivatedRoute: any;
 
   beforeEach(async () => {
-    const todoServiceSpy = jasmine.createSpyObj('TodoService', ['getFilteredTodos']);
+    const todoServiceSpy = jasmine.createSpyObj('TodoService', ['getFilteredTodos', 'getCurrentFilter', 'setCurrentFilter']);
+    todoServiceSpy.getCurrentFilter.and.returnValue(of('all'));
     mockActivatedRoute = {
       url: of([]),
       fragment: of(null)
@@ -36,15 +37,19 @@ describe('TodoFilterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with all filter', () => {
+  it('should initialize with all filter', (done) => {
     fixture.detectChanges();
-    expect(component.currentFilter).toBe('all');
+    component.currentFilter$.subscribe(filter => {
+      expect(filter).toBe('all');
+      done();
+    });
   });
 
   it('should update filter from route', () => {
     mockActivatedRoute.url = of([{ path: 'active' }]);
+    mockTodoService.setCurrentFilter.and.stub();
     component.ngOnInit();
-    expect(component.currentFilter).toBe('active');
+    expect(mockTodoService.setCurrentFilter).toHaveBeenCalledWith('active');
   });
 
   it('should have correct filter options', () => {

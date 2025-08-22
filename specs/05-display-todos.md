@@ -1,5 +1,7 @@
 # Feature 05: Todo-Liste anzeigen
 
+> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
+
 ## Ziel
 Alle Todos in einer Liste anzeigen mit korrekter Darstellung von erledigten und aktiven Todos.
 
@@ -20,7 +22,7 @@ TodoListComponent lädt und zeigt alle Todos vom Backend an. TodoItemComponent r
 - [ ] Leere Liste: Keine Todos sichtbar (main/footer später versteckt)
 
 ### Performance
-- [ ] Efficient rendering mit `*ngFor` und `trackBy`
+- [ ] Efficient rendering mit Listen-Iteration und Track-by-Funktionen
 - [ ] Keine unnötigen API-Aufrufe
 - [ ] Lazy loading preparation (falls später benötigt)
 
@@ -35,27 +37,26 @@ export interface Todo {
 }
 ```
 
-### TodoListComponent
+### TodoList-Komponente
+
+**Template-Struktur:**
+```html
+<section class="main" [wenn todos nicht leer]>
+  <ul class="todo-list">
+    [Für jedes todo in todos:]
+      <todo-item [todo als prop übergeben]></todo-item>
+  </ul>
+</section>
+```
+
+**Komponenten-Logik:**
 ```typescript
-@Component({
-  selector: 'app-todo-list',
-  template: `
-    <section class="main" *ngIf="todos.length > 0">
-      <ul class="todo-list">
-        <app-todo-item 
-          *ngFor="let todo of todos; trackBy: trackByTodoId"
-          [todo]="todo">
-        </app-todo-item>
-      </ul>
-    </section>
-  `
-})
-export class TodoListComponent implements OnInit {
+export class TodoListComponent {
   todos: Todo[] = [];
   
   constructor(private todoService: TodoService) {}
   
-  ngOnInit(): void {
+  onComponentInit(): void {
     this.loadTodos();
   }
   
@@ -65,54 +66,55 @@ export class TodoListComponent implements OnInit {
     });
   }
   
-  trackByTodoId(index: number, todo: Todo): number {
+  // Performance-Optimierung für Listen-Rendering
+  trackByTodoId(todo: Todo): number {
     return todo.id;
   }
 }
 ```
 
-### TodoItemComponent
+### TodoItem-Komponente
+
+**Template-Struktur:**
+```html
+<li [CSS-Klasse 'completed' wenn todo.completed]>
+  <div class="view">
+    <input 
+      class="toggle" 
+      type="checkbox" 
+      [checked bound zu todo.completed]
+      readonly
+    >
+    <label>{{ todo.title }}</label>
+    <button class="destroy"></button>
+  </div>
+</li>
+```
+
+**Komponenten-Logik:**
 ```typescript
-@Component({
-  selector: 'app-todo-item',
-  template: `
-    <li [class.completed]="todo.completed">
-      <div class="view">
-        <input 
-          class="toggle" 
-          type="checkbox" 
-          [checked]="todo.completed"
-          readonly
-        >
-        <label>{{ todo.title }}</label>
-        <button class="destroy"></button>
-      </div>
-    </li>
-  `
-})
 export class TodoItemComponent {
-  @Input() todo!: Todo;
+  todo: Todo; // Als Prop/Input empfangen
 }
 ```
 
 ### TodoService Erweiterung
+
+**Service/Store-Logik:**
 ```typescript
-@Injectable()
 export class TodoService {
-  private todos$ = new BehaviorSubject<Todo[]>([]);
+  private todos: Todo[] = [];
   
   getTodos(): Observable<Todo[]> {
-    this.http.get<Todo[]>(this.apiUrl).subscribe(todos => {
-      this.todos$.next(todos);
-    });
-    return this.todos$.asObservable();
+    return this.httpClient.get<Todo[]>(this.apiUrl).pipe(
+      tap(todos => this.todos = todos)
+    );
   }
   
   createTodo(title: string): Observable<Todo> {
-    return this.http.post<Todo>(this.apiUrl, { title }).pipe(
+    return this.httpClient.post<Todo>(this.apiUrl, { title }).pipe(
       tap(newTodo => {
-        const currentTodos = this.todos$.value;
-        this.todos$.next([...currentTodos, newTodo]);
+        this.todos = [...this.todos, newTodo];
       })
     );
   }

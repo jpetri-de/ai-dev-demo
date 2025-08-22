@@ -1,5 +1,7 @@
 # Feature 06: Todo als erledigt markieren
 
+> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
+
 ## Ziel
 Benutzer können Todos durch Klick auf die Checkbox als erledigt/nicht erledigt markieren.
 
@@ -27,28 +29,29 @@ Klick auf die Checkbox eines Todos schaltet den `completed` Status um. Das UI wi
 
 ## Technische Spezifikationen
 
-### TodoItemComponent Update
+### TodoItem-Komponente Update
+
+**Template-Struktur:**
+```html
+<li [CSS-Klasse 'completed' wenn todo.completed]>
+  <div class="view">
+    <input 
+      class="toggle" 
+      type="checkbox" 
+      [checked bound zu todo.completed]
+      [click event -> toggleTodo()]
+      [disabled wenn isToggling]
+    >
+    <label>{{ todo.title }}</label>
+    <button class="destroy"></button>
+  </div>
+</li>
+```
+
+**Komponenten-Logik:**
 ```typescript
-@Component({
-  selector: 'app-todo-item',
-  template: `
-    <li [class.completed]="todo.completed">
-      <div class="view">
-        <input 
-          class="toggle" 
-          type="checkbox" 
-          [checked]="todo.completed"
-          (click)="toggleTodo()"
-          [disabled]="isToggling"
-        >
-        <label>{{ todo.title }}</label>
-        <button class="destroy"></button>
-      </div>
-    </li>
-  `
-})
 export class TodoItemComponent {
-  @Input() todo!: Todo;
+  todo: Todo; // Als Prop/Input empfangen
   isToggling = false;
   
   constructor(private todoService: TodoService) {}
@@ -79,18 +82,18 @@ export class TodoItemComponent {
 ```
 
 ### TodoService Erweiterung
+
+**Service/Store-Logik:**
 ```typescript
-@Injectable()
 export class TodoService {
   
   toggleTodo(id: number): Observable<Todo> {
-    return this.http.put<Todo>(`${this.apiUrl}/${id}/toggle`, {}).pipe(
+    return this.httpClient.put<Todo>(`${this.apiUrl}/${id}/toggle`, {}).pipe(
       tap(updatedTodo => {
-        const todos = this.todos$.value;
-        const index = todos.findIndex(t => t.id === id);
+        const index = this.todos.findIndex(t => t.id === id);
         if (index !== -1) {
-          todos[index] = updatedTodo;
-          this.todos$.next([...todos]);
+          this.todos[index] = updatedTodo;
+          // Framework-spezifische Reaktivität triggern
         }
       })
     );

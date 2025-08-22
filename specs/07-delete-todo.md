@@ -1,5 +1,7 @@
 # Feature 07: Todo löschen
 
+> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
+
 ## Ziel
 Benutzer können einzelne Todos über einen Löschen-Button entfernen, der bei Hover sichtbar wird.
 
@@ -25,33 +27,34 @@ Beim Hover über ein Todo-Element wird ein Löschen-Button (×) sichtbar. Klick 
 
 ## Technische Spezifikationen
 
-### TodoItemComponent Update
+### TodoItem-Komponente Update
+
+**Template-Struktur:**
+```html
+<li [CSS-Klassen: 'completed' wenn todo.completed, 'deleting' wenn isDeleting]>
+  <div class="view">
+    <input 
+      class="toggle" 
+      type="checkbox" 
+      [checked bound zu todo.completed]
+      [click event -> toggleTodo()]
+      [disabled wenn isToggling || isDeleting]
+    >
+    <label>{{ todo.title }}</label>
+    <button 
+      class="destroy"
+      [click event -> deleteTodo()]
+      [disabled wenn isDeleting]
+    ></button>
+  </div>
+</li>
+```
+
+**Komponenten-Logik:**
 ```typescript
-@Component({
-  selector: 'app-todo-item',
-  template: `
-    <li [class.completed]="todo.completed" [class.deleting]="isDeleting">
-      <div class="view">
-        <input 
-          class="toggle" 
-          type="checkbox" 
-          [checked]="todo.completed"
-          (click)="toggleTodo()"
-          [disabled]="isToggling || isDeleting"
-        >
-        <label>{{ todo.title }}</label>
-        <button 
-          class="destroy"
-          (click)="deleteTodo()"
-          [disabled]="isDeleting"
-        ></button>
-      </div>
-    </li>
-  `
-})
 export class TodoItemComponent {
-  @Input() todo!: Todo;
-  @Output() todoDeleted = new EventEmitter<number>();
+  todo: Todo; // Als Prop/Input empfangen
+  onTodoDeleted: (todoId: number) => void; // Event/Callback an Parent
   
   isToggling = false;
   isDeleting = false;
@@ -64,7 +67,7 @@ export class TodoItemComponent {
     this.isDeleting = true;
     
     // Optimistic update - notify parent to remove from list
-    this.todoDeleted.emit(this.todo.id);
+    this.onTodoDeleted(this.todo.id);
     
     this.todoService.deleteTodo(this.todo.id).subscribe({
       next: () => {
@@ -73,7 +76,7 @@ export class TodoItemComponent {
       },
       error: (error) => {
         // Rollback - notify parent to re-add todo
-        this.todoDeleted.emit(-this.todo.id); // Negative ID signals rollback
+        this.onTodoDeleted(-this.todo.id); // Negative ID signals rollback
         this.isDeleting = false;
         // Show error message
       }

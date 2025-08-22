@@ -35,7 +35,7 @@ Alle Operationen verwenden optimistic updates mit Backend-Synchronisation und Ro
 - [ ] TodoItemComponent rendert einzelne Todo-Elemente
 - [ ] Erledigte Todos: Text durchgestrichen (CSS class `completed`)
 - [ ] Aktive Todos: Normaler Text
-- [ ] Efficient rendering mit `*ngFor` und `trackBy`
+- [ ] Efficient rendering mit Listen-Iteration und Track-by-Funktionen
 - [ ] Reactive state management mit BehaviorSubject
 - [ ] Memory leak prevention (unsubscribe)
 
@@ -97,7 +97,7 @@ export interface UpdateTodoRequest {
           class="new-todo" 
           placeholder="What needs to be done?" 
           autofocus
-          [(ngModel)]="newTodoTitle"
+          [two-way data binding zu newTodoTitle]
           [Enter Key Handler - siehe Framework Guide]
           [disabled]="isCreating"
           #newTodoInput

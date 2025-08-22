@@ -456,7 +456,7 @@ export class UIStateService {
           class="new-todo" 
           placeholder="What needs to be done?" 
           autofocus
-          [(ngModel)]="newTodoTitle"
+          [two-way data binding zu newTodoTitle]
           [Enter Key Handler - siehe Framework Guide]
           [disabled]="isLoading$ | async"
         >

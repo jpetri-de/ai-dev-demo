@@ -77,7 +77,7 @@ npm install react-router-dom
 TodoAppComponent
 ├── todo-filter (TodoFilterComponent)
 ├── todo-list (TodoListComponent)
-│   └── todo-item (TodoItemComponent) [*ngFor]
+│   └── todo-item (TodoItemComponent) [dynamische Liste]
 ```
 
 ### CSS Integration

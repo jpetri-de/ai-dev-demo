@@ -13,12 +13,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a TodoMVC application implementation with the following architecture:
-- **Frontend**: Angular application
+This is a TodoMVC application implementation with the following multi-framework architecture:
+- **Frontend**: Angular OR Vue.js application (framework-agnostic specs)
 - **Backend**: Spring Boot application with REST API
 - **Bundling**: Frontend and backend bundled as single deployable application
 
-The project is currently in planning/design phase with only documentation and CSS resources available.
+The project specifications are completely framework-neutral and support both Angular and Vue.js implementations.
+
+## Multi-Framework Support
+
+### Available Commands
+- **`/fullstack-angular`** - Complete Angular + Spring Boot implementation
+- **`/fullstack-vue`** - Complete Vue.js + Spring Boot implementation
+
+### Framework-Neutral Specs
+All specs in `specs/` directory are technology-neutral with framework adaptation guide available at `specs/00-framework-adaption-guide.md`.
+
+### Agents Available
+- **Angular**: angular-planner, angular-developer, angular-tester  
+- **Vue.js**: vue-planner, vue-developer, vue-tester
+- **Backend**: springboot-planner-agent, springboot-developer-agent, springboot-tester
 
 ## Application Requirements
 
@@ -51,11 +65,12 @@ interface Todo {
 
 ## Architecture
 
-### Frontend (Angular 17)
-- **Components**: TodoAppComponent, TodoListComponent, TodoItemComponent, TodoFilterComponent
-- **Services**: TodoService for HTTP communication
+### Frontend (Framework-Agnostic)
+- **Angular**: Components (TodoAppComponent, TodoListComponent, etc.) with Services for HTTP
+- **Vue.js**: Single File Components with Composables and Pinia stores
 - **Styling**: Integration of existing CSS from `resources/css/main.css`
 - **Development**: Port 4200 with proxy configuration for API calls
+- **Build**: Framework-specific build systems (Angular CLI, Vite, etc.)
 
 ### Backend (Spring Boot 3.2)
 - **Java Version**: 17

@@ -168,7 +168,6 @@ export class TodoItemComponent {
 
 ### TodoService Erweiterung
 ```typescript
-@Injectable()
 export class TodoService {
   
   updateTodo(id: number, title: string): Observable<Todo> {

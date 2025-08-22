@@ -85,22 +85,23 @@ export class TodoItemComponent {
 }
 ```
 
-### TodoListComponent Update
+### TodoList-Komponente Update
+
+**Template-Struktur:**
+```html
+<section class="main" [anzeigen wenn todos.length > 0]>
+  <ul class="todo-list">
+    [Für jedes todo in todos:]
+      <todo-item 
+        [todo als prop übergeben]
+        [todoDeleted callback -> handleTodoDeleted()]>
+      </todo-item>
+  </ul>
+</section>
+```
+
+**Komponenten-Logik:**
 ```typescript
-@Component({
-  selector: 'app-todo-list',
-  template: `
-    <section class="main" *ngIf="todos.length > 0">
-      <ul class="todo-list">
-        <app-todo-item 
-          *ngFor="let todo of todos; trackBy: trackByTodoId"
-          [todo]="todo"
-          (todoDeleted)="handleTodoDeleted($event)">
-        </app-todo-item>
-      </ul>
-    </section>
-  `
-})
 export class TodoListComponent {
   todos: Todo[] = [];
   private deletedTodos: Map<number, Todo> = new Map();
@@ -128,8 +129,9 @@ export class TodoListComponent {
 ```
 
 ### TodoService Erweiterung
+
+**Service/Store-Logik:**
 ```typescript
-@Injectable()
 export class TodoService {
   
   deleteTodo(id: number): Observable<void> {

@@ -1,16 +1,18 @@
 # Feature 03: Frontend Setup
 
+> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
+
 ## Ziel
-Angular 17 Frontend-Anwendung mit TypeScript einrichten und vorhandenes CSS integrieren.
+Moderne Frontend-Anwendung mit TypeScript einrichten und vorhandenes CSS integrieren.
 
 ## Beschreibung
-Grundlegende Angular-Infrastruktur für die TodoMVC-Anwendung erstellen. Integration des vorhandenen CSS aus `resources/css/main.css` und Einrichtung der Komponenten-Struktur.
+Grundlegende Frontend-Infrastruktur für die TodoMVC-Anwendung erstellen. Integration des vorhandenen CSS aus `resources/css/main.css` und Einrichtung der Komponenten-Struktur.
 
 ## Akzeptanzkriterien
 
-### Angular Setup
-- [ ] Angular 17 Projekt mit TypeScript erstellt
-- [ ] Routing konfiguriert (auch wenn initial nicht genutzt)
+### Frontend Setup
+- [ ] Frontend-Projekt mit TypeScript erstellt
+- [ ] Routing-System konfiguriert (auch wenn initial nicht genutzt)
 - [ ] CSS-Framework vorbereitet (ohne externe Dependencies)
 - [ ] Development Server läuft auf Port 4200
 
@@ -31,7 +33,9 @@ Grundlegende Angular-Infrastruktur für die TodoMVC-Anwendung erstellen. Integra
 
 ## Technische Spezifikationen
 
-### Angular CLI Setup
+### Framework-spezifische Setup-Befehle
+
+#### Angular:
 ```bash
 ng new todo-frontend --routing --style=css
 cd todo-frontend
@@ -39,6 +43,22 @@ ng generate component todo-app
 ng generate component todo-list  
 ng generate component todo-item
 ng generate component todo-filter
+```
+
+#### Vue:
+```bash
+npm create vue@latest todo-frontend -- --typescript --router
+cd todo-frontend
+npm install
+# Komponenten manuell in src/components/ erstellen
+```
+
+#### React:
+```bash
+npx create-react-app todo-frontend --template typescript
+cd todo-frontend
+npm install react-router-dom
+# Komponenten manuell in src/components/ erstellen
 ```
 
 ### Proxy Configuration (proxy.conf.json)
@@ -88,45 +108,34 @@ TodoAppComponent
 
 ## Komponenten-Gerüste
 
-### TodoAppComponent
-```typescript
-@Component({
-  selector: 'app-todo',
-  template: `
-    <section class="todoapp">
-      <header class="header">
-        <h1>todos</h1>
-        <!-- Input wird in Feature 04 implementiert -->
-      </header>
-      <app-todo-list></app-todo-list>
-      <app-todo-filter></app-todo-filter>
-    </section>
-  `
-})
-export class TodoAppComponent { }
-```
+### TodoApp-Komponente (Hauptcontainer)
+- Rendert die TodoMVC-Hauptstruktur
+- Enthält Header mit "todos" Titel
+- Integriert TodoList und TodoFilter Komponenten
+- CSS-Klasse: `todoapp`
 
-### TodoListComponent
-```typescript
-@Component({
-  selector: 'app-todo-list',
-  template: `
-    <section class="main">
-      <!-- Todo Items werden hier gerendert -->
-    </section>
-  `
-})
-export class TodoListComponent { }
-```
+### TodoList-Komponente
+- Container für alle Todo-Items
+- CSS-Klasse: `main`
+- Wird später Todo-Items dynamisch rendern
+
+### TodoItem-Komponente
+- Repräsentiert ein einzelnes Todo
+- Wird später in TodoList verwendet
+
+### TodoFilter-Komponente
+- Filter-Navigation (All/Active/Completed)
+- Wird später im Footer angezeigt
 
 ## Definition of Done
-- [ ] Angular 17 Anwendung läuft stabil
+- [ ] Frontend-Anwendung läuft stabil
 - [ ] Alle Basis-Komponenten erstellt
 - [ ] CSS aus resources/ integriert und funktional
 - [ ] Proxy zum Backend konfiguriert
 - [ ] Development Workflow etabliert
 - [ ] TypeScript ohne Fehler
 - [ ] Basis-Template für TodoMVC sichtbar
+- [ ] Framework-spezifische Best Practices befolgt
 
 ## Abhängigkeiten
 - 02-todo-model.md (Backend API verfügbar)

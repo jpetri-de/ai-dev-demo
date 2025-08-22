@@ -1,7 +1,9 @@
 # Feature 14: Frontend-Backend Integration
 
+> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
+
 ## Ziel
-Vollständige Integration zwischen Angular Frontend und Spring Boot Backend mit optimierter HTTP-Kommunikation.
+Vollständige Integration zwischen Frontend und Spring Boot Backend mit optimierter HTTP-Kommunikation.
 
 ## Beschreibung
 Finalisierung der Frontend-Backend-Integration mit HTTP-Client-Optimierungen, Error-Handling, Retry-Mechanismen und Performance-Verbesserungen. Sicherstellung einer robusten Kommunikation zwischen allen Komponenten.
@@ -34,9 +36,9 @@ Finalisierung der Frontend-Backend-Integration mit HTTP-Client-Optimierungen, Er
 
 ## Technische Spezifikationen
 
-### HTTP Client Service (Enhanced)
+### HTTP Client Service (Framework-neutral Beispiel)
 ```typescript
-@Injectable()
+// Beispiel in TypeScript - anzupassen je nach Framework
 export class HttpClientService {
   private readonly API_BASE_URL = '/api';
   
@@ -129,7 +131,7 @@ export class HttpClientService {
 
 ### Enhanced TodoService with Integration
 ```typescript
-@Injectable()
+// Framework-neutral Service-Beispiel
 export class TodoService {
   private todos$ = new BehaviorSubject<Todo[]>([]);
   private filter$ = new BehaviorSubject<TodoFilter>(TodoFilter.ALL);
@@ -301,8 +303,8 @@ export class TodoService {
 
 ### Global Error Handler
 ```typescript
-@Injectable()
-export class GlobalErrorHandler implements ErrorHandler {
+// Framework-neutral Error Handler
+export class GlobalErrorHandler {
   constructor(private notificationService: NotificationService) {}
   
   handleError(error: any): void {
@@ -321,7 +323,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 
 ### Notification Service
 ```typescript
-@Injectable()
+// Framework-neutral Notification Service
 export class NotificationService {
   private notifications$ = new Subject<Notification>();
   

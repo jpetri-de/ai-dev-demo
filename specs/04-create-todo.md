@@ -33,7 +33,7 @@ Benutzer können neue Todos über ein Eingabefeld am oberen Rand der App erstell
 
 ## Technische Spezifikationen
 
-### TodoAppComponent Template
+### Frontend Template-Struktur
 ```html
 <section class="todoapp">
   <header class="header">
@@ -42,12 +42,9 @@ Benutzer können neue Todos über ein Eingabefeld am oberen Rand der App erstell
       class="new-todo" 
       placeholder="What needs to be done?" 
       autofocus
-      [(ngModel)]="newTodoTitle"
-      (keyup.enter)="createTodo()"
-      [disabled]="isCreating"
-    >
-  </header>
-  <!-- Rest der App -->
+      <!-- Framework-spezifisches Data-Binding -->
+      <!-- Enter-Key Event Handler -->
+      <!-- Disabled während API-Call -->
 </section>
 ```
 

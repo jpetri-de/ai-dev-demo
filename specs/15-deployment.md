@@ -1,21 +1,21 @@
 # Feature 15: Deployment & Bundling
 
 ## Ziel
-Production-ready Deployment als Single JAR mit Angular Frontend und Spring Boot Backend gebündelt.
+Production-ready Deployment als Single JAR mit Frontend und Spring Boot Backend gebündelt.
 
 ## Beschreibung
-Finalisierung des Deployment-Prozesses mit Angular Production-Build, Integration in Spring Boot Static Resources, Maven-Build-Pipeline und ausführbarer JAR-Erstellung.
+Finalisierung des Deployment-Prozesses mit Frontend Production-Build, Integration in Spring Boot Static Resources, Build-Pipeline und ausführbarer JAR-Erstellung.
 
 ## Akzeptanzkriterien
 
-### Angular Production Build
-- [ ] Optimierter Angular Build mit `--configuration production`
+### Frontend Production Build
+- [ ] Optimierter Frontend Build für Production
 - [ ] Code Minification und Tree Shaking
 - [ ] Bundle Optimization und Lazy Loading
 - [ ] Asset Optimization (CSS, Images)
 
 ### Spring Boot Integration
-- [ ] Angular Build-Output in `src/main/resources/static/`
+- [ ] Frontend Build-Output in `src/main/resources/static/`
 - [ ] Static Resource Handling konfiguriert
 - [ ] SPA Routing Support (Fallback zu index.html)
 - [ ] MIME-Type Konfiguration
@@ -68,7 +68,7 @@ Finalisierung des Deployment-Prozesses mit Angular Production-Build, Integration
             </configuration>
         </execution>
         
-        <!-- Build Angular app -->
+        <!-- Build Frontend app -->
         <execution>
             <id>npm run build</id>
             <goals>
@@ -81,7 +81,7 @@ Finalisierung des Deployment-Prozesses mit Angular Production-Build, Integration
     </executions>
 </plugin>
 
-<!-- Copy Angular build to Spring Boot static resources -->
+<!-- Copy Frontend build to Spring Boot static resources -->
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-resources-plugin</artifactId>
@@ -114,7 +114,7 @@ public class WebConfig implements WebMvcConfigurer {
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Static resources for Angular app
+        // Static resources for Frontend app
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/")
                 .setCachePeriod(31556926) // 1 year cache for production
@@ -169,7 +169,9 @@ spring.web.resources.chain.strategy.content.enabled=true
 spring.web.resources.chain.strategy.content.paths=/**
 ```
 
-### Angular Production Configuration
+### Frontend Production Configuration
+
+#### Angular:
 ```json
 // angular.json - production configuration
 {
@@ -180,25 +182,50 @@ spring.web.resources.chain.strategy.content.paths=/**
           "type": "initial",
           "maximumWarning": "500kb",
           "maximumError": "1mb"
-        },
-        {
-          "type": "anyComponentStyle",
-          "maximumWarning": "2kb",
-          "maximumError": "4kb"
         }
       ],
       "outputHashing": "all",
       "optimization": true,
       "sourceMap": false,
-      "extractCss": true,
-      "namedChunks": false,
       "aot": true,
-      "extractLicenses": true,
-      "vendorChunk": false,
-      "buildOptimizer": true,
-      "serviceWorker": true,
-      "ngswConfigPath": "ngsw-config.json"
+      "buildOptimizer": true
     }
+  }
+}
+```
+
+#### Vue (Vite):
+```javascript
+// vite.config.js
+export default defineConfig({
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['vue', 'vue-router', 'pinia']
+        }
+      }
+    }
+  }
+})
+```
+
+#### React:
+```json
+// package.json scripts
+{
+  "scripts": {
+    "build": "react-scripts build",
+    "build:analyze": "source-map-explorer 'build/static/js/*.js'"
   }
 }
 ```
@@ -354,7 +381,7 @@ docker run -p 8080:8080 todo-app
 
 ### Build Process
 - [ ] `mvn clean package -Pprod` → Erfolgreicher Build
-- [ ] Angular Production Build → Optimierte Bundle-Größe
+- [ ] Frontend Production Build → Optimierte Bundle-Größe
 - [ ] Static Resources → Korrekt in JAR embedded
 - [ ] JAR ausführbar → Startet ohne Fehler
 
@@ -402,8 +429,8 @@ docker run -p 8080:8080 todo-app
 - [ ] Database Connection Pooling (falls relevant)
 
 ## Definition of Done
-- [ ] Maven Build Pipeline produziert ausführbare JAR
-- [ ] Angular Frontend optimiert und embedded
+- [ ] Build Pipeline produziert ausführbare JAR
+- [ ] Frontend optimiert und embedded
 - [ ] Static Resource Handling konfiguriert
 - [ ] SPA Routing Support implementiert
 - [ ] Production Configuration gesetzt

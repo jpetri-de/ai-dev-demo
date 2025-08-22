@@ -1,6 +1,5 @@
 # Feature 09-15: Erweiterte TodoMVC-Funktionen & Deployment
 
-> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
 ## Ziel
 Vollständige Implementierung aller erweiterten TodoMVC-Features (Counter, Filter, Toggle-All, Clear-Completed) mit UI-State-Management, Frontend-Backend-Integration und Production-Deployment.
 

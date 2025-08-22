@@ -1,6 +1,5 @@
 # Feature 10: Filter Todos
 
-> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
 ## Ziel
 Filter-Funktionalität für All/Active/Completed Todos mit visueller Hervorhebung des aktiven Filters.
 
@@ -47,15 +46,15 @@ export interface FilterOption {
 
 ### TodoFilterComponent
 ```typescript
-// Komponenten-Definition:
+@Component({
   selector: 'app-todo-filter',
   template: `
     <ul class="filters">
-      <li [Liste rendern - siehe Framework Guide]>
+      <li *ngFor="let filter of filterOptions">
         <a 
           [href]="filter.href"
           [class.selected]="currentFilter === filter.key"
-          [click event -> setFilter(filter.key, $event)"
+          (click)="setFilter(filter.key, $event)"
         >
           {{ filter.label }}
         </a>
@@ -78,7 +77,7 @@ export class TodoFilterComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     // Listen to route changes for filter
     this.route.fragment.subscribe(fragment => {
       switch (fragment) {
@@ -108,7 +107,7 @@ export class TodoFilterComponent implements OnInit {
 
 ### TodoService Filter Extension
 ```typescript
-// Service/Store-Definition:)
+@Injectable()
 export class TodoService {
   private todos$ = new BehaviorSubject<Todo[]>([]);
   private filter$ = new BehaviorSubject<TodoFilter>(TodoFilter.ALL);
@@ -147,15 +146,15 @@ export class TodoService {
 
 ### TodoListComponent Update
 ```typescript
-// Komponenten-Definition:
+@Component({
   selector: 'app-todo-list',
   template: `
-    <section class="main" [anzeigen wenn (filteredTodos$ | async)?.length > 0">
+    <section class="main" *ngIf="(filteredTodos$ | async)?.length > 0">
       <ul class="todo-list">
         <app-todo-item 
-          [Für jedes todo of filteredTodos$ | async in trackBy: trackByTodoId"
+          *ngFor="let todo of filteredTodos$ | async; trackBy: trackByTodoId"
           [todo]="todo"
-          [todoDeleted event -> handleTodoDeleted($event)">
+          (todoDeleted)="handleTodoDeleted($event)">
         </app-todo-item>
       </ul>
     </section>

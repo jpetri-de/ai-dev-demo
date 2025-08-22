@@ -51,7 +51,7 @@ export interface FilterOption {
   selector: 'app-todo-filter',
   template: `
     <ul class="filters">
-      <li [Liste rendern - siehe Framework Guide]>
+      <li *ngFor="let filter of filterOptions">
         <a 
           [href]="filter.href"
           [class.selected]="currentFilter === filter.key"
@@ -78,7 +78,7 @@ export class TodoFilterComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     // Listen to route changes for filter
     this.route.fragment.subscribe(fragment => {
       switch (fragment) {

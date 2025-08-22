@@ -49,7 +49,7 @@ export class ClearCompletedComponent implements OnInit, OnDestroy {
   
   constructor(private todoService: TodoService) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     this.subscription.add(
       this.todoService.getCompletedCount().subscribe(count => {
         this.completedCount = count;
@@ -57,7 +57,7 @@ export class ClearCompletedComponent implements OnInit, OnDestroy {
     );
   }
   
-  onComponentDestroy(): void {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
   
@@ -153,7 +153,7 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
   
   constructor(private todoService: TodoService) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     this.subscription.add(
       this.todoService.getTodos().subscribe(todos => {
         this.hasTodos = todos.length > 0;
@@ -161,7 +161,7 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
     );
   }
   
-  onComponentDestroy(): void {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 }

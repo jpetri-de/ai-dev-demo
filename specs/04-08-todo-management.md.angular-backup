@@ -1,6 +1,5 @@
 # Feature 04-08: Vollständiges Todo-Management
 
-> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
 ## Ziel
 Vollständige CRUD-Funktionalität für Todos implementieren: Erstellen, Anzeigen, Toggle, Löschen und Bearbeiten in einer integrierten Lösung.
 
@@ -87,7 +86,7 @@ export interface UpdateTodoRequest {
 
 ### TodoAppComponent (Eingabefeld & Container)
 ```typescript
-// Komponenten-Definition (siehe Framework Adaptation Guide):
+@Component({
   selector: 'app-todo-app',
   template: `
     <section class="todoapp">
@@ -98,7 +97,7 @@ export interface UpdateTodoRequest {
           placeholder="What needs to be done?" 
           autofocus
           [(ngModel)]="newTodoTitle"
-          [Enter Key Handler - siehe Framework Guide]
+          (keyup.enter)="createTodo()"
           [disabled]="isCreating"
           #newTodoInput
         >
@@ -119,7 +118,7 @@ export class TodoAppComponent implements OnInit {
   
   constructor(private todoService: TodoService) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     this.todoService.loadTodos();
   }
   
@@ -158,13 +157,13 @@ export class TodoAppComponent implements OnInit {
 
 ### TodoListComponent (Liste & Container)
 ```typescript
-// Komponenten-Definition (siehe Framework Adaptation Guide):
+@Component({
   selector: 'app-todo-list',
   template: `
-    <section class="main" [Bedingte Anzeige - siehe Framework Guide]>
+    <section class="main" *ngIf="todos && todos.length > 0">
       <ul class="todo-list">
         <app-todo-item 
-          [Liste rendern - siehe Framework Guide]
+          *ngFor="let todo of todos; trackBy: trackByTodoId"
           [todo]="todo"
           (todoToggled)="handleTodoToggled($event)"
           (todoDeleted)="handleTodoDeleted($event)"
@@ -175,10 +174,10 @@ export class TodoAppComponent implements OnInit {
   `
 })
 export class TodoListComponent {
-  // Props/Input - siehe Framework Guide todos: Todo[] | null = null;
-  // Events/Emits - siehe Framework Guide todoToggled = new EventEmitter<Todo>();
-  // Events/Emits - siehe Framework Guide todoDeleted = new EventEmitter<number>();
-  // Events/Emits - siehe Framework Guide todoUpdated = new EventEmitter<Todo>();
+  @Input() todos: Todo[] | null = null;
+  @Output() todoToggled = new EventEmitter<Todo>();
+  @Output() todoDeleted = new EventEmitter<number>();
+  @Output() todoUpdated = new EventEmitter<Todo>();
   
   trackByTodoId(index: number, todo: Todo): number {
     return todo.id;
@@ -200,7 +199,7 @@ export class TodoListComponent {
 
 ### TodoItemComponent (Vollständiges Item)
 ```typescript
-// Komponenten-Definition (siehe Framework Adaptation Guide):
+@Component({
   selector: 'app-todo-item',
   template: `
     <li [class.completed]="todo.completed" 
@@ -208,31 +207,31 @@ export class TodoListComponent {
         [class.deleting]="isDeleting">
       
       <!-- View Mode -->
-      <div class="view" [Bedingte Anzeige - siehe Framework Guide]>
+      <div class="view" *ngIf="!isEditing">
         <input 
           class="toggle" 
           type="checkbox" 
           [checked]="todo.completed"
-          [Click Event Handler - siehe Framework Guide]
+          (click)="toggleTodo()"
           [disabled]="isToggling || isDeleting || isSaving"
         >
         <label (dblclick)="startEditing()">{{ todo.title }}</label>
         <button 
           class="destroy"
-          [Click Event Handler - siehe Framework Guide]
+          (click)="deleteTodo()"
           [disabled]="isDeleting || isSaving"
         ></button>
       </div>
       
       <!-- Edit Mode -->
       <input 
-        [Bedingte Anzeige - siehe Framework Guide]
+        *ngIf="isEditing"
         class="edit"
         [value]="editText"
         (input)="editText = $any($event.target).value"
-        [Enter Key Handler - siehe Framework Guide]
+        (keyup.enter)="saveEdit()"
         (keyup.escape)="cancelEdit()"
-        [Blur Event Handler - siehe Framework Guide]
+        (blur)="saveEdit()"
         #editInput
       >
     </li>
@@ -247,11 +246,11 @@ export class TodoListComponent {
   `]
 })
 export class TodoItemComponent implements AfterViewInit {
-  // Props/Input - siehe Framework Guide todo!: Todo;
-  // Events/Emits - siehe Framework Guide todoToggled = new EventEmitter<Todo>();
-  // Events/Emits - siehe Framework Guide todoDeleted = new EventEmitter<number>();
-  // Events/Emits - siehe Framework Guide todoUpdated = new EventEmitter<Todo>();
-  // Template Ref - siehe Framework Guide('editInput', { static: false }) editInput?: ElementRef;
+  @Input() todo!: Todo;
+  @Output() todoToggled = new EventEmitter<Todo>();
+  @Output() todoDeleted = new EventEmitter<number>();
+  @Output() todoUpdated = new EventEmitter<Todo>();
+  @ViewChild('editInput', { static: false }) editInput?: ElementRef;
   
   isToggling = false;
   isDeleting = false;
@@ -262,7 +261,7 @@ export class TodoItemComponent implements AfterViewInit {
   
   constructor(private todoService: TodoService) {}
   
-  onComponentMounted(): void {
+  ngAfterViewInit(): void {
     if (this.isEditing && this.editInput) {
       this.editInput.nativeElement.focus();
       this.editInput.nativeElement.select();
@@ -387,7 +386,7 @@ export class TodoItemComponent implements AfterViewInit {
 
 ### TodoService (Vollständige Service-Integration)
 ```typescript
-// Service/Store-Definition (siehe Framework Adaptation Guide):
+@Injectable({
   providedIn: 'root'
 })
 export class TodoService {

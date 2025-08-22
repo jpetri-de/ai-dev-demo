@@ -50,7 +50,7 @@ export class ToggleAllComponent implements OnInit, OnDestroy {
   
   constructor(private todoService: TodoService) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     this.subscription.add(
       this.todoService.getTodos().subscribe(todos => {
         if (todos.length === 0) {
@@ -62,7 +62,7 @@ export class ToggleAllComponent implements OnInit, OnDestroy {
     );
   }
   
-  onComponentDestroy(): void {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
   

@@ -81,15 +81,16 @@ export class TodoAppComponent {
 ```
 
 ### TodoService (Gerüst)
+
+**Service/Store-Logik:**
 ```typescript
-@Injectable()
 export class TodoService {
   private apiUrl = '/api/todos';
   
-  constructor(private http: HttpClient) {}
+  constructor(private httpClient: HttpClient) {}
   
   createTodo(title: string): Observable<Todo> {
-    return this.http.post<Todo>(this.apiUrl, { title });
+    return this.httpClient.post<Todo>(this.apiUrl, { title });
   }
 }
 ```

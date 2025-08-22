@@ -1,5 +1,7 @@
 # Feature 08: Todo bearbeiten
 
+> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
+
 ## Ziel
 Benutzer können Todo-Titel durch Doppelklick auf das Label bearbeiten.
 
@@ -32,52 +34,54 @@ Doppelklick auf ein Todo-Label aktiviert den Bearbeitungsmodus. Ein Eingabefeld 
 
 ## Technische Spezifikationen
 
-### TodoItemComponent Update
+### TodoItem-Komponente Update
+
+**Template-Struktur:**
+```html
+<li [CSS-Klassen: 'completed' wenn todo.completed, 'editing' wenn isEditing, 'deleting' wenn isDeleting]>
+  <!-- Normal view (wenn nicht editing) -->
+  <div class="view" [anzeigen wenn !isEditing]>
+    <input 
+      class="toggle" 
+      type="checkbox" 
+      [checked bound zu todo.completed]
+      [click event -> toggleTodo()]
+      [disabled wenn isToggling || isDeleting]
+    >
+    <label [dblclick event -> startEditing()]>{{ todo.title }}</label>
+    <button 
+      class="destroy"
+      [click event -> deleteTodo()]
+      [disabled wenn isDeleting]
+    ></button>
+  </div>
+  
+  <!-- Edit input (nur wenn editing) -->
+  <input 
+    [anzeigen wenn isEditing]
+    class="edit"
+    [value bound zu editText]
+    [input event -> updateEditText()]
+    [enter key -> saveEdit()]
+    [escape key -> cancelEdit()]
+    [blur event -> saveEdit()]
+    [auto-focus und select]
+  >
+</li>
+```
+
+**CSS:**
+```css
+.editing .view {
+  display: none;
+}
+```
+
+**Komponenten-Logik:**
 ```typescript
-@Component({
-  selector: 'app-todo-item',
-  template: `
-    <li [class.completed]="todo.completed" 
-        [class.editing]="isEditing"
-        [class.deleting]="isDeleting">
-      <div class="view" *ngIf="!isEditing">
-        <input 
-          class="toggle" 
-          type="checkbox" 
-          [checked]="todo.completed"
-          (click)="toggleTodo()"
-          [disabled]="isToggling || isDeleting"
-        >
-        <label (dblclick)="startEditing()">{{ todo.title }}</label>
-        <button 
-          class="destroy"
-          (click)="deleteTodo()"
-          [disabled]="isDeleting"
-        ></button>
-      </div>
-      
-      <input 
-        *ngIf="isEditing"
-        class="edit"
-        [value]="editText"
-        (input)="editText = $event.target.value"
-        (keyup.enter)="saveEdit()"
-        (keyup.escape)="cancelEdit()"
-        (blur)="saveEdit()"
-        #editInput
-      >
-    </li>
-  `,
-  styles: [`
-    .editing .view {
-      display: none;
-    }
-  `]
-})
-export class TodoItemComponent implements AfterViewInit {
-  @Input() todo!: Todo;
-  @Output() todoDeleted = new EventEmitter<number>();
-  @ViewChild('editInput', { static: false }) editInput?: ElementRef;
+export class TodoItemComponent {
+  todo: Todo; // Als Prop/Input empfangen
+  onTodoDeleted: (todoId: number) => void; // Event/Callback an Parent
   
   isToggling = false;
   isDeleting = false;
@@ -88,10 +92,10 @@ export class TodoItemComponent implements AfterViewInit {
   
   constructor(private todoService: TodoService) {}
   
-  ngAfterViewInit(): void {
-    if (this.isEditing && this.editInput) {
-      this.editInput.nativeElement.focus();
-      this.editInput.nativeElement.select();
+  onComponentUpdated(): void {
+    // Nach Render-Zyklus: Focus und Select Edit-Input falls editing
+    if (this.isEditing) {
+      this.focusEditInput();
     }
   }
   
@@ -103,11 +107,8 @@ export class TodoItemComponent implements AfterViewInit {
     this.originalTitle = this.todo.title;
     
     // Focus input in next tick
-    setTimeout(() => {
-      if (this.editInput) {
-        this.editInput.nativeElement.focus();
-        this.editInput.nativeElement.select();
-      }
+    this.nextTick(() => {
+      this.focusEditInput();
     });
   }
   

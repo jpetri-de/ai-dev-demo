@@ -92,7 +92,7 @@ export class TodoAppComponent implements OnInit, OnDestroy {
   
   constructor(private todoService: TodoService) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     this.subscription.add(
       this.todoService.getTodos().subscribe(todos => {
         this.hasTodos = todos.length > 0;

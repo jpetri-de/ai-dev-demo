@@ -1,6 +1,5 @@
 # Feature 11: Alle als erledigt markieren
 
-> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
 ## Ziel
 "Toggle All" Checkbox zum gleichzeitigen Umschalten aller Todos zwischen completed/active Status.
 
@@ -29,7 +28,7 @@ Eine Checkbox oberhalb der Todo-Liste schaltet alle Todos gleichzeitig um. Wenn 
 
 ### ToggleAllComponent
 ```typescript
-// Komponenten-Definition:
+@Component({
   selector: 'app-toggle-all',
   template: `
     <input 
@@ -38,7 +37,7 @@ Eine Checkbox oberhalb der Todo-Liste schaltet alle Todos gleichzeitig um. Wenn 
       type="checkbox"
       [checked]="allCompleted"
       [disabled]="isToggling"
-      [change event -> toggleAll()"
+      (change)="toggleAll()"
     >
     <label for="toggle-all">Mark all as complete</label>
   `
@@ -50,7 +49,7 @@ export class ToggleAllComponent implements OnInit, OnDestroy {
   
   constructor(private todoService: TodoService) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     this.subscription.add(
       this.todoService.getTodos().subscribe(todos => {
         if (todos.length === 0) {
@@ -62,7 +61,7 @@ export class ToggleAllComponent implements OnInit, OnDestroy {
     );
   }
   
-  onComponentDestroy(): void {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
   
@@ -87,7 +86,7 @@ export class ToggleAllComponent implements OnInit, OnDestroy {
 
 ### TodoService Bulk Operations
 ```typescript
-// Service/Store-Definition:)
+@Injectable()
 export class TodoService {
   
   toggleAllTodos(completed: boolean): Observable<Todo[]> {
@@ -171,7 +170,7 @@ public class ToggleAllRequest {
 
 ### TodoAppComponent Integration
 ```typescript
-// Komponenten-Definition:
+@Component({
   selector: 'app-todo',
   template: `
     <section class="todoapp">
@@ -181,17 +180,17 @@ public class ToggleAllRequest {
           class="new-todo" 
           placeholder="What needs to be done?" 
           autofocus
-          [bound zu newTodoTitle"
-          [keyup.enter event -> createTodo()"
+          [(ngModel)]="newTodoTitle"
+          (keyup.enter)="createTodo()"
         >
       </header>
       
-      <section class="main" [anzeigen wenn hasTodos">
+      <section class="main" *ngIf="hasTodos">
         <app-toggle-all></app-toggle-all>
         <app-todo-list></app-todo-list>
       </section>
       
-      <footer class="footer" [anzeigen wenn hasTodos">
+      <footer class="footer" *ngIf="hasTodos">
         <app-todo-counter></app-todo-counter>
         <app-todo-filter></app-todo-filter>
       </footer>

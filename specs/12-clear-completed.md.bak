@@ -1,6 +1,5 @@
 # Feature 12: Erledigte löschen
 
-> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
 ## Ziel
 "Clear Completed" Button zum Löschen aller erledigten Todos mit automatischer Sichtbarkeits-Kontrolle.
 
@@ -29,14 +28,14 @@ Ein "Clear Completed" Button im Footer-Bereich entfernt alle erledigten Todos au
 
 ### ClearCompletedComponent
 ```typescript
-// Komponenten-Definition:
+@Component({
   selector: 'app-clear-completed',
   template: `
     <button 
       class="clear-completed"
-      [anzeigen wenn completedCount > 0"
+      *ngIf="completedCount > 0"
       [disabled]="isClearing"
-      [click event -> clearCompleted()"
+      (click)="clearCompleted()"
     >
       Clear completed
     </button>
@@ -49,7 +48,7 @@ export class ClearCompletedComponent implements OnInit, OnDestroy {
   
   constructor(private todoService: TodoService) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     this.subscription.add(
       this.todoService.getCompletedCount().subscribe(count => {
         this.completedCount = count;
@@ -57,7 +56,7 @@ export class ClearCompletedComponent implements OnInit, OnDestroy {
     );
   }
   
-  onComponentDestroy(): void {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
   
@@ -81,7 +80,7 @@ export class ClearCompletedComponent implements OnInit, OnDestroy {
 
 ### TodoService Clear Completed
 ```typescript
-// Service/Store-Definition:)
+@Injectable()
 export class TodoService {
   
   clearCompleted(): Observable<Todo[]> {
@@ -137,10 +136,10 @@ public ResponseEntity<Void> clearCompletedTodos() {
 
 ### Footer Component Integration
 ```typescript
-// Komponenten-Definition:
+@Component({
   selector: 'app-todo-footer',
   template: `
-    <footer class="footer" [anzeigen wenn hasTodos">
+    <footer class="footer" *ngIf="hasTodos">
       <app-todo-counter></app-todo-counter>
       <app-todo-filter></app-todo-filter>
       <app-clear-completed></app-clear-completed>
@@ -153,7 +152,7 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
   
   constructor(private todoService: TodoService) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     this.subscription.add(
       this.todoService.getTodos().subscribe(todos => {
         this.hasTodos = todos.length > 0;
@@ -161,7 +160,7 @@ export class TodoFooterComponent implements OnInit, OnDestroy {
     );
   }
   
-  onComponentDestroy(): void {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 }

@@ -1,6 +1,5 @@
 # Feature 09-15: Erweiterte TodoMVC-Funktionen & Deployment
 
-> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
 ## Ziel
 Vollständige Implementierung aller erweiterten TodoMVC-Features (Counter, Filter, Toggle-All, Clear-Completed) mit UI-State-Management, Frontend-Backend-Integration und Production-Deployment.
 
@@ -77,7 +76,7 @@ Diese kombinierte Feature umfasst alle fortgeschrittenen TodoMVC-Funktionen und 
 
 ### TodoCounterComponent (Feature 09)
 ```typescript
-// Komponenten-Definition (siehe Framework Adaptation Guide):
+@Component({
   selector: 'app-todo-counter',
   template: `
     <span class="todo-count">
@@ -99,15 +98,15 @@ export class TodoCounterComponent {
 
 ### TodoFilterComponent (Feature 10)
 ```typescript
-// Komponenten-Definition (siehe Framework Adaptation Guide):
+@Component({
   selector: 'app-todo-filter',
   template: `
     <ul class="filters">
-      <li [Liste rendern - siehe Framework Guide]>
+      <li *ngFor="let filter of filterOptions">
         <a 
           [href]="filter.href"
           [class.selected]="(currentFilter$ | async) === filter.key"
-          [Click Event Handler - siehe Framework Guide]
+          (click)="setFilter(filter.key, $event)"
         >
           {{ filter.label }}
         </a>
@@ -130,7 +129,7 @@ export class TodoFilterComponent implements OnInit {
     private route: ActivatedRoute
   ) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     this.route.fragment.subscribe(fragment => {
       const filter = this.getFilterFromFragment(fragment);
       this.todoService.setFilter(filter);
@@ -147,7 +146,7 @@ export class TodoFilterComponent implements OnInit {
 
 ### ToggleAllComponent (Feature 11)
 ```typescript
-// Komponenten-Definition (siehe Framework Adaptation Guide):
+@Component({
   selector: 'app-toggle-all',
   template: `
     <input 
@@ -190,14 +189,14 @@ export class ToggleAllComponent {
 
 ### ClearCompletedComponent (Feature 12)
 ```typescript
-// Komponenten-Definition (siehe Framework Adaptation Guide):
+@Component({
   selector: 'app-clear-completed',
   template: `
     <button 
       class="clear-completed"
-      [Bedingte Anzeige - siehe Framework Guide]
+      *ngIf="(completedCount$ | async) > 0"
       [disabled]="isClearing"
-      [Click Event Handler - siehe Framework Guide]
+      (click)="clearCompleted()"
     >
       Clear completed
     </button>
@@ -228,7 +227,7 @@ export class ClearCompletedComponent {
 
 ### Enhanced TodoService (Features 09-14)
 ```typescript
-// Service/Store-Definition (siehe Framework Adaptation Guide):
+@Injectable({
   providedIn: 'root'
 })
 export class TodoService {
@@ -398,7 +397,7 @@ export class TodoService {
 
 ### UI State Service (Feature 13)
 ```typescript
-// Service/Store-Definition (siehe Framework Adaptation Guide):
+@Injectable({
   providedIn: 'root'
 })
 export class UIStateService {
@@ -445,7 +444,7 @@ export class UIStateService {
 
 ### Enhanced TodoAppComponent (All Features)
 ```typescript
-// Komponenten-Definition (siehe Framework Adaptation Guide):
+@Component({
   selector: 'app-todo',
   template: `
     <section class="todoapp">
@@ -457,33 +456,33 @@ export class UIStateService {
           placeholder="What needs to be done?" 
           autofocus
           [(ngModel)]="newTodoTitle"
-          [Enter Key Handler - siehe Framework Guide]
+          (keyup.enter)="createTodo()"
           [disabled]="isLoading$ | async"
         >
       </header>
       
       <!-- Main section only visible when todos exist -->
-      <section class="main" [Bedingte Anzeige - siehe Framework Guide]>
+      <section class="main" *ngIf="hasTodos$ | async">
         <app-toggle-all></app-toggle-all>
         <app-todo-list></app-todo-list>
       </section>
       
       <!-- Footer only visible when todos exist -->
-      <footer class="footer" [Bedingte Anzeige - siehe Framework Guide]>
+      <footer class="footer" *ngIf="hasTodos$ | async">
         <app-todo-counter></app-todo-counter>
         <app-todo-filter></app-todo-filter>
         <app-clear-completed></app-clear-completed>
       </footer>
       
       <!-- Loading overlay -->
-      <div class="loading-overlay" [Bedingte Anzeige - siehe Framework Guide]>
+      <div class="loading-overlay" *ngIf="isLoading$ | async">
         <div class="spinner"></div>
       </div>
     </section>
   `
 })
 export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
-  // Template Ref - siehe Framework Guide('newTodoInput', { static: true }) newTodoInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('newTodoInput', { static: true }) newTodoInput!: ElementRef<HTMLInputElement>;
   
   newTodoTitle = '';
   isLoading$ = this.uiStateService.isLoading();
@@ -498,7 +497,7 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
     private cdr: ChangeDetectorRef
   ) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     this.subscription.add(
       this.uiStateService.getFocusInputTrigger().subscribe(() => {
         this.focusNewTodoInput();
@@ -506,11 +505,11 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
   
-  onComponentMounted(): void {
+  ngAfterViewInit(): void {
     this.focusNewTodoInput();
   }
   
-  onComponentDestroy(): void {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
   

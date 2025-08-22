@@ -1,6 +1,5 @@
 # Feature 04-08: Vollständiges Todo-Management
 
-> **Hinweis**: Die Code-Beispiele in dieser Spec sind framework-neutral. Siehe [00-framework-adaption-guide.md](00-framework-adaption-guide.md) für die Übersetzung in Angular, Vue oder React.
 ## Ziel
 Vollständige CRUD-Funktionalität für Todos implementieren: Erstellen, Anzeigen, Toggle, Löschen und Bearbeiten in einer integrierten Lösung.
 

@@ -115,7 +115,7 @@ export class UIStateService {
   `
 })
 export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
-  // Template Ref - siehe Framework Guide('newTodoInput', { static: true }) newTodoInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('newTodoInput', { static: true }) newTodoInput!: ElementRef<HTMLInputElement>;
   
   newTodoTitle = '';
   isLoading$ = this.uiStateService.isLoading();
@@ -128,7 +128,7 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
     private uiStateService: UIStateService
   ) {}
   
-  onComponentInit(): void {
+  ngOnInit(): void {
     this.subscription.add(
       this.uiStateService.getFocusInputTrigger().subscribe(() => {
         this.focusNewTodoInput();
@@ -136,12 +136,12 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
   
-  onComponentMounted(): void {
+  ngAfterViewInit(): void {
     // Initial focus
     this.focusNewTodoInput();
   }
   
-  onComponentDestroy(): void {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
   
@@ -222,9 +222,9 @@ export class TodoAppComponent implements OnInit, OnDestroy, AfterViewInit {
   `
 })
 export class TodoItemComponent {
-  // Props/Input - siehe Framework Guide todo!: Todo;
-  // Events/Emits - siehe Framework Guide todoDeleted = new EventEmitter<number>();
-  // Template Ref - siehe Framework Guide('editInput', { static: false }) editInput?: ElementRef;
+  @Input() todo!: Todo;
+  @Output() todoDeleted = new EventEmitter<number>();
+  @ViewChild('editInput', { static: false }) editInput?: ElementRef;
   
   isEditing = false;
   isLoading = false;
